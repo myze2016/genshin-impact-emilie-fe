@@ -1,19 +1,18 @@
-import { FormControl, InputLabel, Input, FormHelperText, Grid, Paper, Typography } from "@mui/material";
-import CustomTableRowSearch from "@/components/table/tableRowSearch";
-const ViewCharacterPerks = ({ formData, setFormData, handleChangeForm, headers, data, handleSearch, search }) => {
+import { FormControl, InputLabel, Input, FormHelperText, Grid, Paper } from "@mui/material";
+const ViewCharacterPerks = ({ formData, setFormData, handleChangeForm, headers, perks }) => {
     return (
         <Grid container spacing={2}>
             <form>
                 <Grid size="12">
                     <FormControl>
                         <InputLabel htmlFor="my-input">Name</InputLabel>
-                        <Typography >{formData?.name}</Typography>
+                        <Input name="name" value={formData?.name} onChange={handleChangeForm} id="my-input" aria-describedby="my-helper-text" />
                         <FormHelperText hidden id="my-helper-text">We'll never share your email.</FormHelperText>
                     </FormControl>
                 </Grid>
                 <Grid size="12">
                     <FormControl>
-                        <CustomTableRowSearch minWidth="650" headers={headers} data={data}  handleSearch={handleSearch} search={search} />
+                        <CustomTable minWidth="650" headers={headers} data={perks} />
                     </FormControl>
                 </Grid>
                

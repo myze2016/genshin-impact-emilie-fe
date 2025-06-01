@@ -11,24 +11,18 @@ import ViewCharacterPerks from "./form/ViewCharacterPerks";
 import CustomDialog from "@/components/dialog";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import CustomTable from "@/components/table";
-import { addCharacter, getCharacters, addCharacterPerk, getCharacterPerks } from "@/hooks/useCharacter";
+import { addCharacter, getCharacters } from "@/hooks/useCharacter";
 import AddCharacter from "./form/AddCharacter";
 import tableColumns from "./table/tableColumns";
-import { getPerks } from "@/hooks/usePerk";
-import tableColumnPerks from "./table/tableColumnPerks";
+import AddPerk from "./form/AddPerk";
+import { addPerk, getPerks } from "@/hooks/usePerk";
 
-export default function Character() {
-  const [refetchCharacter, setRefetchCharacter] = useState(0)
-  const [refetchPerk, setRefetchPerk] = useState(0)
-  const [characterId, setCharacterId] = useState(0)
+export default function Page() {
+  const [refetch, setRefetch] = useState(0)
   const [payload, setPayload] = useState('')
-  const [characterPerkPayload, setCharacterPerkPayload] = useState({
-    character_id: '',
-  })
-  const { data: characters, loading: characterloading } = getCharacters(payload, refetchCharacter)
   const [search, setSearch] = useState('')
   const [debouncedInput, setDebouncedInput] = useState("")
-  const { data: characterPerks, loading: perkloading } = getCharacterPerks(characterPerkPayload, refetchPerk, debouncedInput)
+  const { data: perks, loading } = getPerks(payload, refetch, search)
   const [addDialog, setAddDialog] = useState(false)
   const [addPerksDialog, setAddPerksDialog] = useState(false)
   const [viewCharacterPerks, setViewCharacterPerks] = useState(false)
@@ -36,10 +30,17 @@ export default function Character() {
   const [addDialogPositionCharacter, setAddDialogPositionCharacter] = useState(false)
   const [partyId, setPartyId] = useState('')
   const [partyPositionId, setPartyPositionId] = useState('')
+  const [perkDialog, setPerkDialog] = useState(false)
   const [formData, setFormData] = useState({
     name: '',
     element: ''
   })
+
+  const [perkData, setPerkData] = useState({
+    name: '',
+    description: '',
+  })
+
 
   const [formDataPosition, setFormDataPosition] = useState({
     name: '',
@@ -67,13 +68,19 @@ export default function Character() {
     setFormData(updatedForm)
   }
 
+  const handlePerkData = (e) => {
+    const { name, value } = e.target
+    const updatedForm = { ...perkData, [name]: value }
+    setPerkData(updatedForm)
+  }
+
   const handleCancelAdd = (e) => {
     setAddDialog(false)
   }
 
   const handleConfirmAdd = async (e) => {
     await addCharacter(formData)
-    setRefetchCharacter((prev) => !prev)
+    setRefetch((prev) => !prev)
     setAddDialog(false)
   }
 
@@ -98,16 +105,13 @@ export default function Character() {
     setAddDialogPositionCharacter(false)
   }
 
-  const handleOpenViewCharacterPerks = (item) => {
-    setCharacterId(item?.id)
-    setCharacterPerkPayload(prev => ({
-      ...prev,
-      character_id: item?.id, 
-    }));
+  const handleOpenViewCharacterPerks = (e) => {
+    console.log('asdasdasdsadad')
     setViewCharacterPerks(true)
   }
 
   const handleCloseViewCharacterPerks = (e) => {
+    console.log('asdasdasdsadad')
     setViewCharacterPerks(false)
   }
 
@@ -118,7 +122,7 @@ export default function Character() {
       party_position_id: partyPositionId,
     };
     await addPartyPositionCharacter(formDataCharacterPosition)
-    setRefetchCharacter((prev) => !prev)
+    setRefetch((prev) => !prev)
     setAddDialogPositionCharacter(false)
   }
 
@@ -128,7 +132,7 @@ export default function Character() {
       party_id: partyId,
     };
     await addPartyPosition(formDataPositionParty)
-    setRefetchCharacter((prev) => !prev)
+    setRefetch((prev) => !prev)
     setAddDialogPosition(false)
   }
 
@@ -139,6 +143,21 @@ export default function Character() {
   const handleaddDialogPoisitionCharacter = (partyId) => {
     setAddDialogPositionCharacter(true)
     setPartyPositionId(partyId)
+  }
+
+  const handleAddPerk = async (e) => {
+    await addPerk(perkData)
+    setRefetch((prev) => !prev)
+    setPerkDialog(false)
+  }
+
+
+  const closePerkDialog = (e) => {
+    setPerkDialog(false)
+  }
+
+  const openPerkDialog = (e) => {
+    setPerkDialog(true)
   }
 
   const handleSearch = (search) => {
@@ -153,17 +172,9 @@ export default function Character() {
     return () => clearTimeout(timeout)
   }, [search])
 
-  const handleAddCharacterPerk = async (item) => {
-    const payload = {
-      perk_id: item?.id,
-      character_id: characterId
-    };
-    await addCharacterPerk(payload)
-    setRefetchPerk((prev) => !prev)
-  }
 
-  const { headers: characterHeaders  } = tableColumns({handleOpenViewCharacterPerks})
-  const { headers: perkHeaders } = tableColumnPerks({handleAddCharacterPerk})
+  const { headers } = tableColumns()
+  
   return (
     <>
       <CustomDialog open={addDialog}
@@ -180,25 +191,29 @@ export default function Character() {
             title="Add Character Perks" 
             content={<ViewCharacterPerks formData={formData} 
                                setFormData={setFormData}
-                               handleChangeForm={handleChangeForm}
-                               headers={perkHeaders}
-                               data={characterPerks}
-                               handleSearch={handleSearch}
-                               search={search} />}
+                               handleChangeForm={handleChangeForm} />}
           />
+      <CustomDialog open={perkDialog}
+          handleClose={closePerkDialog} 
+          handleConfirm={handleAddPerk}  
+          title="Add Perk" 
+          content={<AddPerk formData={perkData} 
+                              setFormData={setPerkData}
+                              handleChangeForm={handlePerkData} />}
+        />
       <Grid container spacing={2}>
         <Grid item size={12}>
-          <Title title="Character List"></Title>
+          <Title title="Perk List"></Title>
         </Grid>
         <Grid item size={12}>
           <Grid container spacing={2}>
             <Grid item size={2}>
-              <Button onClick={(e) => setAddDialog(true)} variant="contained">Add Character</Button>
+              <Button onClick={openPerkDialog} variant="contained">Add Perk</Button>
             </Grid>
           </Grid>
         </Grid>
         <Grid item size={12}>
-          <CustomTable minWidth="650" headers={characterHeaders} data={characters} />
+          <CustomTable minWidth="650" headers={headers} data={perks} />
         </Grid>
       </Grid>
       

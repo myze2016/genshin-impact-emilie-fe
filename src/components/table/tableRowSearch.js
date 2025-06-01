@@ -1,5 +1,5 @@
-import { TableContainer, Paper, Table, TableHead, TableRow, TableBody, TableCell } from "@mui/material"
-const CustomTable = ({ minWidth=650, headers=[], data=[] }) => {
+import { TableContainer, Paper, Table, TableHead, TableRow, TableBody, TableCell, TextField } from "@mui/material"
+const CustomTableRowSearch = ({ minWidth=650, headers=[], data=[], handleSearch=((e) => {}), search="" }) => {
     return (
         
         <TableContainer component={Paper}>
@@ -14,6 +14,26 @@ const CustomTable = ({ minWidth=650, headers=[], data=[] }) => {
                     </TableRow>
                 </TableHead>
                 <TableBody>
+                <TableRow
+                >
+                    <TableCell colSpan={headers.length}
+                     sx={{
+                        position: 'sticky',
+                        top: 0,
+                        backgroundColor: 'background.paper', 
+                        zIndex: 10,
+                    }}>
+                        <TextField
+                            label="Search"
+                            variant="outlined"
+                            size="small"
+                            fullWidth
+                            margin="normal"
+                            value={search}
+                            onChange={(e) => handleSearch(e.target.value)}
+                        />
+                    </TableCell>
+                </TableRow>
                 {data.map((value, index) => (
                     <TableRow
                     key={index}
@@ -29,4 +49,4 @@ const CustomTable = ({ minWidth=650, headers=[], data=[] }) => {
         </TableContainer>
     )
 }
-export default CustomTable
+export default CustomTableRowSearch

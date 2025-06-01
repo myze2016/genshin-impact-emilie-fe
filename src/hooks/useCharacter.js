@@ -22,6 +22,26 @@ export const getCharacters = (payload, refetch) => {
   return { data, loading }
 }
 
+export const getCharacterPerks = (payload, refetch, search) => {
+  const [data, setData] = useState([])
+  const [loading, setLoading] = useState(true)
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+       const character_id = payload?.character_id || ''
+       const response = await api.get(`/character-perk?character_id=${character_id}&search=${search}`);
+        setData(response?.data?.character_perks)
+      } catch (error) {
+        console.log(error)
+      } 
+    }
+
+    fetchData()
+  }, [payload, refetch, search])
+
+  return { data, loading }
+}
+
 export const addCharacter = async (payload) => {
   try {
     const response = await api.post(`/character`, payload)
@@ -29,6 +49,15 @@ export const addCharacter = async (payload) => {
     console.log(error)
   } 
 }
+
+export const addCharacterPerk = async (payload) => {
+  try {
+    const response = await api.post(`/character-perk`, payload)
+  } catch (error) {
+    console.log(error)
+  } 
+}
+
 
 export const addPartyPosition = async (payload) => {
   try {

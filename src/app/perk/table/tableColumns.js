@@ -1,16 +1,16 @@
 import { TableCell, Button } from "@mui/material"
 import { Fragment } from "react"
 
-const tableColumns = ({handleOpenViewCharacterPerks}) => {
+const tableColumns = () => {
   const headers = [
     { name: 'Name', value: 'name', cell: (item,index) => {
       return (
         <TableCell key={index} align="right">{item?.name}</TableCell>
       )
     } },
-    { name: 'Element', value: 'element',  cell: (item,index) => {
+    { name: 'Description', value: 'description',  cell: (item,index) => {
         return (
-          <TableCell key={index} align="right">{item?.element}</TableCell>
+          <TableCell key={index} align="right">{item?.description}</TableCell>
         )
       }
     },
@@ -18,7 +18,7 @@ const tableColumns = ({handleOpenViewCharacterPerks}) => {
       cell: (item, index) => {
           return (
             <Fragment key={index}>
-              <TableCell key={index} align="right"> <Button onClick={(e) => handleOpenViewCharacterPerks(item)}> Add Perks</Button></TableCell>
+             
             </Fragment>
           )
       }
