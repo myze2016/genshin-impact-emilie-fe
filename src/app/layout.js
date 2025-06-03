@@ -4,6 +4,7 @@ import { ThemeProvider } from '@mui/material/styles'
 import theme from "@/lib/theme";
 import { CssBaseline, Container } from '@mui/material'
 import Nav from "@/components/nav/nav";
+import ClientOnly from "@/components/ClientOnly";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -22,13 +23,15 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          <Nav />
-          <Container maxWidth="lg" className="p-5">
-          {children}
-          </Container>
-        </ThemeProvider>
+        <ClientOnly>
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <Nav />
+            <Container maxWidth={false} className="p-5">
+            {children}
+            </Container>
+          </ThemeProvider>
+        </ClientOnly>
       </body>
     </html>
   );

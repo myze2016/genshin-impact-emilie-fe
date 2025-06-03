@@ -3,12 +3,16 @@ import { createTheme } from '@mui/material/styles'
 
 const theme = createTheme({
   palette: {
-    mode: 'dark', // or 'light'
+    mode: 'dark', 
     primary: {
-      main: '#81c784', // soft green (Dendro-inspired)
+      main: '#81c784', 
     },
     secondary: {
-      main: '#d1c4e9', // lavender/gold accent
+      main: '#d1c4e9', 
+    },
+     error: {
+      main: '#b85c38',    
+      contrastText: '#f0e6d2', 
     },
     background: {
       default: '#1b2a21',

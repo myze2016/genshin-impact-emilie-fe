@@ -1,0 +1,18 @@
+import { FormControl, InputLabel, Input, FormHelperText, Grid } from "@mui/material";
+import CustomTableRowSearch from "@/components/table/tableRowSearch";
+import CustomTableRowSearchV2 from "@/components/table/tableRowSearchV2";
+
+const AddPartyPositionCharacter = ({ formData, setFormData, handleChangeForm, headers, data, handleSearch, search, handleSearchChip, dataChips  }) => {
+    return (
+        <Grid container spacing={2}>
+            <form>
+                <Grid size="12">
+                    <FormControl>
+                        <CustomTableRowSearchV2 minWidth="650" headers={headers} data={data}  handleSearch={handleSearch} search={search}  handleSearchChip={handleSearchChip} dataChips={dataChips}  />
+                    </FormControl>
+                </Grid>
+            </form>
+        </Grid>
+    );
+}
+export default AddPartyPositionCharacter

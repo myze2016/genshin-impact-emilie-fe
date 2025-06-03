@@ -1,11 +1,13 @@
 'use client'
 
-import { AppBar, Toolbar, Typography, Button, Box, Container } from '@mui/material'
+import { AppBar, Toolbar, Typography, Button, Box, Container, useTheme } from '@mui/material'
 import Link from 'next/link'
 
 export default function Nav() {
+  const theme = useTheme()
+
   const navItems = [
-    { label: 'Home', href: '/' },
+    { label: 'Home', href: '/dashboard' },
     { label: 'Party', href: '/party' },
     { label: 'Character', href: '/character' },
     { label: 'Perk', href: '/perk' },
@@ -16,42 +18,59 @@ export default function Nav() {
       position="static"
       elevation={0}
       sx={{
-        background: 'linear-gradient(90deg, #2f4034, #45694a)',
-        fontFamily: `'Cinzel', serif`,
-        borderBottom: '2px solid #c0e6ca',
+        background: `linear-gradient(90deg, ${theme.palette.background.paper}, ${theme.palette.background.default})`,
+        fontFamily: theme.typography.fontFamily,
+        borderBottom: `2px solid ${theme.palette.primary.main}`,
+        WebkitFontSmoothing: 'antialiased',
+        MozOsxFontSmoothing: 'grayscale',
       }}
     >
       <Container maxWidth="lg">
-        <Toolbar disableGutters sx={{ py: 1, justifyContent: 'space-between' }}>
+        <Toolbar disableGutters sx={{ py: 1.25, justifyContent: 'space-between' }}>
           <Typography
-            variant="h4"
+            variant="h5"
             sx={{
               ml: 2,
-              fontWeight: 600,
-              color: '#d3ffe5',
-              letterSpacing: '0.08em',
-              textShadow: '1px 1px 6px #1e2f23',
+              fontWeight: 700,
+              color: theme.palette.primary.main,
+              letterSpacing: '0.12em',
+              textTransform: 'uppercase',
+              textShadow: `
+                0 0 3px ${theme.palette.primary.main}aa,
+                0 0 6px ${theme.palette.primary.main}66
+              `,
+              userSelect: 'none',
+              fontStyle: 'normal',
             }}
           >
             Emilie
           </Typography>
 
-          <Box sx={{ display: 'flex', gap: 2, mr: 2 }}>
+          <Box sx={{ display: 'flex', gap: 2.5, mr: 2 }}>
             {navItems.map((item) => (
               <Button
                 key={item.href}
                 component={Link}
                 href={item.href}
                 sx={{
-                  color: '#e3ffe9',
-                  textTransform: 'none',
-                  fontSize: '1rem',
-                  fontWeight: 500,
+                  color: theme.palette.text.primary,
+                  textTransform: 'uppercase',
+                  fontSize: '0.9rem',
+                  fontWeight: 600,
+                  letterSpacing: '0.08em',
                   borderBottom: '2px solid transparent',
                   transition: 'all 0.3s ease',
+                  px: 1.2,
+                  py: 0.4,
                   '&:hover': {
-                    borderBottom: '2px solid #a3e4b5',
-                    color: '#ffffff',
+                    borderBottom: `2px solid ${theme.palette.primary.main}`,
+                    color: theme.palette.primary.main,
+                    filter: 'drop-shadow(0 0 3px rgba(129, 199, 132, 0.6))',
+                    backgroundColor: 'transparent',
+                  },
+                  '&:focus-visible': {
+                    outline: `2px solid ${theme.palette.primary.main}`,
+                    outlineOffset: '2px',
                   },
                 }}
               >

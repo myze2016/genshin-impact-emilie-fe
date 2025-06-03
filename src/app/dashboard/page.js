@@ -1,6 +1,6 @@
 'use client'
 
-import { Grid, Typography, Button, Box, Chip, Stack } from "@mui/material"
+import { Grid, Typography, Button, Box, Chip, Stack, Card, CardMedia, CardContent, CardActionArea } from "@mui/material"
 import { Fragment, useState, useEffect } from "react";
 import { getParties, addParty, addPartyPosition, addPartyPositionCharacter, removePartyPositionCharacter } from "../../hooks/useParty";
 import Title from "@/components/title";
@@ -13,11 +13,9 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { getCharacters } from "@/hooks/useCharacter";
 import tableColumns from "./table/tableColumns";
 import { getPerks } from "@/hooks/usePerk";
-import { useParams, useRouter } from "next/navigation";
 
-export default function Party() {
-  const params = useParams();
-  const id = params?.id;
+
+export default function Dashboard() {
   const [refetch, setRefetch] = useState(0)
   const [payload, setPayload] = useState('')
   const [refetchCharacter, setRefetchCharacter] = useState(0)
@@ -180,6 +178,7 @@ export default function Party() {
   return (
     <>
       <CustomDialog open={addDialog}
+              size="sm"
               handleClose={handleCancelAdd} 
               handleConfirm={handleConfirmAdd}  
               title="Add Party" 
@@ -221,101 +220,35 @@ export default function Party() {
           />
       <Grid container spacing={2}>
         <Grid item size={12}>
-          <Title title="Party List"></Title>
-        </Grid>
-        <Grid item size={12}>
           <Button onClick={(e) => setAddDialog(true)} variant="contained">Add Party</Button>
         </Grid>
-        {
-          parties && parties?.map((party, index) => (
-            <Fragment key={index}>
-              <Grid item size={12}>
-                  <Grid container spacing={2}>
-                    <Grid item size={2}>
-                      <Typography>{party?.name}</Typography>
-                    </Grid>
-                    <Grid item size={2}>
-                      <Typography>{party?.element}</Typography>
-                    </Grid>
-                    <Grid item size={2}>
-                      <Typography>{party?.reaction}</Typography>
-                    </Grid>
-                  </Grid>
-              </Grid>
-              <Grid item size={12}>
-                <Grid container spacing={2}>
-                  <Grid item size={6}>
-                    <Button onClick={(e) => handleaddDialogPoisition(party?.id)} variant="contained">Add Party Position</Button>
-                  </Grid>
-                </Grid>
-              </Grid>
-              {
-                party && party?.positions?.map((position, index) => (
-                  <Grid key={index} item size={12}>
-                      <Grid container spacing={2}>
-                        <Grid item size={{xs: 6, md: 2}}>
-                          <Typography>{position?.name}</Typography>
-                        </Grid>
-                        <Grid item size={{xs: 6, md: 2}}>
-                          <Typography>{position?.description}</Typography>
-                        </Grid>
-                      </Grid>
-                  </Grid>
-                ))
-              }
-              
-              <Grid key={index} sx={{marginTop: '25px'}}item size={12}>
-                <Grid container spacing={2}>
-                {
-                  party && party?.positions?.map((position, index) => (
-                      <Grid key={index} item size={{xs: 6, md: 2}}>
-                        <Grid container spacing={2}>
-                          <Grid item size={12}>
-                            <Typography sx={{ fontWeight: 'bold' }}>{position?.name}</Typography>
-                          </Grid>
-                        {
-                          position && position?.characters_value?.map((character, index) => (
-                            <Grid key={index} item size={12}>
-                               <Grid container spacing={0}>
-                                  <Grid item size={{xs: 6, md: 2}}>
-                                    <Typography>{character?.character?.name}</Typography>
-                                  </Grid>
-                                  <Grid item size={{xs: 6, md: 10}}>
-                                    <Stack direction="row" alignItems="center" spacing={2} flexWrap="wrap" useFlexGap>
-                                    {
-                                      character && character?.character?.perks.slice(0, 3).map((perk, index) => (
-                                        <Chip
-                                          key={index}
-                                          label={perk.perk.name}
-                                          color="primary"
-                                          variant="contained"
-                                        />
-                                      
-                                      ))
-                                    }
-                                    </Stack>
-                                  </Grid>
-                                </Grid>
-                            </Grid>
-                          ))
-                        }
-                          <Grid item size={12}>
-                            <Button 
-                              onClick={(e) => handleaddDialogPoisitionCharacter(position?.id)}
-                              variant="contained"
-                            >
-                              <AddCircleOutlineIcon />
-                            </Button>
-                          </Grid>
-                        </Grid>
-                      </Grid>
-                  ))
-                }
-                </Grid>
-              </Grid>
-            </Fragment>
-          ))
-        }
+        <Grid item size={12}>
+          <Grid container spacing={2}>
+            {
+              parties && parties?.map((party, index) => (
+                <Fragment key={index}>
+                    <Card sx={{ width: 345, height: 160 }}>
+                      <CardActionArea href={`/party/${party.id}`} sx={{ height: '100%' }}>
+                        <CardContent sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'flex-start',
+                            height: '100%',
+                          }}>
+                          <Typography gutterBottom variant="h6" component="div">
+                            {party?.name}
+                          </Typography>
+                          <Typography variant="body2" color="secondary">
+                            {party?.description}
+                          </Typography>
+                        </CardContent>
+                      </CardActionArea>
+                    </Card>
+                </Fragment>
+              ))
+            }
+          </Grid>
+        </Grid>
       </Grid>
       
     </>

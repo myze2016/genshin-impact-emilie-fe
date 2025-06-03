@@ -1,17 +1,17 @@
 'use client'
 
-import { Grid, Typography, Button, Box, Chip, Stack } from "@mui/material"
+import { Grid, Typography, Button, Box, Chip, Stack, Paper } from "@mui/material"
 import { Fragment, useState, useEffect } from "react";
-import { getParties, addParty, addPartyPosition, addPartyPositionCharacter, removePartyPositionCharacter } from "../../hooks/useParty";
+import { getParties, addParty, addPartyPosition, addPartyPositionCharacter, removePartyPositionCharacter } from "../../../hooks/useParty";
 import Title from "@/components/title";
-import AddParty from "./form/AddParty";
-import AddPartyPosition from "./form/AddPartyPosition";
-import AddPartyPositionCharacter from "./form/AddPartyPositionCharacter";
-import ViewCharacterPerks from "./form/ViewCharacterPerks";
+import AddParty from "../form/AddParty";
+import AddPartyPosition from "../form/AddPartyPosition";
+import AddPartyPositionCharacter from "../form/AddPartyPositionCharacter";
+import ViewCharacterPerks from "../form/ViewCharacterPerks";
 import CustomDialog from "@/components/dialog";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { getCharacters } from "@/hooks/useCharacter";
-import tableColumns from "./table/tableColumns";
+import tableColumns from "../table/tableColumns";
 import { getPerks } from "@/hooks/usePerk";
 import { useParams, useRouter } from "next/navigation";
 
@@ -220,16 +220,11 @@ export default function Party() {
                                 handleChangeForm={handleChangeFormPositionCharacter} />}
           />
       <Grid container spacing={2}>
-        <Grid item size={12}>
-          <Title title="Party List"></Title>
-        </Grid>
-        <Grid item size={12}>
-          <Button onClick={(e) => setAddDialog(true)} variant="contained">Add Party</Button>
-        </Grid>
         {
           parties && parties?.map((party, index) => (
             <Fragment key={index}>
               <Grid item size={12}>
+                <Paper sx={{ padding: 2 }}>
                   <Grid container spacing={2}>
                     <Grid item size={2}>
                       <Typography>{party?.name}</Typography>
@@ -241,6 +236,7 @@ export default function Party() {
                       <Typography>{party?.reaction}</Typography>
                     </Grid>
                   </Grid>
+                  </Paper>
               </Grid>
               <Grid item size={12}>
                 <Grid container spacing={2}>

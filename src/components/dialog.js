@@ -7,12 +7,14 @@ const CustomDialog = ({ size = "md", open, handleClose = ((e) => {}), handleConf
         open={open}
         onClose={handleClose}>
             <DialogTitle>{title}</DialogTitle>
-            <DialogContent>
+            <hr></hr>
+            <DialogContent sx={{ py: 3 }}>
                 {content}
             </DialogContent>
-            <DialogActions>
-            <Button onClick={handleClose}>{cancelText}</Button>
-            <Button onClick={handleConfirm}>{confirmText}</Button>
+            <hr></hr>
+            <DialogActions sx={{ py: 2 }}>
+                <Button onClick={handleClose} color="error" variant="contained" size="small">{cancelText}</Button>
+                <Button onClick={handleConfirm} color="primary" variant="contained" size="small">{confirmText}</Button>
             </DialogActions>
       </Dialog>
     )
