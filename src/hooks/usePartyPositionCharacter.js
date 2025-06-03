@@ -45,12 +45,3 @@ export const addPartyPositionCharacter = async (payload) => {
     console.log(error)
   } 
 }
-
-
-export const removePartyPositionCharacter = async (payload) => {
-  try {
-    const response = await api.delete(`/party-position-character`, payload)
-  } catch (error) {
-    console.log(error)
-  } 
-}

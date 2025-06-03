@@ -1,6 +1,7 @@
 import { FormControl, InputLabel, Input, FormHelperText, Grid, Paper, Typography } from "@mui/material";
 import CustomTableRowSearch from "@/components/table/tableRowSearch";
-const ViewCharacterPerks = ({ formData, setFormData, handleChangeForm, headers, data, handleSearch, search }) => {
+import CustomTableRowSearchV2 from "@/components/table/tableRowSearchV2";
+const ViewCharacterPerks = ({ formData, setFormData, handleChangeForm, headers, data, handleSearch, search, handleSearchChip, dataChips }) => {
     return (
         <Grid container spacing={2}>
             <form>
@@ -13,7 +14,7 @@ const ViewCharacterPerks = ({ formData, setFormData, handleChangeForm, headers, 
                 </Grid>
                 <Grid size="12">
                     <FormControl>
-                        <CustomTableRowSearch minWidth="650" headers={headers} data={data}  handleSearch={handleSearch} search={search} />
+                        <CustomTableRowSearchV2 minWidth="650" headers={headers} data={data}  handleSearch={handleSearch} search={search} handleSearchChip={handleSearchChip} dataChips={dataChips} />
                     </FormControl>
                 </Grid>
                

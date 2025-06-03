@@ -11,7 +11,8 @@ import ViewCharacterPerks from "./form/ViewCharacterPerks";
 import CustomDialog from "@/components/dialog";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import CustomTable from "@/components/table";
-import { addCharacter, getCharacters, addCharacterPerk, getCharacterPerks } from "@/hooks/useCharacter";
+import { addCharacter, getCharacters, addCharacterPerk, getCharacterPerks, deleteCharacterPerk, addCharacterApi } from "@/hooks/useCharacter";
+
 import AddCharacter from "./form/AddCharacter";
 import tableColumns from "./table/tableColumns";
 import { getPerks } from "@/hooks/usePerk";
@@ -20,15 +21,23 @@ import tableColumnPerks from "./table/tableColumnPerks";
 export default function Character() {
   const [refetchCharacter, setRefetchCharacter] = useState(0)
   const [refetchPerk, setRefetchPerk] = useState(0)
+  const [refetchPerks, setRefetchPerks] = useState(0)
   const [characterId, setCharacterId] = useState(0)
   const [payload, setPayload] = useState('')
   const [characterPerkPayload, setCharacterPerkPayload] = useState({
     character_id: '',
   })
-  const { data: characters, loading: characterloading } = getCharacters(payload, refetchCharacter)
+  const [perkPayload, setPerkPayload] = useState({
+    search: '',
+  })
+  const [searchCharacter, setSearchCharacter] = useState('')
+  const [debouncedInputCharacter, setDebouncedInputCharacter] = useState("")
+  const { data: characters, loading: characterloading } = getCharacters(payload, refetchCharacter, debouncedInputCharacter)
   const [search, setSearch] = useState('')
   const [debouncedInput, setDebouncedInput] = useState("")
-  const { data: characterPerks, loading: perkloading } = getCharacterPerks(characterPerkPayload, refetchPerk, debouncedInput)
+  const [debouncedInputPerk, setDebouncedInputPerk] = useState("")
+  const { data: characterPerks, loading: characterPerkloading } = getCharacterPerks(characterPerkPayload, refetchPerk, debouncedInput)
+  const { data: perks, loading: perkloading } = getCharacterPerks(perkPayload, refetchPerks, debouncedInputPerk)
   const [addDialog, setAddDialog] = useState(false)
   const [addPerksDialog, setAddPerksDialog] = useState(false)
   const [viewCharacterPerks, setViewCharacterPerks] = useState(false)
@@ -145,6 +154,14 @@ export default function Character() {
     setSearch(search)
   }
 
+  const handleSearchChip = (value) => {
+    if (!search.includes(value)) {
+      setSearch((prev) => prev+' '+value)
+    } else {
+      setSearch((prev) => prev.replace(' '+value, ''))
+    }
+  }
+
   useEffect(() => {
     const timeout = setTimeout(() => {
       setDebouncedInput(search)
@@ -152,6 +169,18 @@ export default function Character() {
 
     return () => clearTimeout(timeout)
   }, [search])
+
+  const handleSearchCharacter = (search) => {
+    setSearchCharacter(search)
+  }
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setDebouncedInputCharacter(search)
+    }, 300)
+
+    return () => clearTimeout(timeout)
+  }, [searchCharacter])
 
   const handleAddCharacterPerk = async (item) => {
     const payload = {
@@ -162,8 +191,26 @@ export default function Character() {
     setRefetchPerk((prev) => !prev)
   }
 
+  
+
+  const removeCharacterPerk = async (item) => {
+    const payload = {
+      perk_id: item?.id,
+      character_id: characterId
+    };
+    await deleteCharacterPerk(payload)
+    setRefetchPerk((prev) => !prev)
+  }
+
+
+  const handleAddCharacterApi = async (item) => {
+    await addCharacterApi(payload)
+    setRefetchCharacter((prev) => !prev)
+  }
+
+
   const { headers: characterHeaders  } = tableColumns({handleOpenViewCharacterPerks})
-  const { headers: perkHeaders } = tableColumnPerks({handleAddCharacterPerk})
+  const { headers: perkHeaders } = tableColumnPerks({handleAddCharacterPerk, removeCharacterPerk})
   return (
     <>
       <CustomDialog open={addDialog}
@@ -176,7 +223,7 @@ export default function Character() {
             />
      <CustomDialog size="lg" open={viewCharacterPerks}
             handleClose={handleCloseViewCharacterPerks} 
-            handleConfirm={(e) => {}}  
+            handleConfirm={handleCloseViewCharacterPerks}  
             title="Add Character Perks" 
             content={<ViewCharacterPerks formData={formData} 
                                setFormData={setFormData}
@@ -184,7 +231,9 @@ export default function Character() {
                                headers={perkHeaders}
                                data={characterPerks}
                                handleSearch={handleSearch}
-                               search={search} />}
+                               search={search}
+                               handleSearchChip={handleSearchChip}
+                               dataChips={perks} />}
           />
       <Grid container spacing={2}>
         <Grid item size={12}>
@@ -194,6 +243,9 @@ export default function Character() {
           <Grid container spacing={2}>
             <Grid item size={2}>
               <Button onClick={(e) => setAddDialog(true)} variant="contained">Add Character</Button>
+            </Grid>
+            <Grid item size={2}>
+              <Button onClick={(e) => handleAddCharacterApi()} variant="contained">Add Character Api</Button>
             </Grid>
           </Grid>
         </Grid>

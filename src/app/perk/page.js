@@ -160,6 +160,24 @@ export default function Page() {
     setPerkDialog(true)
   }
 
+  const generatePerk = (e) => {
+    console.log('generating perk...')
+    const wordSet = new Set();
+
+    perks.forEach(perk => {
+      const words = perk.split(' ');
+      words.forEach(word => {
+        if (!wordSet.has(word)) {
+          wordSet.add(word);
+        }
+      });
+    });
+
+    const combinedString = Array.from(wordSet).join(' ');
+    console.log('combinedString', combinedString)
+  }
+
+
   const handleSearch = (search) => {
     setSearch(search)
   }
@@ -201,6 +219,7 @@ export default function Page() {
                               setFormData={setPerkData}
                               handleChangeForm={handlePerkData} />}
         />
+        
       <Grid container spacing={2}>
         <Grid item size={12}>
           <Title title="Perk List"></Title>
@@ -210,6 +229,9 @@ export default function Page() {
             <Grid item size={2}>
               <Button onClick={openPerkDialog} variant="contained">Add Perk</Button>
             </Grid>
+            {/* <Grid item size={2}>
+             <Button onClick={(e) => generatePerk()} variant="contained">Generate Perk String</Button>
+            </Grid> */}
           </Grid>
         </Grid>
         <Grid item size={12}>

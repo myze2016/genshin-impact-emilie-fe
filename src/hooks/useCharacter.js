@@ -2,13 +2,13 @@
 import { api } from "../utils/axios"
 import { useState, useEffect } from "react"
 
-export const getCharacters = (payload, refetch) => {
+export const getCharacters = (payload, refetch, search) => {
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(true)
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await api.get(`/character`)
+        const response = await api.get(`/character?search=${search}`)
         console.log('response?.data?.characters', response?.data?.characters)
         setData(response?.data?.characters)
       } catch (error) {
@@ -17,7 +17,7 @@ export const getCharacters = (payload, refetch) => {
     }
 
     fetchData()
-  }, [payload, refetch])
+  }, [payload, refetch, search])
 
   return { data, loading }
 }
@@ -50,9 +50,26 @@ export const addCharacter = async (payload) => {
   } 
 }
 
+export const addCharacterApi = async (payload) => {
+  try {
+    const response = await api.post(`/character/create/api`, payload)
+  } catch (error) {
+    console.log(error)
+  } 
+}
+
+
 export const addCharacterPerk = async (payload) => {
   try {
     const response = await api.post(`/character-perk`, payload)
+  } catch (error) {
+    console.log(error)
+  } 
+}
+
+export const deleteCharacterPerk = async (payload) => {
+  try {
+    const response = await api.post(`/character-perk/delete-by-character`, payload)
   } catch (error) {
     console.log(error)
   } 
