@@ -8,7 +8,6 @@ export default function Nav() {
 
   const navItems = [
     { label: 'Home', href: '/dashboard' },
-    { label: 'Party', href: '/party' },
     { label: 'Character', href: '/character' },
     { label: 'Perk', href: '/perk' },
   ]

@@ -1,6 +1,6 @@
 'use client'
 
-import { Grid, Typography, Button, Box } from "@mui/material"
+import { Grid, Typography, Button, Box, Paper } from "@mui/material"
 import { Fragment, useState, useEffect } from "react";
 import { getParties, addPartyPosition, addPartyPositionCharacter } from "../../hooks/useParty";
 import Title from "@/components/title";
@@ -17,6 +17,8 @@ import AddCharacter from "./form/AddCharacter";
 import tableColumns from "./table/tableColumns";
 import { getPerks } from "@/hooks/usePerk";
 import tableColumnPerks from "./table/tableColumnPerks";
+import CustomTableV2 from "@/components/table/tableV2";
+import CustomTableDialog from "@/components/dialog/table";
 
 export default function Character() {
   const [refetchCharacter, setRefetchCharacter] = useState(0)
@@ -221,7 +223,7 @@ export default function Character() {
                                  setFormData={setFormData}
                                  handleChangeForm={handleChangeForm} />}
             />
-     <CustomDialog size="lg" open={viewCharacterPerks}
+     <CustomTableDialog size="lg" open={viewCharacterPerks}
             handleClose={handleCloseViewCharacterPerks} 
             handleConfirm={handleCloseViewCharacterPerks}  
             title="Add Character Perks" 
@@ -237,20 +239,11 @@ export default function Character() {
           />
       <Grid container spacing={2}>
         <Grid item size={12}>
-          <Title title="Character List"></Title>
+            <Button onClick={(e) => setAddDialog(true)} variant="contained">Add Character</Button>
+            <Button sx={{ml: 1}} onClick={(e) => handleAddCharacterApi()} variant="contained">Add Character Api</Button>
         </Grid>
         <Grid item size={12}>
-          <Grid container spacing={2}>
-            <Grid item size={2}>
-              <Button onClick={(e) => setAddDialog(true)} variant="contained">Add Character</Button>
-            </Grid>
-            <Grid item size={2}>
-              <Button onClick={(e) => handleAddCharacterApi()} variant="contained">Add Character Api</Button>
-            </Grid>
-          </Grid>
-        </Grid>
-        <Grid item size={12}>
-          <CustomTable minWidth="650" headers={characterHeaders} data={characters} />
+           <CustomTableV2 minWidth="650" headers={characterHeaders} data={characters} />
         </Grid>
       </Grid>
       

@@ -1,8 +1,8 @@
 'use client'
 
-import { Grid, Typography, Button, Box, Chip, Stack, Paper } from "@mui/material"
+import { Grid, Typography, Button, Box, Chip, Stack, Paper, Table, TableRow, TableCell, TableBody, IconButton } from "@mui/material"
 import { Fragment, useState, useEffect } from "react";
-import { getParties, addParty, addPartyPosition, addPartyPositionCharacter, removePartyPositionCharacter } from "../../../hooks/useParty";
+import { getParty, addParty, addPartyPosition, addPartyPositionCharacter, removePartyPositionCharacter } from "../../../hooks/useParty";
 import Title from "@/components/title";
 import AddParty from "../form/AddParty";
 import AddPartyPosition from "../form/AddPartyPosition";
@@ -14,17 +14,20 @@ import { getCharacters } from "@/hooks/useCharacter";
 import tableColumns from "../table/tableColumns";
 import { getPerks } from "@/hooks/usePerk";
 import { useParams, useRouter } from "next/navigation";
+import CustomTableDialog from "@/components/dialog/table";
 
 export default function Party() {
   const params = useParams();
   const id = params?.id;
   const [refetch, setRefetch] = useState(0)
-  const [payload, setPayload] = useState('')
+  const [payload, setPayload] = useState({
+    id: id,
+  })
   const [refetchCharacter, setRefetchCharacter] = useState(0)
   const [addDialog, setAddDialog] = useState(false)
   const [search, setSearch] = useState('')
   const [debouncedInput, setDebouncedInput] = useState("")
-  const { data: parties, loading } = getParties(payload, refetch)
+  const { data: parties, loading } = getParty(payload, refetch)
   const [refetchPerks, setRefetchPerks] = useState(0)
   const [debouncedInputPerk, setDebouncedInputPerk] = useState("")
   const [perkPayload, setPerkPayload] = useState({
@@ -75,6 +78,16 @@ export default function Party() {
 
     return () => clearTimeout(timeout)
   }, [search])
+
+
+  useEffect(() => {
+    if (id) {
+      setPayload(prev => ({
+        ...prev,
+        id: id,
+      }));
+    }
+  }, [])
 
   const handleChangeForm = (e) => {
     const { name, value } = e.target
@@ -156,7 +169,6 @@ export default function Party() {
   }
 
   const addCharacterPosition = async (item) => {
-    console.log('item2', item)
     const payload = {
         character_id: item?.id,
         party_position_id: partyPositionId
@@ -179,23 +191,16 @@ export default function Party() {
 
   return (
     <>
-      <CustomDialog open={addDialog}
-              handleClose={handleCancelAdd} 
-              handleConfirm={handleConfirmAdd}  
-              title="Add Party" 
-              content={<AddParty formData={formData} 
-                                 setFormData={setFormData}
-                                 handleChangeForm={handleChangeForm} />}
-            />
        <CustomDialog open={addDialogPosition}
               handleClose={handleCancelAddPosition} 
               handleConfirm={handleConfirmAddPosition}  
               title="Add Party Position" 
+              size="xs"
               content={<AddPartyPosition formData={formDataPosition} 
                                  setFormData={setFormDataPosition}
                                  handleChangeForm={handleChangeFormPosition} />}
             />
-       <CustomDialog open={addDialogPositionCharacter}
+       <CustomTableDialog open={addDialogPositionCharacter}
               size="lg"
               handleClose={handleCancelAddPositionCharacter} 
               handleConfirm={handleConfirmAddPositionCharacter}  
@@ -225,27 +230,42 @@ export default function Party() {
             <Fragment key={index}>
               <Grid item size={12}>
                 <Paper sx={{ padding: 2 }}>
-                  <Grid container spacing={2}>
-                    <Grid item size={2}>
-                      <Typography>{party?.name}</Typography>
+                  <Grid container>
+                    <Grid item size={12} sx={{mb: 1}}>
+                      <Box display="flex" justifyContent="space-between" alignItems="center">
+                        <Typography variant="h6">{party?.name}</Typography>
+                        <Button onClick={(e) => handleaddDialogPoisition(party?.id)} variant="contained">Add Party Position</Button>
+                      </Box>
                     </Grid>
-                    <Grid item size={2}>
-                      <Typography>{party?.element}</Typography>
+                    <hr style={{ width: '100%' }} />
+                    <Grid item size={12} >
+                      <Typography variant="subtitle1">{party?.element}&nbsp;&nbsp;•&nbsp;&nbsp;{party?.reaction}</Typography>
                     </Grid>
-                    <Grid item size={2}>
-                      <Typography>{party?.reaction}</Typography>
+                    <Grid item size={12} sx={{mt: 1}}>
+                      <Typography>{party?.description}</Typography>
                     </Grid>
                   </Grid>
-                  </Paper>
+                </Paper>
               </Grid>
               <Grid item size={12}>
-                <Grid container spacing={2}>
-                  <Grid item size={6}>
-                    <Button onClick={(e) => handleaddDialogPoisition(party?.id)} variant="contained">Add Party Position</Button>
-                  </Grid>
-                </Grid>
+                <Paper >
+                  <Table>
+                    <TableBody>
+                      {party?.positions?.map((position, index) => (
+                        <TableRow key={index}>
+                          <TableCell>
+                            <Typography>{position?.name}</Typography>
+                          </TableCell>
+                          <TableCell>
+                            <Typography>{position?.description}</Typography>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </Paper>
               </Grid>
-              {
+              {/* {
                 party && party?.positions?.map((position, index) => (
                   <Grid key={index} item size={12}>
                       <Grid container spacing={2}>
@@ -258,55 +278,56 @@ export default function Party() {
                       </Grid>
                   </Grid>
                 ))
-              }
-              
-              <Grid key={index} sx={{marginTop: '25px'}}item size={12}>
+              } */}
+               <Grid item size={12}>
                 <Grid container spacing={2}>
-                {
-                  party && party?.positions?.map((position, index) => (
-                      <Grid key={index} item size={{xs: 6, md: 2}}>
-                        <Grid container spacing={2}>
-                          <Grid item size={12}>
-                            <Typography sx={{ fontWeight: 'bold' }}>{position?.name}</Typography>
-                          </Grid>
-                        {
-                          position && position?.characters_value?.map((character, index) => (
-                            <Grid key={index} item size={12}>
-                               <Grid container spacing={0}>
-                                  <Grid item size={{xs: 6, md: 2}}>
-                                    <Typography>{character?.character?.name}</Typography>
-                                  </Grid>
-                                  <Grid item size={{xs: 6, md: 10}}>
-                                    <Stack direction="row" alignItems="center" spacing={2} flexWrap="wrap" useFlexGap>
-                                    {
-                                      character && character?.character?.perks.slice(0, 3).map((perk, index) => (
-                                        <Chip
-                                          key={index}
-                                          label={perk.perk.name}
-                                          color="primary"
-                                          variant="contained"
-                                        />
-                                      
-                                      ))
-                                    }
-                                    </Stack>
-                                  </Grid>
-                                </Grid>
+                  {
+                    party && party?.positions?.map((position, index) => (
+                      <Grid key={index} item size={6}>
+                        <Paper sx={{ padding: 2 }}>
+                          <Grid container spacing={0}>
+                            <Grid item size={12} >
+                              <Box display="flex" justifyContent="space-between" alignItems="center">
+                                <Typography sx={{ fontWeight: 'bold' }}>{position?.name}</Typography>
+                                  <IconButton
+                                    color="primary"
+                                    onClick={() => handleaddDialogPoisitionCharacter(position?.id)}
+                                    aria-label="add character to position"
+                                  >
+                                    <AddCircleOutlineIcon />
+                                  </IconButton>
+                              </Box>
                             </Grid>
-                          ))
-                        }
-                          <Grid item size={12}>
-                            <Button 
-                              onClick={(e) => handleaddDialogPoisitionCharacter(position?.id)}
-                              variant="contained"
-                            >
-                              <AddCircleOutlineIcon />
-                            </Button>
+                            <hr style={{ width: '100%' }} />
+                            {
+                              position && position?.characters_value?.map((character, index) => (
+                                <Grid key={index} item size={12}>
+                                  <Grid container spacing={0}>
+                                      <Grid item size={12}>
+                                        <Typography>{character?.character?.name}</Typography>
+                                        <Stack direction="row" alignItems="center" spacing={2} flexWrap="wrap" useFlexGap>
+                                        {
+                                          character && character?.character?.perks.slice(0, 3).map((perk, index) => (
+                                            <Chip
+                                              key={index}
+                                              label={perk.perk.name}
+                                              color="primary"
+                                              variant="contained"
+                                            />
+                                          
+                                          ))
+                                        }
+                                        </Stack>
+                                      </Grid>
+                                    </Grid>
+                                </Grid>
+                              ))
+                            }
                           </Grid>
-                        </Grid>
+                        </Paper>
                       </Grid>
-                  ))
-                }
+                    ))
+                  }
                 </Grid>
               </Grid>
             </Fragment>

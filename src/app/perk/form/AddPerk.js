@@ -1,24 +1,16 @@
-import { FormControl, InputLabel, Input, FormHelperText, Grid } from "@mui/material";
+import { FormControl, InputLabel, Input, FormHelperText, Grid, Box, TextField } from "@mui/material";
 const AddPerk = ({ formData, setFormData, handleChangeForm }) => {
     return (
-        <Grid container spacing={2}>
-            <form>
-                <Grid size="12">
-                    <FormControl>
-                        <InputLabel htmlFor="my-input">Name</InputLabel>
-                        <Input name="name" value={formData?.name} onChange={handleChangeForm} id="my-input" aria-describedby="my-helper-text" />
-                        <FormHelperText hidden id="my-helper-text">We'll never share your email.</FormHelperText>
-                    </FormControl>
-                </Grid>
-                <Grid size="12">
-                    <FormControl>
-                        <InputLabel htmlFor="my-input">Description</InputLabel>
-                        <Input name="description" value={formData?.description} onChange={handleChangeForm} id="my-input" aria-describedby="my-helper-text" />
-                        <FormHelperText hidden id="my-helper-text">We'll never share your email.</FormHelperText>
-                    </FormControl>
-                </Grid>
-            </form>
-        </Grid>
+        <Box sx={{ width: '100%' }}>
+            <Grid container spacing={2}>
+                    <Grid item size={{xs: 12, md: 6, lg: 6}}>
+                            <TextField fullWidth name="name" value={formData?.name} onChange={handleChangeForm} label="Name" variant="outlined" />
+                    </Grid>
+                    <Grid item size={{xs: 12, md: 6, lg: 6}}>
+                            <TextField fullWidth name="description" value={formData?.description} onChange={handleChangeForm} label="Description" variant="outlined" />
+                    </Grid>
+            </Grid>
+        </Box>
     );
 }
 export default AddPerk

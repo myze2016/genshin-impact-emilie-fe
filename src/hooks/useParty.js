@@ -21,6 +21,25 @@ export const getParties = (payload, refetch) => {
   return { data, loading }
 }
 
+export const getParty = (payload, refetch) => {
+  const [data, setData] = useState([])
+  const [loading, setLoading] = useState(true)
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await api.get(`/party/${payload.id}`)
+        setData(response?.data?.parties)
+      } catch (error) {
+        console.log(error)
+      } 
+    }
+
+    fetchData()
+  }, [payload, refetch])
+
+  return { data, loading }
+}
+
 export const addParty = async (payload) => {
   try {
     const response = await api.post(`/party`, payload)

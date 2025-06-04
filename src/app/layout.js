@@ -6,6 +6,8 @@ import { CssBaseline, Container } from '@mui/material'
 import Nav from "@/components/nav/nav";
 import ClientOnly from "@/components/ClientOnly";
 import "./globals.css";
+import { ToastContainer } from "react-toastify";
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,6 +27,7 @@ export default function RootLayout({ children }) {
       >
         <ClientOnly>
           <ThemeProvider theme={theme}>
+            <ToastContainer newestOnTop />
             <CssBaseline />
             <Nav />
             <Container maxWidth={false} className="p-5">

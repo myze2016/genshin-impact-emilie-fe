@@ -16,11 +16,13 @@ import AddCharacter from "./form/AddCharacter";
 import tableColumns from "./table/tableColumns";
 import AddPerk from "./form/AddPerk";
 import { addPerk, getPerks } from "@/hooks/usePerk";
+import CustomTableV2 from "@/components/table/tableV2";
 
 export default function Page() {
   const [refetch, setRefetch] = useState(0)
   const [payload, setPayload] = useState('')
   const [search, setSearch] = useState('')
+  const [libraryDialog, setLibraryDialog] = useState(false)
   const [debouncedInput, setDebouncedInput] = useState("")
   const { data: perks, loading } = getPerks(payload, refetch, search)
   const [addDialog, setAddDialog] = useState(false)
@@ -190,6 +192,16 @@ export default function Page() {
     return () => clearTimeout(timeout)
   }, [search])
 
+  const closeLibraryDialog = (search) => {
+    setLibraryDialog(false)
+  }
+
+  const confirmLibraryDialog = (search) => {
+    setLibraryDialog(true)
+  }
+
+
+
 
   const { headers } = tableColumns()
   
@@ -219,23 +231,23 @@ export default function Page() {
                               setFormData={setPerkData}
                               handleChangeForm={handlePerkData} />}
         />
+
+      <LibraryDialog open={libraryDialog}
+          handleClose={closeLibraryDialog} 
+          handleConfirm={confirmLibraryDialog}  
+          title="Tag Common" 
+          content={<AddPerk formData={perkData} 
+                              setFormData={setPerkData}
+                              handleChangeForm={handlePerkData} />}
+        />
         
       <Grid container spacing={2}>
         <Grid item size={12}>
-          <Title title="Perk List"></Title>
+            <Button onClick={openPerkDialog} variant="contained" sx={{mr: 1}}>Add Perk</Button>
+            <Button onClick={openPerkDialog} variant="contained">Tag Common</Button>
         </Grid>
         <Grid item size={12}>
-          <Grid container spacing={2}>
-            <Grid item size={2}>
-              <Button onClick={openPerkDialog} variant="contained">Add Perk</Button>
-            </Grid>
-            {/* <Grid item size={2}>
-             <Button onClick={(e) => generatePerk()} variant="contained">Generate Perk String</Button>
-            </Grid> */}
-          </Grid>
-        </Grid>
-        <Grid item size={12}>
-          <CustomTable minWidth="650" headers={headers} data={perks} />
+          <CustomTableV2 minWidth="650" headers={headers} data={perks} />
         </Grid>
       </Grid>
       

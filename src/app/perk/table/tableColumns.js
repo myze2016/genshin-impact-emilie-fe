@@ -14,15 +14,6 @@ const tableColumns = () => {
         )
       }
     },
-    { name: 'Actions', value: '', 
-      cell: (item, index) => {
-          return (
-            <Fragment key={index}>
-             
-            </Fragment>
-          )
-      }
-    },
   ]
 
   return {

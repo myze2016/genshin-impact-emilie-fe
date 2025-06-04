@@ -14,6 +14,7 @@ import { getCharacters } from "@/hooks/useCharacter";
 import tableColumns from "./table/tableColumns";
 import { getPerks } from "@/hooks/usePerk";
 import { useParams, useRouter } from "next/navigation";
+import CustomeTableDialog from "@/components/dialog/table";
 
 export default function Party() {
   const params = useParams();
@@ -195,7 +196,7 @@ export default function Party() {
                                  setFormData={setFormDataPosition}
                                  handleChangeForm={handleChangeFormPosition} />}
             />
-       <CustomDialog open={addDialogPositionCharacter}
+       <CustomeTableDialog open={addDialogPositionCharacter}
               size="lg"
               handleClose={handleCancelAddPositionCharacter} 
               handleConfirm={handleConfirmAddPositionCharacter}  

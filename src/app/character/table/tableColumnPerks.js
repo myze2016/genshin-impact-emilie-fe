@@ -1,31 +1,55 @@
-import { TableCell, Button } from "@mui/material"
+import { TableCell, Button, IconButton, Box } from "@mui/material"
 import { Fragment } from "react"
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import XCircleOutlineIcon from '@mui/icons-material/Cancel';
 
 const tableColumnPerks = ({handleAddCharacterPerk, removeCharacterPerk}) => {
   const headers = [
     { name: 'Name', value: 'name', cell: (item,index) => {
       return (
         <TableCell sx={{
-    backgroundColor: item?.character_perks?.length > 0 ? 'lightgreen' : 'transparent'
-  }} key={index} align="right">{item?.name}</TableCell>
+          backgroundColor: item?.character_perks?.length > 0 
+          ? 'rgba(165, 214, 167, 0.15)' // soft success green
+          : 'transparent'
+  }} key={index} align="left">{item?.name}</TableCell>
       )
     } },
     { name: 'Description', value: 'description',  cell: (item,index) => {
         return (
           <TableCell sx={{
-    backgroundColor: item?.character_perks?.length > 0 ? 'lightgreen' : 'transparent'
-  }} key={index} align="right">{item?.description}</TableCell>
+            backgroundColor: item?.character_perks?.length > 0 
+            ? 'rgba(165, 214, 167, 0.15)' // soft success green
+            : 'transparent'
+  }} key={index} align="left">{item?.description}</TableCell>
         )
       }
     },
     { name: 'Actions', value: '', 
       cell: (item, index) => {
           return (
-            <Fragment key={index}>
-              <TableCell  sx={{
-    backgroundColor: item?.character_perks?.length > 0 ? 'lightgreen' : 'transparent'
-  }} key={index} align="right"> <Button onClick={(e)=>handleAddCharacterPerk(item)}> Add Perk</Button><Button onClick={(e)=>removeCharacterPerk(item)}> Remove Perk</Button></TableCell>
-            </Fragment>
+              <TableCell key={index} sx={{
+                backgroundColor: item?.character_perks?.length > 0 
+                ? 'rgba(165, 214, 167, 0.15)' // soft success green
+                : 'transparent',
+  }} align="left"> 
+        <Box sx={{ display: 'inline-flex', gap: 1, alignItems: 'center' }}>
+           <IconButton
+                color="primary"
+                onClick={() => handleAddCharacterPerk(item)}
+                aria-label="add character to position"
+              >
+                
+                <AddCircleOutlineIcon />
+              </IconButton>
+          <IconButton
+                color="error"
+                onClick={() => removeCharacterPerk(item)}
+                aria-label="add character to position"
+              >
+                <XCircleOutlineIcon />
+              </IconButton>
+              </Box>
+            </TableCell>
           )
       }
     },

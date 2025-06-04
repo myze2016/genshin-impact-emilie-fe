@@ -1,38 +1,40 @@
-import { TableCell, Button } from "@mui/material"
+import { TableCell, Button, IconButton } from "@mui/material"
 import { Fragment } from "react"
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
 const tableColumns = ({addCharacterPosition}) => {
 
   const getElementColor = (element) => {
     switch (element?.toLowerCase()) {
       case 'pyro':
-        return '#ffcdd2'; // light red
+        return '#8b3a2f'; // darker red-brown
       case 'hydro':
-        return '#bbdefb'; // light blue
+        return '#336b87'; // dark teal-blue
       case 'electro':
-        return '#e1bee7'; // light purple
+        return '#5e4b8b'; // dark violet
       case 'cryo':
-        return '#b2ebf2'; // light cyan
+        return '#4a707a'; // cool dark cyan
       case 'anemo':
-        return '#c8e6c9'; // light green
+        return '#3a5f4f'; // dark muted green
       case 'geo':
-        return '#ffe0b2'; // light orange
+        return '#7a6652'; // earthy brown
       case 'dendro':
-        return '#dcedc8'; // another light green
+        return '#486b45'; // dark forest green
       default:
         return 'transparent';
     }
     };
 
+
   const headers = [
     { name: 'Name', value: 'name', cell: (item,index) => {
       return (
-        <TableCell sx={{backgroundColor: getElementColor(item?.element)}} key={index} align="right">{item?.name}</TableCell>
+        <TableCell sx={{backgroundColor: getElementColor(item?.element)}} key={index} align="left">{item?.name}</TableCell>
       )
     } },
     { name: 'Element', value: 'element',  cell: (item,index) => {
         return (
-          <TableCell sx={{backgroundColor: getElementColor(item?.element)}} key={index} align="right">{item?.element}</TableCell>
+          <TableCell sx={{backgroundColor: getElementColor(item?.element)}} key={index} align="left">{item?.element}</TableCell>
         )
       }
     },
@@ -40,7 +42,16 @@ const tableColumns = ({addCharacterPosition}) => {
       cell: (item, index) => {
           return (
             <Fragment key={index}>
-              <TableCell sx={{backgroundColor: getElementColor(item?.element)}} key={index} align="right"> <Button onClick={(e) => addCharacterPosition(item)}> Add Character</Button></TableCell>
+             
+              <TableCell sx={{backgroundColor: getElementColor(item?.element)}} key={index} align="left">  
+                  <IconButton
+                    color="primary"
+                    onClick={() => addCharacterPosition(item)}
+                    aria-label="add character to position"
+                  >
+                    <AddCircleOutlineIcon />
+                  </IconButton>
+              </TableCell>
             </Fragment>
           )
       }
