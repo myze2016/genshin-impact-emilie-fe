@@ -2,7 +2,7 @@ import { TableContainer, Paper, Table, TableHead, TableRow, TableBody, TableCell
 const CustomTableRowSearchV2 = ({ minWidth=650, headers=[], data=[], handleSearch=((e) => {}), handleSearchChip=((e) => {}), dataChips=[], search="" }) => {
     return (
         <TableContainer sx={{width: '100%'}} component={Paper}>
-            <Table>
+            <Table sx={{overflowY: 'auto'}}>
                 <TableBody>
                     <TableRow>
                         <TableCell colSpan={headers.length}>

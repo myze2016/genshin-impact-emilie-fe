@@ -1,6 +1,6 @@
 'use client'
 
-import { Grid, Typography, Button, Box, Paper } from "@mui/material"
+import { Grid, Typography, Button, Box, Paper, TextField } from "@mui/material"
 import { Fragment, useState, useEffect } from "react";
 import { getParties, addPartyPosition, addPartyPositionCharacter } from "../../hooks/useParty";
 import Title from "@/components/title";
@@ -11,7 +11,7 @@ import ViewCharacterPerks from "./form/ViewCharacterPerks";
 import CustomDialog from "@/components/dialog";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import CustomTable from "@/components/table";
-import { addCharacter, getCharacters, addCharacterPerk, getCharacterPerks, deleteCharacterPerk, addCharacterApi } from "@/hooks/useCharacter";
+import { addCharacter, getCharacters, addCharacterPerk, getCharacterPerks, deleteCharacterPerk, addCharacterApi, getCharactersName } from "@/hooks/useCharacter";
 
 import AddCharacter from "./form/AddCharacter";
 import tableColumns from "./table/tableColumns";
@@ -21,6 +21,8 @@ import CustomTableV2 from "@/components/table/tableV2";
 import CustomTableDialog from "@/components/dialog/table";
 
 export default function Character() {
+   const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10)
   const [refetchCharacter, setRefetchCharacter] = useState(0)
   const [refetchPerk, setRefetchPerk] = useState(0)
   const [refetchPerks, setRefetchPerks] = useState(0)
@@ -34,7 +36,7 @@ export default function Character() {
   })
   const [searchCharacter, setSearchCharacter] = useState('')
   const [debouncedInputCharacter, setDebouncedInputCharacter] = useState("")
-  const { data: characters, loading: characterloading } = getCharacters(payload, refetchCharacter, debouncedInputCharacter)
+  const { data: characters, loading: characterloading, total } = getCharactersName(payload, refetchCharacter, debouncedInputCharacter, page+1, rowsPerPage)
   const [search, setSearch] = useState('')
   const [debouncedInput, setDebouncedInput] = useState("")
   const [debouncedInputPerk, setDebouncedInputPerk] = useState("")
@@ -173,12 +175,13 @@ export default function Character() {
   }, [search])
 
   const handleSearchCharacter = (search) => {
+    console.log('search')
     setSearchCharacter(search)
   }
 
   useEffect(() => {
     const timeout = setTimeout(() => {
-      setDebouncedInputCharacter(search)
+      setDebouncedInputCharacter(searchCharacter)
     }, 300)
 
     return () => clearTimeout(timeout)
@@ -191,6 +194,7 @@ export default function Character() {
     };
     await addCharacterPerk(payload)
     setRefetchPerk((prev) => !prev)
+    setRefetchCharacter((prev) => !prev)
   }
 
   
@@ -202,6 +206,7 @@ export default function Character() {
     };
     await deleteCharacterPerk(payload)
     setRefetchPerk((prev) => !prev)
+    setRefetchCharacter((prev) => !prev)
   }
 
 
@@ -210,7 +215,17 @@ export default function Character() {
     setRefetchCharacter((prev) => !prev)
   }
 
+    const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
 
+  // Handle rows per page change
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0); // Reset to first page when rows per page changes
+  };
+
+  
   const { headers: characterHeaders  } = tableColumns({handleOpenViewCharacterPerks})
   const { headers: perkHeaders } = tableColumnPerks({handleAddCharacterPerk, removeCharacterPerk})
   return (
@@ -223,7 +238,7 @@ export default function Character() {
                                  setFormData={setFormData}
                                  handleChangeForm={handleChangeForm} />}
             />
-     <CustomTableDialog size="lg" open={viewCharacterPerks}
+     <CustomTableDialog size="xs" open={viewCharacterPerks}
             handleClose={handleCloseViewCharacterPerks} 
             handleConfirm={handleCloseViewCharacterPerks}  
             title="Add Character Perks" 
@@ -239,11 +254,26 @@ export default function Character() {
           />
       <Grid container spacing={2}>
         <Grid item size={12}>
-            <Button onClick={(e) => setAddDialog(true)} variant="contained">Add Character</Button>
-            <Button sx={{ml: 1}} onClick={(e) => handleAddCharacterApi()} variant="contained">Add Character Api</Button>
+          <Grid container spacing={2} >
+            <Grid item size={6}>
+              <Button onClick={(e) => setAddDialog(true)} variant="contained">Add Character</Button>
+              <Button sx={{ml: 1}} onClick={(e) => handleAddCharacterApi()} variant="contained">Add Character Api</Button>
+            </Grid>
+             <Grid item size={6} >
+               <Grid container  justifyContent="flex-end" spacing={2} >
+                <TextField
+                    label="Search"
+                    variant="outlined"
+                    size="small"
+                    value={searchCharacter}
+                    onChange={(e) => handleSearchCharacter(e.target.value)}
+                />
+              </Grid>
+            </Grid>
+          </Grid>
         </Grid>
         <Grid item size={12}>
-           <CustomTableV2 minWidth="650" headers={characterHeaders} data={characters} />
+           <CustomTableV2 minWidth="650" headers={characterHeaders} data={characters} page={page} handleChangePage={handleChangePage} rowsPerPage={rowsPerPage} handleChangeRowsPerPage={handleChangeRowsPerPage} total={total} />
         </Grid>
       </Grid>
       

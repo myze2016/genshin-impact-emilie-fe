@@ -17,14 +17,18 @@ import tableColumns from "./table/tableColumns";
 import AddPerk from "./form/AddPerk";
 import { addPerk, getPerks } from "@/hooks/usePerk";
 import CustomTableV2 from "@/components/table/tableV2";
+import AddCommon from "./form/AddCommon";
+import { addCommon, getCommons } from "@/hooks/useCommon";
 
 export default function Page() {
   const [refetch, setRefetch] = useState(0)
+    const [refetchCommon, setRefetchCommon] = useState(0)
   const [payload, setPayload] = useState('')
   const [search, setSearch] = useState('')
   const [libraryDialog, setLibraryDialog] = useState(false)
   const [debouncedInput, setDebouncedInput] = useState("")
   const { data: perks, loading } = getPerks(payload, refetch, search)
+  const { data: commons, loading: commonLoading } = getCommons(payload, refetchCommon, search)
   const [addDialog, setAddDialog] = useState(false)
   const [addPerksDialog, setAddPerksDialog] = useState(false)
   const [viewCharacterPerks, setViewCharacterPerks] = useState(false)
@@ -36,6 +40,9 @@ export default function Page() {
   const [formData, setFormData] = useState({
     name: '',
     element: ''
+  })
+  const [commonFormData, setCommonFormData] = useState({
+    name: '',
   })
 
   const [perkData, setPerkData] = useState({
@@ -74,6 +81,19 @@ export default function Page() {
     const { name, value } = e.target
     const updatedForm = { ...perkData, [name]: value }
     setPerkData(updatedForm)
+  }
+
+  const handleClickChip = (name) => {
+      setPerkData((prev) => ({
+        ...prev,
+        name: prev.name + name + ' '
+      }));
+  }
+
+  const handleCommonData = (e) => {
+    const { name, value } = e.target
+    const updatedForm = { ...commonFormData, [name]: value }
+    setCommonFormData(updatedForm)
   }
 
   const handleCancelAdd = (e) => {
@@ -196,10 +216,15 @@ export default function Page() {
     setLibraryDialog(false)
   }
 
-  const confirmLibraryDialog = (search) => {
-    setLibraryDialog(true)
+  const confirmLibraryDialog = async (search) => {
+    //  await addCommon(commonFormData)
+    // setRefetchCommon((prev) => !prev)
   }
 
+
+  const openLibraryDialog = (search) => {
+    setLibraryDialog(true)
+  }
 
 
 
@@ -227,24 +252,29 @@ export default function Page() {
           handleClose={closePerkDialog} 
           handleConfirm={handleAddPerk}  
           title="Add Perk" 
+          size="md"
           content={<AddPerk formData={perkData} 
                               setFormData={setPerkData}
-                              handleChangeForm={handlePerkData} />}
+                              handleChangeForm={handlePerkData}
+                              dataChip={commons}
+                              handleClickChip={handleClickChip} />}
         />
 
-      <LibraryDialog open={libraryDialog}
+      <CustomDialog open={libraryDialog}
           handleClose={closeLibraryDialog} 
           handleConfirm={confirmLibraryDialog}  
           title="Tag Common" 
-          content={<AddPerk formData={perkData} 
-                              setFormData={setPerkData}
-                              handleChangeForm={handlePerkData} />}
+          content={<AddCommon formData={commonFormData} 
+                              setFormData={setCommonFormData}
+                              handleChangeForm={handleCommonData}
+                              tagData={commons}
+                              handleAddCommon={confirmLibraryDialog} />}
         />
         
       <Grid container spacing={2}>
         <Grid item size={12}>
             <Button onClick={openPerkDialog} variant="contained" sx={{mr: 1}}>Add Perk</Button>
-            <Button onClick={openPerkDialog} variant="contained">Tag Common</Button>
+            <Button onClick={openLibraryDialog} variant="contained">Tag Common</Button>
         </Grid>
         <Grid item size={12}>
           <CustomTableV2 minWidth="650" headers={headers} data={perks} />

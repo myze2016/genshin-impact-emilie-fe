@@ -5,24 +5,48 @@ import { toast, Slide } from "react-toastify"
 import { CustomToast } from "../components/CustomToast"
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 
-export const getCharacters = (payload, refetch, search) => {
+export const getCharacters = (payload, refetch, search, page, rowsPerPage) => {
   const [data, setData] = useState([])
+  const [total, setTotal] = useState([])
   const [loading, setLoading] = useState(true)
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await api.get(`/character?search=${search}`)
-        console.log('response?.data?.characters', response?.data?.characters)
-        setData(response?.data?.characters)
+        const response = await api.get(`/character?search=${search}&page=${page}&rows_per_page=${rowsPerPage}`)
+        console.log('response?.data?.characters', response?.data?.characters?.data)
+        setData(response?.data?.characters?.data)
+        setTotal(response?.data?.characters?.total)
       } catch (error) {
         console.log(error)
       } 
     }
 
     fetchData()
-  }, [payload, refetch, search])
+  }, [payload, refetch, search, page, rowsPerPage])
 
-  return { data, loading }
+  return { data, loading, total }
+}
+
+export const getCharactersName = (payload, refetch, search, page, rowsPerPage) => {
+  const [data, setData] = useState([])
+  const [total, setTotal] = useState([])
+  const [loading, setLoading] = useState(true)
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await api.get(`/character-get-by-name?search=${search}&page=${page}&rows_per_page=${rowsPerPage}`)
+        console.log('response?.data?.characters', response?.data?.characters?.data)
+        setData(response?.data?.characters?.data)
+        setTotal(response?.data?.characters?.total)
+      } catch (error) {
+        console.log(error)
+      } 
+    }
+
+    fetchData()
+  }, [payload, refetch, search, page, rowsPerPage])
+
+  return { data, loading, total }
 }
 
 export const getCharacterPerks = (payload, refetch, search) => {

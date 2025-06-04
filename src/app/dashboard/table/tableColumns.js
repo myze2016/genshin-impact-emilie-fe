@@ -27,12 +27,12 @@ const tableColumns = ({addCharacterPosition}) => {
   const headers = [
     { name: 'Name', value: 'name', cell: (item,index) => {
       return (
-        <TableCell sx={{backgroundColor: getElementColor(item?.element)}} key={index} align="right">{item?.name}</TableCell>
+        <TableCell sx={{backgroundColor: getElementColor(item?.element)}} key={index} align="left">{item?.name}</TableCell>
       )
     } },
     { name: 'Element', value: 'element',  cell: (item,index) => {
         return (
-          <TableCell sx={{backgroundColor: getElementColor(item?.element)}} key={index} align="right">{item?.element}</TableCell>
+          <TableCell sx={{backgroundColor: getElementColor(item?.element)}} key={index} align="left">{item?.element}</TableCell>
         )
       }
     },
@@ -40,7 +40,7 @@ const tableColumns = ({addCharacterPosition}) => {
       cell: (item, index) => {
           return (
             <Fragment key={index}>
-              <TableCell sx={{backgroundColor: getElementColor(item?.element)}} key={index} align="right"> <Button onClick={(e) => addCharacterPosition(item)}> Add Character</Button></TableCell>
+              <TableCell sx={{backgroundColor: getElementColor(item?.element)}} key={index} align="left"> <Button onClick={(e) => addCharacterPosition(item)}> Add Character</Button></TableCell>
             </Fragment>
           )
       }

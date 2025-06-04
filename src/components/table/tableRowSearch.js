@@ -9,7 +9,7 @@ const CustomTableRowSearch = ({ minWidth=650, headers=[], data=[], handleSearch=
                         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                         >
                         {headers.map((header, index) => (
-                                <TableCell key={index} align="right">{header.name}</TableCell>
+                                <TableCell key={index} align="left">{header.name}</TableCell>
                         ))}
                     </TableRow>
                 </TableHead>

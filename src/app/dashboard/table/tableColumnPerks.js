@@ -7,14 +7,14 @@ const tableColumnPerks = ({handleAddCharacterPerk, removeCharacterPerk}) => {
       return (
         <TableCell sx={{
     backgroundColor: item?.character_perks?.length > 0 ? 'lightgreen' : 'transparent'
-  }} key={index} align="right">{item?.name}</TableCell>
+  }} key={index} align="left">{item?.name}</TableCell>
       )
     } },
     { name: 'Description', value: 'description',  cell: (item,index) => {
         return (
           <TableCell sx={{
     backgroundColor: item?.character_perks?.length > 0 ? 'lightgreen' : 'transparent'
-  }} key={index} align="right">{item?.description}</TableCell>
+  }} key={index} align="left">{item?.description}</TableCell>
         )
       }
     },
@@ -24,7 +24,7 @@ const tableColumnPerks = ({handleAddCharacterPerk, removeCharacterPerk}) => {
             <Fragment key={index}>
               <TableCell  sx={{
     backgroundColor: item?.character_perks?.length > 0 ? 'lightgreen' : 'transparent'
-  }} key={index} align="right"> <Button onClick={(e)=>handleAddCharacterPerk(item)}> Add Perk</Button><Button onClick={(e)=>removeCharacterPerk(item)}> Remove Perk</Button></TableCell>
+  }} key={index} align="left"> <Button onClick={(e)=>handleAddCharacterPerk(item)}> Add Perk</Button><Button onClick={(e)=>removeCharacterPerk(item)}> Remove Perk</Button></TableCell>
             </Fragment>
           )
       }

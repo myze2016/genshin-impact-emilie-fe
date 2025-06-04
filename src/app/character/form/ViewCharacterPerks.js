@@ -6,7 +6,7 @@ const ViewCharacterPerks = ({ formData, setFormData, handleChangeForm, headers, 
     return (
         <Box sx={{Width: '100%'}}>
             <Grid container spacing={2}>
-                    <Grid size="12">
+                    <Grid item size={{xs: 12, md: 12, lg: 12}}>
                         <CustomTableRowSearchV2 minWidth="650" headers={headers} data={data}  handleSearch={handleSearch} search={search} handleSearchChip={handleSearchChip} dataChips={dataChips} />
             
                     </Grid>
