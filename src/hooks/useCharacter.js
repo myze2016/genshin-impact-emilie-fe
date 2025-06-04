@@ -5,7 +5,7 @@ import { toast, Slide } from "react-toastify"
 import { CustomToast } from "../components/CustomToast"
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 
-export const getCharacters = (payload, refetch, search, page, rowsPerPage) => {
+export const getCharacters = (payload, refetch, search, page=1, rowsPerPage=99) => {
   const [data, setData] = useState([])
   const [total, setTotal] = useState([])
   const [loading, setLoading] = useState(true)
@@ -27,7 +27,7 @@ export const getCharacters = (payload, refetch, search, page, rowsPerPage) => {
   return { data, loading, total }
 }
 
-export const getCharactersName = (payload, refetch, search, page, rowsPerPage) => {
+export const getCharactersName = (payload, refetch, search, page=1, rowsPerPage=99) => {
   const [data, setData] = useState([])
   const [total, setTotal] = useState([])
   const [loading, setLoading] = useState(true)

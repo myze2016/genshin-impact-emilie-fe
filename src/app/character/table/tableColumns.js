@@ -1,4 +1,4 @@
-import { TableCell, Button, Stack, Chip } from "@mui/material"
+import { TableCell, Button, Stack, Chip, Box } from "@mui/material"
 import { Fragment } from "react"
 
 const tableColumns = ({handleOpenViewCharacterPerks}) => {
@@ -25,20 +25,25 @@ const tableColumns = ({handleOpenViewCharacterPerks}) => {
     };
 
   const headers = [
+     { name: ' ', value: 'icon_side_url', cell: (item,index) => {
+      return (
+        <TableCell  sx={{paddingRight: 0, minWidth: '80px', display: 'flex', justifyContent: 'flex-end', alignItems: 'center'}} key={index}><img src={item?.icon_side_url} alt={item?.name} style={{ width: 50, height: 57, display: 'block' }}/> </TableCell>
+      )
+    } },
     { name: 'Name', value: 'name', cell: (item,index) => {
       return (
-        <TableCell   key={index} align="left">{item?.name}</TableCell>
+        <TableCell sx={{width: '15%'}}  key={index} align="left">{item?.name}</TableCell>
       )
     } },
     { name: 'Element', value: 'element',  cell: (item,index) => {
         return (
-          <TableCell key={index} align="left">{item?.element}</TableCell>
+          <TableCell sx={{width: '10%'}}   key={index} align="left">{item?.element}</TableCell>
         )
       }
     },
      { name: 'Perk', value: 'perk',  cell: (item,index) => {
         return (
-          <TableCell key={index} align="left"> <Stack direction="row"
+          <TableCell sx={{width: '50%'}}  key={index} align="left"> <Stack direction="row"
                                 spacing={1}
                                 sx={{ flexWrap: 'wrap', rowGap: 1 }}>
                                 {item?.perks?.map((perk, index) => (
@@ -58,7 +63,7 @@ const tableColumns = ({handleOpenViewCharacterPerks}) => {
       cell: (item, index) => {
           return (
             <Fragment key={index}>
-              <TableCell  key={index} align="left"> <Button onClick={(e) => handleOpenViewCharacterPerks(item)} color="primary" variant="contained" size="small"> Add Perks</Button></TableCell>
+              <TableCell sx={{width: '20%'}} key={index} align="left"> <Button onClick={(e) => handleOpenViewCharacterPerks(item)} color="primary" variant="contained" size="small"> Add Perks</Button></TableCell>
             </Fragment>
           )
       }
