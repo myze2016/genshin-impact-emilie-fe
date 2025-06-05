@@ -1,8 +1,6 @@
-import { TableCell, Button } from "@mui/material"
-import { Fragment } from "react"
-
-const tableColumns = () => {
-  const headers = [
+import { TableCell } from "@mui/material"
+const TableColumnsPerks = () => {
+  const columns = [
     { name: 'Name', value: 'name', cell: (item,index) => {
       return (
         <TableCell key={index} align="left">{item?.name}</TableCell>
@@ -17,8 +15,8 @@ const tableColumns = () => {
   ]
 
   return {
-    headers,
+    columns,
   }
 }
   
-export default tableColumns
+export default TableColumnsPerks
