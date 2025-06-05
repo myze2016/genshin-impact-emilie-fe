@@ -26,6 +26,17 @@ export default function Nav() {
     >
       <Container maxWidth="lg">
         <Toolbar disableGutters sx={{ py: 1.25, justifyContent: 'space-between' }}>
+       
+          <Box
+            sx={{
+              backgroundImage: `url(https://genshin.jmp.blue/characters/sucrose/gacha-splash.png)`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'top', // or 'center right'
+              height: 'auto',
+              width: 80,
+            }}
+          />
+
           <Typography
             variant="h5"
             sx={{
@@ -44,7 +55,6 @@ export default function Nav() {
           >
             Emilie
           </Typography>
-
           <Box sx={{ display: 'flex', gap: 2.5, mr: 2 }}>
             {navItems.map((item) => (
               <Button

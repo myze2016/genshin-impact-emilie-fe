@@ -1,28 +1,18 @@
 'use client'
 
-import { Grid, Typography, Button, Box } from "@mui/material"
-import { Fragment, useState, useEffect } from "react";
-import { getParties, addPartyPosition, addPartyPositionCharacter } from "../../hooks/useParty";
-import Title from "@/components/title";
-import AddParty from "./form/AddParty";
-import AddPartyPosition from "./form/AddPartyPosition";
-import AddPartyPositionCharacter from "./form/AddPartyPositionCharacter";
-import ViewCharacterPerks from "./form/ViewCharacterPerks";
+import { Grid, Button } from "@mui/material"
+import { useState, useEffect } from "react";
 import CustomDialog from "@/components/dialog";
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import CustomTable from "@/components/table";
-import { addCharacter, getCharacters } from "@/hooks/useCharacter";
-import AddCharacter from "./form/AddCharacter";
+import CustomTableV2 from "@/components/table/tableV2";
 import tableColumns from "./table/tableColumns";
 import AddPerk from "./form/AddPerk";
-import { addPerk, getPerks } from "@/hooks/usePerk";
-import CustomTableV2 from "@/components/table/tableV2";
 import AddCommon from "./form/AddCommon";
 import { addCommon, getCommons } from "@/hooks/useCommon";
+import { addPerk, getPerks } from "@/hooks/usePerk";
 
 export default function Page() {
   const [refetch, setRefetch] = useState(0)
-    const [refetchCommon, setRefetchCommon] = useState(0)
+  const [refetchCommon, setRefetchCommon] = useState(0)
   const [payload, setPayload] = useState('')
   const [search, setSearch] = useState('')
   const [libraryDialog, setLibraryDialog] = useState(false)
@@ -30,7 +20,6 @@ export default function Page() {
   const { data: perks, loading } = getPerks(payload, refetch, search)
   const { data: commons, loading: commonLoading } = getCommons(payload, refetchCommon, search)
   const [addDialog, setAddDialog] = useState(false)
-  const [addPerksDialog, setAddPerksDialog] = useState(false)
   const [viewCharacterPerks, setViewCharacterPerks] = useState(false)
   const [addDialogPosition, setAddDialogPosition] = useState(false)
   const [addDialogPositionCharacter, setAddDialogPositionCharacter] = useState(false)
@@ -71,11 +60,6 @@ export default function Page() {
     reaction: '',
   })
 
-  const handleChangeForm = (e) => {
-    const { name, value } = e.target
-    const updatedForm = { ...formData, [name]: value }
-    setFormData(updatedForm)
-  }
 
   const handlePerkData = (e) => {
     const { name, value } = e.target
@@ -96,79 +80,12 @@ export default function Page() {
     setCommonFormData(updatedForm)
   }
 
-  const handleCancelAdd = (e) => {
-    setAddDialog(false)
-  }
-
-  const handleConfirmAdd = async (e) => {
-    await addCharacter(formData)
-    setRefetch((prev) => !prev)
-    setAddDialog(false)
-  }
-
-  const handleChangeFormPosition = (e) => {
-    const { name, value } = e.target
-    const updatedForm = { ...formDataPosition, [name]: value }
-    setFormDataPosition(updatedForm)
-  }
-
-  const handleCancelAddPosition = (e) => {
-    setAddDialogPosition(false)
-  }
-
-  const handleChangeFormPositionCharacter = (e) => {
-    const { name, value } = e.target
-    const updatedForm = { ...formDataPositionCharacter, [name]: value }
-    setFormDataPositionCharacter(updatedForm)
-  }
-
-  
-  const handleCancelAddPositionCharacter = (e) => {
-    setAddDialogPositionCharacter(false)
-  }
-
-  const handleOpenViewCharacterPerks = (e) => {
-    console.log('asdasdasdsadad')
-    setViewCharacterPerks(true)
-  }
-
-  const handleCloseViewCharacterPerks = (e) => {
-    console.log('asdasdasdsadad')
-    setViewCharacterPerks(false)
-  }
-
-
-  const handleConfirmAddPositionCharacter = async (e) => {
-    const formDataCharacterPosition = {
-      ...formDataPositionCharacter,
-      party_position_id: partyPositionId,
-    };
-    await addPartyPositionCharacter(formDataCharacterPosition)
-    setRefetch((prev) => !prev)
-    setAddDialogPositionCharacter(false)
-  }
-
-  const handleConfirmAddPosition = async (e) => {
-    const formDataPositionParty = {
-      ...formDataPosition,
-      party_id: partyId,
-    };
-    await addPartyPosition(formDataPositionParty)
-    setRefetch((prev) => !prev)
-    setAddDialogPosition(false)
-  }
-
-  const handleaddDialogPoisition = (partyId) => {
-    setAddDialogPosition(true)
-    setPartyId(partyId)
-  }
-  const handleaddDialogPoisitionCharacter = (partyId) => {
-    setAddDialogPositionCharacter(true)
-    setPartyPositionId(partyId)
-  }
-
   const handleAddPerk = async (e) => {
     await addPerk(perkData)
+    setPerkData({
+      name: '',
+      description: '',
+    })
     setRefetch((prev) => !prev)
     setPerkDialog(false)
   }
@@ -180,28 +97,6 @@ export default function Page() {
 
   const openPerkDialog = (e) => {
     setPerkDialog(true)
-  }
-
-  const generatePerk = (e) => {
-    console.log('generating perk...')
-    const wordSet = new Set();
-
-    perks.forEach(perk => {
-      const words = perk.split(' ');
-      words.forEach(word => {
-        if (!wordSet.has(word)) {
-          wordSet.add(word);
-        }
-      });
-    });
-
-    const combinedString = Array.from(wordSet).join(' ');
-    console.log('combinedString', combinedString)
-  }
-
-
-  const handleSearch = (search) => {
-    setSearch(search)
   }
 
   useEffect(() => {
@@ -217,8 +112,8 @@ export default function Page() {
   }
 
   const confirmLibraryDialog = async (search) => {
-    //  await addCommon(commonFormData)
-    // setRefetchCommon((prev) => !prev)
+     await addCommon(commonFormData)
+    setRefetchCommon((prev) => !prev)
   }
 
 
@@ -226,28 +121,21 @@ export default function Page() {
     setLibraryDialog(true)
   }
 
-
-
   const { headers } = tableColumns()
   
   return (
     <>
-      <CustomDialog open={addDialog}
-              handleClose={handleCancelAdd} 
-              handleConfirm={handleConfirmAdd}  
-              title="Add Character" 
-              content={<AddCharacter formData={formData} 
-                                 setFormData={setFormData}
-                                 handleChangeForm={handleChangeForm} />}
-            />
-     <CustomDialog size="lg" open={viewCharacterPerks}
-            handleClose={handleCloseViewCharacterPerks} 
-            handleConfirm={(e) => {}}  
-            title="Add Character Perks" 
-            content={<ViewCharacterPerks formData={formData} 
-                               setFormData={setFormData}
-                               handleChangeForm={handleChangeForm} />}
-          />
+      <CustomDialog open={perkDialog}
+        handleClose={closePerkDialog} 
+        handleConfirm={handleAddPerk}  
+        title="Add Perk" 
+        size="md"
+        content={<AddPerk formData={perkData} 
+                            setFormData={setPerkData}
+                            handleChangeForm={handlePerkData}
+                            dataChip={commons}
+                            handleClickChip={handleClickChip} />}
+      />
       <CustomDialog open={perkDialog}
           handleClose={closePerkDialog} 
           handleConfirm={handleAddPerk}  

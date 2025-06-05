@@ -48,6 +48,14 @@ export const addParty = async (payload) => {
   } 
 }
 
+export const addPartyImage = async (payload) => {
+  try {
+    const response = await api.post(`/party-image`, payload)
+  } catch (error) {
+    console.log(error)
+  } 
+}
+
 export const addPartyPosition = async (payload) => {
   try {
     const response = await api.post(`/party-position`, payload)

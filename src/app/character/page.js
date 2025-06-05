@@ -23,7 +23,7 @@ import CustomTableDialog from "@/components/dialog/table";
 export default function Character() {
    const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10)
-  const [refetchCharacter, setRefetchCharacter] = useState(0)
+  const [refetchCharacter, setRefetchCharacter] = useState('')
   const [refetchPerk, setRefetchPerk] = useState(0)
   const [refetchPerks, setRefetchPerks] = useState(0)
   const [characterId, setCharacterId] = useState(0)
@@ -256,8 +256,8 @@ export default function Character() {
         <Grid item size={12}>
           <Grid container spacing={2} >
             <Grid item size={6}>
-              <Button onClick={(e) => setAddDialog(true)} variant="contained">Add Character</Button>
-              <Button sx={{ml: 1}} onClick={(e) => handleAddCharacterApi()} variant="contained">Add Character Api</Button>
+              <Button sx={{mr: 1}} onClick={(e) => setAddDialog(true)} variant="contained">Add Character</Button>
+              <Button onClick={(e) => handleAddCharacterApi()} variant="contained">Add Character Api</Button>
             </Grid>
              <Grid item size={6} >
                <Grid container  justifyContent="flex-end" spacing={2} >

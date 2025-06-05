@@ -227,9 +227,13 @@ export default function Party() {
       <Grid container spacing={2}>
         {
           parties && parties?.map((party, index) => (
+
+            console.log('parties122131', party?.character),
             <Fragment key={index}>
               <Grid item size={12}>
-                <Paper sx={{ padding: 2 }}>
+                <Paper sx={{ padding: 2, backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.4), rgba(0,0,0,0.8)), url(${party?.character?.namecard_background_url})`,
+                          backgroundSize: 'cover',
+                          backgroundPosition: 'center', }}>
                   <Grid container>
                     <Grid item size={12} sx={{mb: 1}}>
                       <Box display="flex" justifyContent="space-between" alignItems="center">

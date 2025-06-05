@@ -10,7 +10,7 @@ const AddCommon = ({ formData, setFormData, handleChangeForm, tagData, handleAdd
                         <TextField name="name" value={formData?.name} onChange={handleChangeForm} label="Name" variant="outlined" />
                             <IconButton
                                         color="primary"
-                                        onClick={() => handleAddCommon(item)}
+                                        onClick={() => handleAddCommon()}
                                         aria-label="add character to position"
                                     >
                                         
