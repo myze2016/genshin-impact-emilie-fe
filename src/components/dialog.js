@@ -1,5 +1,5 @@
-import { Dialog,DialogActions,DialogContent,DialogTitle,Button } from "@mui/material"
-const CustomDialog = ({ size = "md", open, handleClose = ((e) => {}), handleConfirm = ((e) => {}), cancelText = "Cancel", confirmText = "Confirm", title, content = "" }) => {
+import { Dialog,DialogActions,DialogContent,DialogTitle,Button, CircularProgress } from "@mui/material"
+const CustomDialog = ({ size = "md", open, handleClose = ((e) => {}), handleConfirm = ((e) => {}), cancelText = "Cancel", confirmText = "Confirm", title, content = "", loading=false }) => {
     return (
         <Dialog
         maxWidth={size}

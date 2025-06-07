@@ -1,5 +1,5 @@
-import { TableContainer, Paper, Table, TableHead, TableRow, TableBody, TableCell, TablePagination } from "@mui/material"
-const CustomTableV2 = ({ minWidth=650, headers=[], data=[], page=1, handleChangePage=(()=>{}), rowsPerPage=5, handleChangeRowsPerPage=(()=>{}), total=10 }) => {
+import { TableContainer, Paper, Table, TableHead, TableRow, TableBody, TableCell, TablePagination, Box, CircularProgress } from "@mui/material"
+const CustomTableV2 = ({ minWidth=650, headers=[], data=[], page=0, handleChangePage=(()=>{}), rowsPerPage=5, handleChangeRowsPerPage=(()=>{}), total=10, loading=false }) => {
     return (
         <>
             <TableContainer component={Paper}>
@@ -22,16 +22,21 @@ const CustomTableV2 = ({ minWidth=650, headers=[], data=[], page=1, handleChange
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                    {data.map((value, index) => (
-                        <TableRow
-                        key={index}
-                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                        >
-                        {headers.map((header, index) => (
-                        header.cell(value, index)
-                        ))}
-                        </TableRow>
-                    ))}
+                        { loading ?  <TableRow>
+      <TableCell colSpan={headers.length} align="center">
+        <CircularProgress />
+      </TableCell></TableRow> :
+                            (data.map((value, index) => (
+                                <TableRow
+                                key={index}
+                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                >
+                                {headers.map((header, index) => (
+                                header.cell(value, index)
+                                ))}
+                                </TableRow>
+                            )))
+                        }
                     </TableBody>
                 </Table>
             </TableContainer>

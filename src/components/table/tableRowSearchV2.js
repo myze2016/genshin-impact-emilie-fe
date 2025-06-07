@@ -1,10 +1,15 @@
-import { TableContainer, Paper, Table, TableHead, TableRow, TableBody, TableCell, TextField, Chip, Stack } from "@mui/material"
-const CustomTableRowSearchV2 = ({ minWidth=650, headers=[], data=[], handleSearch=((e) => {}), handleSearchChip=((e) => {}), dataChips=[], search="" }) => {
+import { TableContainer, Paper, Table, TableHead, TableRow, TableBody, TableCell, TextField, Chip, Stack, CircularProgress } from "@mui/material"
+const CustomTableRowSearchV2 = ({ minWidth=650, headers=[], data=[], handleSearch=((e) => {}), handleSearchChip=((e) => {}), dataChips=[], search="", loading=false, apiLoading=false }) => {
     return (
         <TableContainer sx={{width: '100%'}} component={Paper}>
             <Table sx={{overflowY: 'auto'}}>
                 <TableBody>
-                    <TableRow>
+                    {
+                        loading ? <TableRow>
+                              <TableCell colSpan={headers.length} align="center">
+                                <CircularProgress />
+                              </TableCell></TableRow> : (
+                            <TableRow>
                         <TableCell colSpan={headers.length}>
                             <Stack direction="row"
                                 spacing={1}
@@ -30,6 +35,9 @@ const CustomTableRowSearchV2 = ({ minWidth=650, headers=[], data=[], handleSearc
                             </Stack>
                         </TableCell>
                     </TableRow>
+                              )
+                    }
+                    
                 </TableBody>
                 <TableBody>
                     <TableRow>
@@ -53,7 +61,12 @@ const CustomTableRowSearchV2 = ({ minWidth=650, headers=[], data=[], handleSearc
                     </TableRow>
                 </TableBody>
                 <TableBody>
-                    <TableRow sx={{borderBottom: `1.5px solid #a9cbb3`}}>
+                    {
+                        loading ? <TableRow>
+                              <TableCell colSpan={headers.length} align="center">
+                                <CircularProgress />
+                              </TableCell></TableRow> : (
+                                <TableRow sx={{borderBottom: `1.5px solid #a9cbb3`}}>
                         {headers.map((header, index) => (
                                 <TableCell  sx={{
                                     // backgroundColor: '#81c784',
@@ -63,6 +76,9 @@ const CustomTableRowSearchV2 = ({ minWidth=650, headers=[], data=[], handleSearc
                                   }} key={index} align="left">{header.name}</TableCell>
                         ))}
                     </TableRow>
+                              )
+                    }
+                    
                 </TableBody>
                 <TableBody>
                     {data.map((value, index) => (

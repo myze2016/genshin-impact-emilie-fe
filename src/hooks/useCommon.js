@@ -1,6 +1,7 @@
 'use client'
 import { api } from "../utils/axios"
 import { useState, useEffect } from "react"
+import { toast, Slide } from "react-toastify"
 
 export const getCommons = (payload, refetch, search) => {
   const [data, setData] = useState([])
@@ -8,11 +9,17 @@ export const getCommons = (payload, refetch, search) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-       const response = await api.get(`/common`);
-        setData(response?.data?.commons)
+        setLoading(true)
+       const response = await api.get(`/common`)
+         if (response?.data?.success) {
+          setData(response?.data?.commons);
+        } else if (!response?.data?.message) {
+          toast.error(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+        } 
       } catch (error) {
-        console.log(error)
+        toast.error(error, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
       } 
+       setLoading(false)
     }
 
     fetchData()
@@ -24,24 +31,13 @@ export const getCommons = (payload, refetch, search) => {
 export const addCommon = async (payload) => {
   try {
     const response = await api.post(`/common`, payload)
+    if (response?.data?.success) {
+      toast.success(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+    } else {
+      toast.error(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+    }
+    return response
   } catch (error) {
-    console.log(error)
-  } 
-}
-
-export const addPartyPosition = async (payload) => {
-  try {
-    const response = await api.post(`/party-position`, payload)
-  } catch (error) {
-    console.log(error)
-  } 
-}
-
-
-export const addPartyPositionCharacter = async (payload) => {
-  try {
-    const response = await api.post(`/party-position-character`, payload)
-  } catch (error) {
-    console.log(error)
+    toast.error(error, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
   } 
 }

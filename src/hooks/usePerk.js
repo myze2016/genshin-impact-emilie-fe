@@ -3,17 +3,18 @@ import { api } from "../utils/axios"
 import { useState, useEffect } from "react"
 import { toast, Slide } from "react-toastify"
 
-export const getPerks = (payload, refetch, search) => {
+export const getPerks = (payload, refetch, search, page=0, rowsPerPage=100) => {
   const [data, setData] = useState([])
+  const [total, setTotal] = useState([])
   const [loading, setLoading] = useState(true)
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true)
       try {
-        const response = await api.get(`/perk?search=${search}`);
+        const response = await api.get(`/perk?search=${search}&page=${page}&rows_per_page=${rowsPerPage}`);
         if (response?.data?.success) {
-          setData(response?.data?.perks)
-          toast.success(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+          setData(response?.data?.perks?.data)
+          setTotal(response?.data?.perks?.total)
         } else if (!response?.data?.message) {
           toast.error(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
         } 
