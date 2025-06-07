@@ -1,6 +1,7 @@
 'use client'
 import { api } from "../utils/axios"
 import { useState, useEffect } from "react"
+import { toast, Slide } from "react-toastify"
 
 export const getParties = (payload, refetch) => {
   const [data, setData] = useState([])
@@ -9,10 +10,14 @@ export const getParties = (payload, refetch) => {
     const fetchData = async () => {
       try {
         const response = await api.get(`/party`)
+         if (response?.data?.success) {
         setData(response?.data?.parties)
+           } else if (!response?.data?.message) {
+          toast.error(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+        } 
       } catch (error) {
-        console.log(error)
-      } 
+        toast.error(error, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+      }
     }
 
     fetchData()
@@ -28,10 +33,14 @@ export const getParty = (payload, refetch) => {
     const fetchData = async () => {
       try {
         const response = await api.get(`/party/${payload.id}`)
+         if (response?.data?.success) {
         setData(response?.data?.parties)
+       } else if (!response?.data?.message) {
+          toast.error(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+        } 
       } catch (error) {
-        console.log(error)
-      } 
+        toast.error(error, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+      }
     }
 
     fetchData()
@@ -42,42 +51,61 @@ export const getParty = (payload, refetch) => {
 
 export const addParty = async (payload) => {
   try {
+
     const response = await api.post(`/party`, payload)
+         if (response?.data?.success) {
+              toast.success(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+ } else {
+      toast.error(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+    }
+    return response
   } catch (error) {
-    console.log(error)
+    toast.error(error, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
   } 
 }
 
 export const addPartyImage = async (payload) => {
   try {
+    
     const response = await api.post(`/party-image`, payload)
+     if (response?.data?.success) {
+          toast.success(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+  } else {
+      toast.error(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+    }
+    return response
   } catch (error) {
-    console.log(error)
+    toast.error(error, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
   } 
 }
 
 export const addPartyPosition = async (payload) => {
   try {
-    const response = await api.post(`/party-position`, payload)
+
+    const response = await api.post(`/party`, payload)
+         if (response?.data?.success) {
+              toast.success(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+ } else {
+      toast.error(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+    }
+    return response
   } catch (error) {
-    console.log(error)
+    toast.error(error, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
   } 
 }
 
 
 export const addPartyPositionCharacter = async (payload) => {
   try {
-    const response = await api.post(`/party-position-character`, payload)
-  } catch (error) {
-    console.log(error)
-  } 
-}
 
-
-export const removePartyPositionCharacter = async (payload) => {
-  try {
-    const response = await api.delete(`/party-position-character`, payload)
+    const response = await api.post(`/party`, payload)
+         if (response?.data?.success) {
+              toast.success(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+ } else {
+      toast.error(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+    }
+    return response
   } catch (error) {
-    console.log(error)
+    toast.error(error, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
   } 
 }

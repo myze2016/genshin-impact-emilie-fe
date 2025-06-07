@@ -1,5 +1,7 @@
 import { TableCell, Button, Stack, Chip, Box, CircularProgress } from "@mui/material"
 import { Fragment } from "react"
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+
 
 const characterTable = ({openAddCharacterPerksDialog}) => {
 
@@ -63,7 +65,8 @@ const characterTable = ({openAddCharacterPerksDialog}) => {
       cell: (item, index) => {
           return (
             <Fragment key={index}>
-              <TableCell sx={{width: '20%'}} key={index} align="left"> <Button onClick={(e) => openAddCharacterPerksDialog(item)} color="primary" variant="contained" size="small"> Add Perks</Button></TableCell>
+              <TableCell sx={{width: '20%'}} key={index} align="left"> <Button startIcon={<AddCircleOutlineIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} />} 
+                                      sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }}} onClick={(e) => openAddCharacterPerksDialog(item)} color="primary" variant="contained" size="small"> Add Perks</Button></TableCell>
             </Fragment>
           )
       }

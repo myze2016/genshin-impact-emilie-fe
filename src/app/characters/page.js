@@ -12,6 +12,9 @@ import CustomTableV2 from "@/components/table/tableV2";
 import CustomTableDialog from "@/components/dialog/table";
 import { getCommons } from "@/hooks/useCommon";
 import Spinner from "@/components/Spinner";
+import { Add } from "@mui/icons-material";
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import FileUploadIcon from '@mui/icons-material/FileUpload';
 
 export default function Characters() {
 
@@ -210,8 +213,10 @@ export default function Characters() {
         <Grid item size={12}>
           <Grid container spacing={2} >
             <Grid item size={6}>
-              <Button sx={{mr: 1}} onClick={(e) => openAddCharacterDialog()} variant="contained">{ 'Add Character' }</Button>
-              <Button onClick={(e) => clickAddCharacterApi()} variant="contained">Add Character Api</Button>
+              <Button  startIcon={<AddCircleOutlineIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} />} 
+                                      sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }, mr: 1}} onClick={(e) => openAddCharacterDialog()} variant="contained">{ 'Add Character' }</Button>
+              <Button startIcon={<FileUploadIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} />} 
+                                      sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }}} onClick={(e) => clickAddCharacterApi()} variant="contained">Add Character Api</Button>
             </Grid>
              <Grid item size={6} >
                <Grid container  justifyContent="flex-end" spacing={2} >

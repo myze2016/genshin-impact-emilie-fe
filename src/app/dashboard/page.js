@@ -8,139 +8,156 @@ import CustomDialog from "@/components/dialog";
 import { getCharactersName } from "@/hooks/useCharacter";
 import AddPartyImage from "./form/AddPartyImage";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import Spinner from "@/components/Spinner";
+import AddIcon from '@mui/icons-material/Add';
+import { Add } from "@mui/icons-material";
 
 export default function Dashboard() {
-  const [refetch, setRefetch] = useState(0)
-  const [payload, setPayload] = useState('')
-  const [imageDialog, setImageDialog] = useState(false)
+
+  const [refetchParties, setRefetchParties] = useState(false)
+  const [partiesPayload, setPartiesPayload] = useState('')
+  const { data: partiesData, loading: partiesLoading } = getParties(partiesPayload, refetchParties)
+
+  const [charactersPage, setCharactersPage] = useState(0)
+  const [charactersPayload, setCharactersPayload] = useState('')
+  const [refetchCharacters, setRefetchCharacters] = useState(false)
+  const [searchCharacters, setSearchCharacters] = useState('')
+  const [searchCharactersInput, setSearchCharactersInput] = useState('')
+  const [charactersRows, setCharactersRows] = useState(10)
+  const { data: charactersData, loading: charactersLoading, total: charactersTotal } = getCharactersName(charactersPayload, refetchCharacters, searchCharacters, charactersPage+1, charactersRows)
+
+  const [ apiLoading, setApiLoading ] = useState(false)
+  const [addImageDialog, setAddImageDialog] = useState(false)
+  const [addPartyDialog, setAddPartyDialog] = useState(false)
   const [partyId, setPartyId] = useState('')
-  const [addDialog, setAddDialog] = useState(false)
-  const [search, setSearch] = useState('')
-  const { data: parties, loading } = getParties(payload, refetch)
-  const [debouncedInput, setDebouncedInput] = useState("")
-  const [debouncedInputCharacter, setDebouncedInputCharacter] = useState("")
-  const [pageCharacter, setPageCharacter] = useState(0)
-  const [rowsPerPageCharacter, setRowsPerPageCharacter] = useState(99)
 
-  const [characterPayload , setCharacterPayload] = useState({
-    search: '',
-  })
-  const [refetchCharacter, setRefetchCharacter] = useState(true)
-  const { data: characters, loading: characterloading, total } = getCharactersName(characterPayload, refetchCharacter, debouncedInputCharacter, pageCharacter+1, rowsPerPageCharacter)
 
-  const [formData, setFormData] = useState({
+  const [partyFormData, setPartyFormData] = useState({
     name: '',
     element: '',
     reaction: '',
   })
-  const [formDataImage, setFormDataImage] = useState({
+  const [imageFormData, setImageFormData] = useState({
     character_id: '',
   })
 
-  const [errors, setErrors] = useState({
-    name: '',
-    element: '',
-    reaction: '',
-  })
-
-   const handleSearch = (search) => {
-      setSearch(search)
-    }
   
-    useEffect(() => {
+  const changeSearchCharactersInput = (search) => {
+    setSearchCharactersInput(search)
+  }
+
+  
+  useEffect(() => {
     const timeout = setTimeout(() => {
-      setDebouncedInput(search)
+      setSearchCharacters(searchCharactersInput)
     }, 300)
 
     return () => clearTimeout(timeout)
-  }, [search])
+  }, [searchCharactersInput])
 
-  const handleChangeForm = (e) => {
+ 
+  const changeFormData = (e, formData, setFormData) => {
     const { name, value } = e.target
     const updatedForm = { ...formData, [name]: value }
     setFormData(updatedForm)
   }
 
-  const handleSelectImage = async (item) => {
-    await addPartyImage({character_id: item.id, party_id: partyId})
-    setRefetch((prev) => !prev)
-    setImageDialog(false)
+  const selectImage = async (character) => {
+    setApiLoading(true)
+    let response = await addPartyImage({character_id: character.id, party_id: partyId})
+    if (response?.data?.success) {
+      setRefetchParties((prev) => !prev)
+      setAddImageDialog(false)
+    }
+    setApiLoading(false)
   }
 
-  const handleCancelAdd = (e) => {
-    setAddDialog(false)
+  const closeAddPartyDialog = (e) => {
+    setAddPartyDialog(false)
   }
 
-  const handleConfirmAdd = async (e) => {
-    await addParty(formData)
-    setRefetch((prev) => !prev)
-    setAddDialog(false)
+  const confirmAddPartyDialog = async (e) => {
+    setApiLoading(true)
+    console.log('add')
+    let response = await addParty(partyFormData)
+    if (response?.data?.success) {  
+      setRefetchParties((prev) => !prev)
+      setAddPartyDialog(false)
+    }
+    setApiLoading(false)
   }
 
-  const handleAddImage = (e, party) => {
+  const clickAddPartyImage = (e, party) => {
     e.stopPropagation()
     setPartyId(party.id)
-    setImageDialog(true)
+    setAddImageDialog(true)
   }
 
-  const handlCloseImage = (party) => {
-    setImageDialog(false)
+  const closeAddImageDialog = () => {
+    setAddImageDialog(false)
   }
 
-  const handleAddPartyImage = async (e) => {
-    await addPartyImage(formData)
-    setRefetch((prev) => !prev)
-    setImageDialog(false)
-  }
+    const clickCharactersPage = (e, page) => {
+    setCharactersPage(page);
+  };
 
-
+  const selectCharactersRows = (e) => {
+    console.log('e.target.value',e.target.value)
+    setCharactersRows(parseInt(e.target.value, 10));
+    setCharactersPage(0);
+  };
 
   return (
     <>
-      <CustomDialog open={addDialog}
+     { apiLoading && <Spinner /> }
+      <CustomDialog open={addPartyDialog}
               size="sm"
-              handleClose={handleCancelAdd} 
-              handleConfirm={handleConfirmAdd}  
+              handleClose={closeAddPartyDialog} 
+              handleConfirm={confirmAddPartyDialog}  
               title="Add Party" 
-              content={<AddParty formData={formData} 
-                                 setFormData={setFormData}
-                                 handleChangeForm={handleChangeForm} />}
+              content={<AddParty partyFormData={partyFormData} 
+                                 setPartyFormData={setPartyFormData}
+                                 changeFormData={changeFormData} />}
             />
-      <CustomDialog open={imageDialog}
-              size="sm"
-              handleClose={handlCloseImage} 
-              handleConfirm={handlCloseImage}  
+      <CustomDialog open={addImageDialog}
+              size="xl"
+              handleClose={closeAddImageDialog} 
+              handleConfirm={closeAddImageDialog}  
               title="Add Party Image" 
-              content={<AddPartyImage formData={formDataImage} 
-                                 setFormData={setFormDataImage}
-                                 handleChangeForm={handleChangeForm}
-                                 data={characters}
-                                 handleSelectImage={handleSelectImage} />}
+              content={<AddPartyImage 
+                                 charactersData={charactersData}
+                                 selectImage={selectImage}
+                                 charactersPage={charactersPage}
+                                 charactersTotal={charactersTotal}
+                                  clickCharactersPage={clickCharactersPage} 
+                                  charactersRows={charactersRows} 
+                                  selectCharactersRows={selectCharactersRows} />}
             />
        
       <Grid container spacing={2}>
         <Grid item size={12}>
-          <Button onClick={(e) => setAddDialog(true)} variant="contained">Add Party</Button>
+          <Button startIcon={<AddCircleOutlineIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} />} 
+          sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }}} 
+          onClick={(e) => setAddPartyDialog(true)} variant="contained">Add Party</Button>
         </Grid>
         <Grid item size={12}>
 
        
           <Grid container spacing={2}>
             {
-              parties && parties?.map((party, index) => (
+              partiesData && partiesData?.map((party, index) => (
                 <Fragment key={index}>
-                    <Card key={index} sx={{ width: 345, height: 160, 
+                    <Card sx={{ width: 345, height: 160, 
                        backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.4), rgba(0,0,0,0.8)), url(${party?.character?.gacha_splash_url})`,
                           backgroundSize: 'cover',
                           backgroundPosition: 'top', overflowY: 'auto' }}>
-                            <CardActions sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start'}}>
+                            <CardActions sx={{ pb: 0, px: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start'}}>
                             <Typography gutterBottom variant="h6" component="div">
                             {party?.name}
                           </Typography>
                             <IconButton
                       color="primary"
-                      onClick={(e) => handleAddImage(e, party)}
-                      aria-label="add character to position"
+                      onClick={(e) => clickAddPartyImage(e, party)}
                       
                     >
                       <AddCircleOutlineIcon sx={{ fontSize: '28px' }} />
@@ -152,10 +169,12 @@ export default function Dashboard() {
                         
                         <CardContent sx={{
                             height: '100%',
+                            pt: 0,
+                            px: 2
                           }}>
                              
                         
-                          <Typography variant="body2" color="secondary">
+                          <Typography  variant="body2" color="secondary">
                             {party?.description}
                           </Typography>
                         </CardContent>

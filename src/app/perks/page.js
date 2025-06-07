@@ -8,6 +8,9 @@ import CustomTableV2 from "@/components/table/tableV2";
 import perkTable from "./tables/perkTable";
 import AddCommonsForm from "./forms/AddCommonsForm";
 import AddPerkForm from "./forms/AddPerkForm";
+import MenuBookIcon from '@mui/icons-material/MenuBook';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+
 
 
 export default function Page() {
@@ -133,8 +136,10 @@ export default function Page() {
       />
       <Grid container spacing={2}>
         <Grid size={12}>
-            <Button onClick={openAddPerkDialog} variant="contained" sx={{mr: 1}}>Add Perk</Button>
-            <Button onClick={openAddCommonsDialog} variant="contained">Tag Common</Button>
+            <Button startIcon={<AddCircleOutlineIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} />} 
+                                                  sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }, mr: 1}} onClick={openAddPerkDialog} variant="contained">Add Perk</Button>
+            <Button startIcon={<MenuBookIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} />} 
+                                                  sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }}} onClick={openAddCommonsDialog} variant="contained">Tag Common</Button>
         </Grid>
         <Grid size={12}>
           <CustomTableV2 minWidth="650" headers={columns} data={perksData} page={perksPage} handleChangePage={clickPerksPage} rowsPerPage={perksRows} handleChangeRowsPerPage={selectPerksRows} total={perksTotal} loading={perksLoading} />
