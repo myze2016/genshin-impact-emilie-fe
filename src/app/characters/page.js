@@ -116,9 +116,9 @@ export default function Characters() {
 
   const clickCommon = (value) => {
     if (!search.includes(value)) {
-      searchCharactersInput((prev) => prev + (value + ' '))
+      setSearchCharactersInput((prev) => prev + (value + ' '))
     } else {
-      searchCharactersInput((prev) => prev.replace(value + ' ', ''))
+      setSearchCharactersInput((prev) => prev.replace(value + ' ', ''))
     }
   }
 

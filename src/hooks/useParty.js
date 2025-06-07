@@ -82,7 +82,7 @@ export const addPartyImage = async (payload) => {
 export const addPartyPosition = async (payload) => {
   try {
 
-    const response = await api.post(`/party`, payload)
+    const response = await api.post(`/party-position`, payload)
          if (response?.data?.success) {
               toast.success(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
  } else {
@@ -98,7 +98,22 @@ export const addPartyPosition = async (payload) => {
 export const addPartyPositionCharacter = async (payload) => {
   try {
 
-    const response = await api.post(`/party`, payload)
+    const response = await api.post(`/party-position-character`, payload)
+         if (response?.data?.success) {
+              toast.success(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+ } else {
+      toast.error(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+    }
+    return response
+  } catch (error) {
+    toast.error(error, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+  } 
+}
+
+export const removePartyPositionCharacter = async (payload) => {
+  try {
+
+    const response = await api.post(`/party-position-character`, payload)
          if (response?.data?.success) {
               toast.success(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
  } else {

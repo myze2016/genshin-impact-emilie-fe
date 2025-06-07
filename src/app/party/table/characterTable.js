@@ -2,7 +2,7 @@ import { TableCell, Button, IconButton } from "@mui/material"
 import { Fragment } from "react"
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
-const tableColumns = ({addCharacterPosition}) => {
+const characterTable = ({handleClickAddCharacterPosition}) => {
 
   const getElementColor = (element) => {
     switch (element?.toLowerCase()) {
@@ -26,7 +26,7 @@ const tableColumns = ({addCharacterPosition}) => {
     };
 
 
-  const headers = [
+  const columns = [
     { name: 'Name', value: 'name', cell: (item,index) => {
       return (
         <TableCell sx={{backgroundColor: getElementColor(item?.element)}} key={index} align="left">{item?.name}</TableCell>
@@ -46,7 +46,7 @@ const tableColumns = ({addCharacterPosition}) => {
               <TableCell sx={{backgroundColor: getElementColor(item?.element)}} key={index} align="left">  
                   <IconButton
                     color="primary"
-                    onClick={() => addCharacterPosition(item)}
+                    onClick={() => handleClickAddCharacterPosition(item)}
                     aria-label="add character to position"
                   >
                     <AddCircleOutlineIcon />
@@ -59,8 +59,8 @@ const tableColumns = ({addCharacterPosition}) => {
   ]
 
   return {
-    headers,
+    columns,
   }
 }
   
-export default tableColumns
+export default characterTable

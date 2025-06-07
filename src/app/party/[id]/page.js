@@ -2,57 +2,55 @@
 
 import { Grid, Typography, Button, Box, Chip, Stack, Paper, Table, TableRow, TableCell, TableBody, IconButton } from "@mui/material"
 import { Fragment, useState, useEffect } from "react";
-import { getParty, addParty, addPartyPosition, addPartyPositionCharacter, removePartyPositionCharacter } from "../../../hooks/useParty";
-import Title from "@/components/title";
-import AddParty from "../form/AddParty";
+import { getParty, addPartyPosition, addPartyPositionCharacter, removePartyPositionCharacter } from "../../../hooks/useParty";
 import AddPartyPosition from "../form/AddPartyPosition";
 import AddPartyPositionCharacter from "../form/AddPartyPositionCharacter";
-import ViewCharacterPerks from "../form/ViewCharacterPerks";
 import CustomDialog from "@/components/dialog";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { getCharacters } from "@/hooks/useCharacter";
-import tableColumns from "../table/tableColumns";
-import { getPerks } from "@/hooks/usePerk";
+import characterTable from "../table/characterTable";
 import { useParams, useRouter } from "next/navigation";
 import CustomTableDialog from "@/components/dialog/table";
+import { getCommons } from "@/hooks/useCommon";
 
 export default function Party() {
   const params = useParams();
-  const id = params?.id;
-  const [refetch, setRefetch] = useState(0)
-  const [payload, setPayload] = useState({
-    id: id,
-  })
-  const [refetchCharacter, setRefetchCharacter] = useState(0)
-  const [addDialog, setAddDialog] = useState(false)
-  const [search, setSearch] = useState('')
-  const [debouncedInput, setDebouncedInput] = useState("")
-  const { data: parties, loading } = getParty(payload, refetch)
-  const [refetchPerks, setRefetchPerks] = useState(0)
-  const [debouncedInputPerk, setDebouncedInputPerk] = useState("")
-  const [perkPayload, setPerkPayload] = useState({
-    search: '',
-  })
-  const { data: perks, loading: perkloading } = getPerks(perkPayload, refetchPerks, debouncedInputPerk)
-  const { data: characters, loading: characterloading } = getCharacters(payload, refetchCharacter, debouncedInput)
-  const [addDialogPosition, setAddDialogPosition] = useState(false)
-  const [addDialogPositionCharacter, setAddDialogPositionCharacter] = useState(false)
-  const [viewCharacterPerks, setViewCharacterPerks] = useState(false)
-  const [partyId, setPartyId] = useState('')
-  const [partyPositionId, setPartyPositionId] = useState('')
-  const [formData, setFormData] = useState({
-    name: '',
-    element: '',
-    reaction: '',
-  })
+  const party_id = params?.id;
 
-  const [formDataPosition, setFormDataPosition] = useState({
+  const [refetchParty, setRefetchParty] = useState(false)
+  const [partyPayload, setPartyPayload] = useState({
+    id: party_id,
+  })
+  const { data: partyData, loading: partyLoading } = getParty(partyPayload, refetchParty)
+
+   
+  const [charactersPage, setCharactersPage] = useState(0)
+  const [charactersPayload, setCharactersPayload] = useState('')
+  const [refetchCharacters, setRefetchCharacters] = useState(false)
+  const [searchCharacters, setSearchCharacters] = useState('')
+  const [searchCharactersInput, setSearchCharactersInput] = useState('')
+  const [charactersRows, setCharactersRows] = useState(10)
+  const { data: charactersData, loading: charactersLoading, total: charactersTotal } = getCharacters(charactersPayload, refetchCharacters, searchCharacters, charactersPage+1, charactersRows)
+
+
+  const [commonsPayload, setCommonsPayload] = useState('')
+  const [refetchCommons, setRefetchCommons] = useState(false)
+  const [searchCommons, setSearchCommons] = useState('')
+  const { data: commonsData, loading: commonsLoading } = getCommons(commonsPayload, refetchCommons, searchCommons)
+
+  const [addPositionDialog, setAddPositionDialog] = useState(false)
+  const [addCharacterPositionDialog, setAddCharacterPositionDialog] = useState(false)
+
+
+  const [partyId, setPartyId] = useState('')
+  const [positionId, setPositionId] = useState('')
+
+  const [positionFormData, setPositionFormData] = useState({
     name: '',
     description: '',
-    party_id: partyId,
+    party_id: '',
   })
-
-  const [formDataPositionCharacter, setFormDataPositionCharacter] = useState({
+  const [characterPositionFormData, setCharacterPoisitionFormData] = useState({
     name: '',
     description: '',
     element: '',
@@ -60,175 +58,138 @@ export default function Party() {
     party_position_id: '',
   })
 
-  const [errors, setErrors] = useState({
-    name: '',
-    element: '',
-    reaction: '',
-  })
 
-   const handleSearch = (search) => {
-      setSearch(search)
+   const handleSearchCharactersInput = (search) => {
+      setSearchCharactersInput(search)
     }
   
   useEffect(() => {
     const timeout = setTimeout(() => {
-      console.log("setDebouncedInput")
-      setDebouncedInput(search)
+      setSearchCharacters(searchCharactersInput)
     }, 300)
-
     return () => clearTimeout(timeout)
-  }, [search])
+  }, [searchCharactersInput])
 
-
-  useEffect(() => {
-    if (id) {
-      setPayload(prev => ({
-        ...prev,
-        id: id,
-      }));
-    }
-  }, [])
-
-  const handleChangeForm = (e) => {
+   const changeFormData = (e, formData, setFormData) => {
     const { name, value } = e.target
     const updatedForm = { ...formData, [name]: value }
     setFormData(updatedForm)
   }
 
-  const handleCancelAdd = (e) => {
-    setAddDialog(false)
-  }
-
-  const handleConfirmAdd = async (e) => {
-    await addParty(formData)
-    setRefetch((prev) => !prev)
-    setAddDialog(false)
-  }
-
-  const handleChangeFormPosition = (e) => {
-    const { name, value } = e.target
-    const updatedForm = { ...formDataPosition, [name]: value }
-    setFormDataPosition(updatedForm)
-  }
-
   const handleCancelAddPosition = (e) => {
-    setAddDialogPosition(false)
+    setAddPositionDialog(false)
   }
 
-  const handleSearchChip = (value) => {
-    if (!search.includes(value)) {
-      setSearch((prev) => prev+' '+value)
+  const handleOpenAddPosition = (e) => {
+    setAddPositionDialog(true)
+  }
+
+  const handleClickCommon = (value) => {
+    if (!searchCharactersInput.includes(value)) {
+      setSearchCharactersInput((prev) => prev + (value + ' '))
     } else {
-      setSearch((prev) => prev.replace(' '+value, ''))
+      setSearchCharactersInpu((prev) => prev.replace(value + ' ', ''))
+    }
+  }
+  
+  const handleCancelAddCharacterPositionDialog = (e) => {
+    setAddCharacterPositionDialog(false)
+  }
+
+  const handleCloseAddCharacterPositionDialog = (e) => {
+    setAddCharacterPositionDialog(false)
+  }
+
+
+  const handleConfirmAddCharacterPositionDialog = async (e) => {
+    const updatedForm = {
+      ...characterPositionFormData,
+      party_position_id: positionId,
+    };
+    let response = await addPartyPositionCharacter(updatedForm)
+     if (response?.data?.success) {
+      setRefetchParty((prev) => !prev)
+      setAddCharacterPositionDialog(false)
     }
   }
 
-  const handleChangeFormPositionCharacter = (e) => {
-    const { name, value } = e.target
-    const updatedForm = { ...formDataPositionCharacter, [name]: value }
-    setFormDataPositionCharacter(updatedForm)
-  }
-
-  
-  const handleCancelAddPositionCharacter = (e) => {
-    setAddDialogPositionCharacter(false)
-  }
-
-  const handleCloseViewCharacterPerks = (e) => {
-    setViewCharacterPerks(false)
-  }
-
-
-  const handleConfirmAddPositionCharacter = async (e) => {
-    const formDataCharacterPosition = {
-      ...formDataPositionCharacter,
-      party_position_id: partyPositionId,
-    };
-    await addPartyPositionCharacter(formDataCharacterPosition)
-    setRefetch((prev) => !prev)
-    setAddDialogPositionCharacter(false)
-  }
-
-  const handleConfirmAddPosition = async (e) => {
-    const formDataPositionParty = {
-      ...formDataPosition,
+  const handleConfirmAddPositionDialog = async (e) => {
+    const updatedForm = {
+      ...positionFormData,
       party_id: partyId,
     };
-    await addPartyPosition(formDataPositionParty)
-    setRefetch((prev) => !prev)
-    setAddDialogPosition(false)
+    let response = await addPartyPosition(updatedForm)
+    if (response?.data?.success) {
+      setRefetchParty((prev) => !prev)
+      setAddPositionDialog(false)
+    }
   }
 
-  const handleaddDialogPoisition = (partyId) => {
-    setAddDialogPosition(true)
-    setPartyId(partyId)
+  const handleOpenAddPositionDialog = (party) => {
+    setAddPositionDialog(true)
+    setPartyId(party.id)
   }
-  const handleaddDialogPoisitionCharacter = (partyId) => {
-    setAddDialogPositionCharacter(true)
-    setPartyPositionId(partyId)
+  const handleOpenAddCharacterPositionDialog = (position) => {
+    setAddCharacterPositionDialog(true)
+    setPositionId(position.id)
   }
 
-  const addCharacterPosition = async (item) => {
+  const handleClickAddCharacterPosition = async (character) => {
     const payload = {
-        character_id: item?.id,
-        party_position_id: partyPositionId
+        character_id: character?.id,
+        party_position_id: positionId
     };
-    await addPartyPositionCharacter(payload)
-    setAddDialogPositionCharacter(false)
-    setRefetch((prev) => !prev)
+    
+    let response = await addPartyPositionCharacter(payload)
+
+    if (response?.data?.success) {
+      setRefetchParty((prev) => !prev)
+      setAddCharacterPositionDialog(false)
+    }
   }
 
-  const removeCharacterPosition = async (item) => {
+  const handleClickRemoveAddCharacterPosition = async (item) => {
     const payload = {
       perk_id: item?.id,
       character_id: characterId
     };
     await removePartyPositionCharacter(payload)
-    setRefetchPerk((prev) => !prev)
+    if (response?.data?.success) {
+        setRefetchParty((prev) => !prev)
+        setAddCharacterPositionDialog(false)
+    }
+
   }
 
-  const { headers } = tableColumns({addCharacterPosition})
+  const { columns } = characterTable({handleClickAddCharacterPosition})
 
   return (
     <>
-       <CustomDialog open={addDialogPosition}
+       <CustomDialog open={addPositionDialog}
               handleClose={handleCancelAddPosition} 
-              handleConfirm={handleConfirmAddPosition}  
+              handleConfirm={handleConfirmAddPositionDialog}  
               title="Add Party Position" 
               size="xs"
-              content={<AddPartyPosition formData={formDataPosition} 
-                                 setFormData={setFormDataPosition}
-                                 handleChangeForm={handleChangeFormPosition} />}
+              content={<AddPartyPosition positionFormData={positionFormData} 
+                                 setPositionFormData={setPositionFormData}
+                                 changeFormData={changeFormData} />}
             />
-       <CustomTableDialog open={addDialogPositionCharacter}
+       <CustomTableDialog open={addCharacterPositionDialog}
               size="lg"
-              handleClose={handleCancelAddPositionCharacter} 
-              handleConfirm={handleConfirmAddPositionCharacter}  
+              handleClose={handleCancelAddCharacterPositionDialog} 
+              handleConfirm={handleCancelAddCharacterPositionDialog}  
               title="Add Party Position Character" 
-              content={<AddPartyPositionCharacter formData={formDataPositionCharacter} 
-                                 setFormData={setFormDataPositionCharacter}
-                                 handleChangeForm={handleChangeFormPositionCharacter}
-                                  headers={headers}
-                                  data={characters}
-                                  handleSearch={handleSearch}
-                                  search={search}
-                                  handleSearchChip={handleSearchChip}
-                                  dataChips={perks}
+              content={<AddPartyPositionCharacter columns={columns}
+                                  charactersData={charactersData}
+                                  handleSearchCharactersInput={handleSearchCharactersInput}
+                                  searchCharactersInput={searchCharactersInput}
+                                  handleClickCommon={handleClickCommon}
+                                  commonsData={commonsData}
                                   />}
             />
-        <CustomDialog open={viewCharacterPerks}
-            handleClose={handleCloseViewCharacterPerks} 
-            handleConfirm={(e) => {}}  
-            title="Add Party Position Character" 
-            content={<ViewCharacterPerks formData={formDataPositionCharacter} 
-                                setFormData={setFormDataPositionCharacter}
-                                handleChangeForm={handleChangeFormPositionCharacter} />}
-          />
       <Grid container spacing={2}>
         {
-          parties && parties?.map((party, index) => (
-
-            console.log('parties122131', party?.character),
+          partyData && partyData?.map((party, index) => (
             <Fragment key={index}>
               <Grid item size={12}>
                 <Paper sx={{ padding: 2, backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.4), rgba(0,0,0,0.8)), url(${party?.character?.namecard_background_url})`,
@@ -238,7 +199,7 @@ export default function Party() {
                     <Grid item size={12} sx={{mb: 1}}>
                       <Box display="flex" justifyContent="space-between" alignItems="center">
                         <Typography variant="h6">{party?.name}</Typography>
-                        <Button onClick={(e) => handleaddDialogPoisition(party?.id)} variant="contained">Add Party Position</Button>
+                        <Button onClick={(e) => handleOpenAddPositionDialog(party)} variant="contained">Add Party Position</Button>
                       </Box>
                     </Grid>
                     <hr style={{ width: '100%' }} />
@@ -269,20 +230,6 @@ export default function Party() {
                   </Table>
                 </Paper>
               </Grid>
-              {/* {
-                party && party?.positions?.map((position, index) => (
-                  <Grid key={index} item size={12}>
-                      <Grid container spacing={2}>
-                        <Grid item size={{xs: 6, md: 2}}>
-                          <Typography>{position?.name}</Typography>
-                        </Grid>
-                        <Grid item size={{xs: 6, md: 2}}>
-                          <Typography>{position?.description}</Typography>
-                        </Grid>
-                      </Grid>
-                  </Grid>
-                ))
-              } */}
                <Grid item size={12}>
                 <Grid container spacing={2}>
                   {
@@ -295,7 +242,7 @@ export default function Party() {
                                 <Typography sx={{ fontWeight: 'bold' }}>{position?.name}</Typography>
                                   <IconButton
                                     color="primary"
-                                    onClick={() => handleaddDialogPoisitionCharacter(position?.id)}
+                                    onClick={() => handleOpenAddCharacterPositionDialog(position)}
                                     aria-label="add character to position"
                                   >
                                     <AddCircleOutlineIcon />
