@@ -19,7 +19,7 @@ export const getPerks = (payload, refetch, search, page=0, rowsPerPage=100) => {
           toast.error(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
         } 
       } catch (error) {
-        toast.error(error, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+        toast.error(error.response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
       } 
       setLoading(false)
     } 
@@ -40,6 +40,6 @@ export const addPerk = async (payload) => {
     }
     return response
   } catch (error) {
-    toast.error(error, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+    toast.error(error.response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
   }
 }

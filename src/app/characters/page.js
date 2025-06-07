@@ -28,9 +28,11 @@ export default function Characters() {
   
   const [characterPerksPayload, setCharacterPerksPayload] = useState('')
   const [refetchCharacterPerks, setRefetchCharacterPerks] = useState(false)
-  const [searchCharacterPerks, setSearchCharacterPerks] = useState('')
-  const [searchCharacterPerksInput, setSearchCharacterPerksInput] = useState('')
-  const { data: perksData, loading: perksLoading } = getCharacterPerks(characterPerksPayload, refetchCharacterPerks, searchCharacterPerks)
+  const [searchPerks, setSearchPerks] = useState('')
+  const [searchPerksInput, setSearchPerksInput] = useState('')
+  const [ perksPage, setPerksPage] = useState(0)
+  const [ perksRows, setPerksRows] = useState(10)
+  const { data: perksData, loading: perksLoading, total: perksTotal } = getCharacterPerks(characterPerksPayload, refetchCharacterPerks, searchPerks, perksPage+1, perksRows)
 
   const [commonsPayload, setCommonsPayload] = useState('')
   const [refetchCommons, setRefetchCommons] = useState(false)
@@ -59,23 +61,19 @@ export default function Characters() {
     setFormData(updatedForm)
   }
 
-  const cancelAddCharacterDialog = (e) => {
-    setAddCharacterDialog(false)
-  }
-
-  const confirmAddCharacterDialog = async (e) => {
+  
+  const handleAddCharacter = async (e) => {
     setApiLoading(true)
-    response = await addCharacter(formData)
+    let response = await addCharacter(characterFormData)
      if (response?.data?.success) {
-      setCharacterFormData({
-        name: '',
-        element: ''
-      })
+      resetCharacterFormData()
       setRefetchCharacters((prev) => !prev)
       setAddCharacterDialog(false)
     }
     setApiLoading(false)
   }
+  
+
 
 
   const openAddCharacterPerksDialog = (character) => {
@@ -87,11 +85,18 @@ export default function Characters() {
     setAddCharacterPerksDialog(true)
   }
 
-  const closeAddCharacterPerksDialog = (e) => {
+  const handleClosePerkDialog = (e) => {
+    resetSearchPerksInput()
     setAddCharacterPerksDialog(false)
   }
 
-  const closeAddCharacterDialog = (e) => {
+  const resetSearchPerksInput = () => {
+      setSearchPerksInput('')
+  }
+
+  const handleCloseCharacterDialog = (e) => {
+    setRefetchCharacters((prev) => !prev)
+    resetCharacterFormData()
     setAddCharacterDialog(false)
   }
 
@@ -114,29 +119,28 @@ export default function Characters() {
     return () => clearTimeout(timeout)
   }, [searchCharactersInput])
 
-  const clickCommon = (value) => {
-    if (!search.includes(value)) {
-      setSearchCharactersInput((prev) => prev + (value + ' '))
+  const handleFillCommon = (value) => {
+    if (!searchPerksInput.includes(value)) {
+      setSearchPerksInput((prev) => prev + (value + ' '))
     } else {
-      setSearchCharactersInput((prev) => prev.replace(value + ' ', ''))
+      setSearchPerksInput((prev) => prev.replace(value + ' ', ''))
     }
   }
 
 
   const changeSearchPerksInput = (search) => {
-    setSearchCharacterPerksInput(search)
+    setSearchPerksInput(search)
   }
 
   useEffect(() => {
     const timeout = setTimeout(() => {
-      setSearchCharacterPerks(searchCharacterPerksInput)
+      setSearchPerks(searchPerksInput)
     }, 300)
 
     return () => clearTimeout(timeout)
-  }, [searchCharacterPerksInput])
+  }, [searchPerksInput])
 
   const clickAddCharacterPerk = async (perk) => {
-         setApiLoading(true)
     const payload = {
       perk_id: perk?.id,
       character_id: characterId
@@ -144,13 +148,10 @@ export default function Characters() {
     let response = await addCharacterPerk(payload)
     if (response?.data?.success) {
       setRefetchCharacterPerks((prev) => !prev)
-      setRefetchCharacters((prev) => !prev)
     }
-    setApiLoading(false)
   }
 
   const clickRemoveCharacterPerk = async (perk) => {
-     setApiLoading(true)
     const payload = {
       perk_id: perk?.id,
       character_id: characterId
@@ -158,9 +159,7 @@ export default function Characters() {
     let response = await deleteCharacterPerk(payload)
     if (response?.data?.success) {
       setRefetchCharacterPerks((prev) => !prev)
-      setRefetchCharacters((prev) => !prev)
     }
-     setApiLoading(false)
   }
 
 
@@ -171,6 +170,16 @@ export default function Characters() {
     }
   }
 
+  
+  const resetCharacterFormData = () => {
+      setCharacterFormData({
+        name: '',
+        element: ''
+      })
+  }
+
+
+
   const clickCharactersPage = (e, page) => {
     setCharactersPage(page);
   };
@@ -180,6 +189,16 @@ export default function Characters() {
     setCharactersPage(0);
   };
 
+  const handlePerksChangePage = (e, page) => {
+    setPerksPage(page);
+  };
+
+  const handlePerksRowsPerPage = (e) => {
+    setPerksRows(parseInt(e.target.value, 10));
+    setPerksPage(0);
+  };
+
+
   
   const { columns: characterColumns  } = characterTable({openAddCharacterPerksDialog})
   const { columns: perkTableColumns } = perkTable({clickAddCharacterPerk, clickRemoveCharacterPerk})
@@ -187,25 +206,35 @@ export default function Characters() {
   return (
     <>
       { apiLoading && <Spinner /> }
-      <CustomDialog open={addCharacterDialog}
-              handleClose={closeAddCharacterDialog} 
-              handleConfirm={confirmAddCharacterDialog}  
+      <CustomDialog size="sm" open={addCharacterDialog}
+              handleClose={handleCloseCharacterDialog} 
+              handleConfirm={handleAddCharacter}  
               title="Add Character" 
               content={<AddCharacterForm characterFormData={characterFormData} 
                                  setCharacterFormData={setCharacterFormData}
                                  changeFormData={changeFormData} />}
             />
-     <CustomTableDialog size="xs" open={addCharacterPerksDialog}
-            handleClose={closeAddCharacterPerksDialog} 
-            handleConfirm={closeAddCharacterPerksDialog}  
+     <CustomTableDialog size="md" open={addCharacterPerksDialog}
+            handleClose={handleClosePerkDialog} 
+            handleConfirm={handleClosePerkDialog}  
             title="Add Character Perks" 
+            page={charactersPage} 
+            handleChangePage={clickCharactersPage} 
+            rowsPerPage={charactersRows} 
+            handleChangeRowsPerPage={selectCharactersRow} 
+            total={charactersTotal}
             content={<AddCharacterPerksForm perkTableColumns={perkTableColumns}
                                perksData={perksData}
                                changeSearchPerksInput={changeSearchPerksInput}
-                               searchCharacterPerksInput={searchCharacterPerksInput}
-                               clickCommon={clickCommon}
+                               searchCharacterPerksInput={searchPerksInput}
+                               clickCommon={handleFillCommon}
                                commonsData={commonsData}
                                loading={commonsLoading && perksLoading}
+                               page={perksPage} 
+                               handleChangePage={handlePerksChangePage} 
+                               rowsPerPage={perksRows}
+                                handleChangeRowsPerPage={handlePerksRowsPerPage} 
+                                total={perksTotal}
                                 />}
           />
         

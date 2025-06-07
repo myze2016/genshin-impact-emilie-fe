@@ -1,15 +1,79 @@
-import { Grid, Box, TextField, Stack, Chip, IconButton, CircularProgress } from "@mui/material";
+import { Grid, Box, TextField, Stack, Chip, IconButton, CircularProgress, Select, MenuItem, InputLabel, FormControl } from "@mui/material";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-const AddCommonsForm = ({ commonFormData, setCommonFormData, changeFormData, commonsData, clickAddCommon, loading=false }) => {
+import { addCommon, removeCommon } from "@/hooks/useCommon";
+
+const AddCommonsForm = ({ commonFormData, setCommonFormData, changeFormData, commonsData, loading=false, setApiLoading, handleRefetch, handleClear }) => {
+
+    const handleRemoveCommon = async (e, common) => {
+        setApiLoading(true)
+        const payload = {
+            id: common.id
+        }
+        let response = await removeCommon(payload)
+        if (response?.data?.success) {
+            handleRefetch('commons')
+        }
+        setApiLoading(false)
+    }
+
+    const handleAddCommon = async (e) => {
+        setApiLoading(true)
+        let response = await addCommon(commonFormData)
+        if (response?.data?.success) {
+            handleRefetch('commons')
+            handleClear('common')
+        }
+        setApiLoading(false)
+  }
+
+    
+    const colorOptions = [
+        { label: 'Primary', color: '#81c784', value: 'primary' },
+        { label: 'Secondary', color: '#d1c4e9', value: 'secondary' },
+        { label: 'Error', color: '#b85c38', value: 'error' },
+        { label: 'Success', color: '#a5d6a7', value: 'success' },
+        { label: 'Info', color: '#7bb6c3', value: 'info' },
+        { label: 'Warning', color: '#d4a373', value: 'warning' },
+    ];
     return (
         <Box sx={{ width: '100%' }}>
             <Grid container spacing={2}>
                 <Grid item size={{xs: 12, md: 12, lg: 12}}>
                     <Box sx={{display: 'flex', alignItems: 'center'}}>
-                    <TextField name="name" value={commonFormData?.name} onChange={(e) => changeFormData(e, commonFormData, setCommonFormData)} label="Name" variant="outlined" />
+                    <TextField sx={{mr:1}} name="name" value={commonFormData?.name} onChange={(e) => changeFormData(e, commonFormData, setCommonFormData)} label="Name" variant="outlined" />
+                        <FormControl >
+                            <InputLabel id="color-label" >
+                                Color
+                            </InputLabel>
+                        <Select
+                            id="color-label"
+                            name="color"
+                            value={commonFormData?.color}
+                            label="Color"
+                            onChange={(e) => changeFormData(e, commonFormData, setCommonFormData)}
+                        >
+                            {colorOptions.map((option) => (
+                                <MenuItem key={option.value} value={option.value}>
+                                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                        <Box
+                                            sx={{
+                                                width: 16,
+                                                height: 16,
+                                                backgroundColor: option.color,
+                                                borderRadius: '4px',
+                                                marginRight: 1,
+                                                display: 'inline-block',
+                                            }}
+                                        />
+                                        {option.label}
+                                    </Box>
+                                </MenuItem>
+                            ))}
+                        </Select>
+                        </FormControl>
                         <IconButton
                             color="primary"
-                            onClick={() => clickAddCommon()}
+                            onClick={() => handleAddCommon()}
                         >
                            { <AddCircleOutlineIcon sx={{ fontSize: '28px' }} />   }       
                         </IconButton>
@@ -17,23 +81,22 @@ const AddCommonsForm = ({ commonFormData, setCommonFormData, changeFormData, com
                 </Grid>
                 <Grid item size={{xs: 12, md: 12, lg: 12}}>
                     {
-                        loading ?  <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
-        <CircularProgress />
-      </Box> : (
+                      
 <Stack direction="row"
                         spacing={1}
                         sx={{ flexWrap: 'wrap', rowGap: 1 }}>
                         {commonsData.map((common, index) => (
                                 <Chip
+                                    onClick={(e)=>handleRemoveCommon(e, common)}
                                     key={index}
                                     label={common?.name}
-                                    color="primary"
+                                    color={common?.color}
                                     variant="contained"
                                 />
                             ))
                         }
                     </Stack>
-      )
+      
                     }
                     
                 </Grid>

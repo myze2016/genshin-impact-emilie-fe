@@ -1,6 +1,7 @@
-import { TableContainer, Paper, Table, TableHead, TableRow, TableBody, TableCell, TextField, Chip, Stack, CircularProgress } from "@mui/material"
-const CustomTableRowSearchV2 = ({ minWidth=650, headers=[], data=[], handleSearch=((e) => {}), handleSearchChip=((e) => {}), dataChips=[], search="", loading=false, apiLoading=false }) => {
+import { TableContainer, Paper, Table, TableHead, TableRow, TableBody, TableCell, TextField, Chip, Stack, CircularProgress, TablePagination  } from "@mui/material"
+const CustomTableRowSearchV2 = ({ minWidth=650, headers=[], data=[], chipData=[], handleSearch=((e) => {}), handleSearchChip=((e) => {}), dataChips=[], search="", loading=false, apiLoading=false, page=0, handleChangePage=(()=>{}), rowsPerPage=5, handleChangeRowsPerPage=(()=>{}), total=10, }) => {
     return (
+        <>
         <TableContainer sx={{width: '100%'}} component={Paper}>
             <Table sx={{overflowY: 'auto'}}>
                 <TableBody>
@@ -14,24 +15,16 @@ const CustomTableRowSearchV2 = ({ minWidth=650, headers=[], data=[], handleSearc
                             <Stack direction="row"
                                 spacing={1}
                                 sx={{ flexWrap: 'wrap', rowGap: 1 }}>
-                                {(() => {
-                                    const displayedWords = new Set();
-                                    return dataChips.flatMap((chip, index) =>
-                                    chip.name.split(' ').filter(word => {
-                                        if (displayedWords.has(word)) return false;
-                                        displayedWords.add(word);
-                                        return true;
-                                    }).map((word, wordIndex) => (
+                                {   chipData.map((chip, index) => (
                                         <Chip
-                                        key={`${index}-${wordIndex}`}
-                                        onClick={() => handleSearchChip(word)}
-                                        label={word}
-                                        color="primary"
-                                        variant={ search.includes(word) ? "contained" : "outlined"}
+                                            key={index}
+                                            onClick={() => handleSearchChip(chip?.name)}
+                                            label={chip?.name}
+                                            color="primary"
+                                            variant={ search.includes(chip?.name) ? "contained" : "outlined"}
                                         />
                                     ))
-                                    );
-                                })()}
+                                }
                             </Stack>
                         </TableCell>
                     </TableRow>
@@ -94,6 +87,16 @@ const CustomTableRowSearchV2 = ({ minWidth=650, headers=[], data=[], handleSearc
                 </TableBody>
             </Table>
         </TableContainer>
+        <TablePagination
+                    component="div"
+                    count={total}
+                    page={page}
+                    onPageChange={handleChangePage}
+                    rowsPerPage={rowsPerPage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                    rowsPerPageOptions={[5, 10, 25, 50]}
+                />
+                </>
     )
 }
 export default CustomTableRowSearchV2

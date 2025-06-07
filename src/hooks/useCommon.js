@@ -17,7 +17,7 @@ export const getCommons = (payload, refetch, search) => {
           toast.error(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
         } 
       } catch (error) {
-        toast.error(error, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+         toast.error(error?.response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
       } 
        setLoading(false)
     }
@@ -38,6 +38,20 @@ export const addCommon = async (payload) => {
     }
     return response
   } catch (error) {
-    toast.error(error, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+    toast.error(error?.response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+  } 
+}
+
+export const removeCommon = async (payload) => {
+  try {
+    const response = await api.delete(`/common/${payload.id}`);
+    if (response?.data?.success) {
+      toast.success(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+    } else {
+      toast.error(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+    }
+    return response
+  } catch (error) {
+    toast.error(error?.response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
   } 
 }

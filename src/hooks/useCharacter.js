@@ -21,7 +21,7 @@ export const getCharacters = (payload, refetch, search, page=1, rowsPerPage=99) 
           toast.error(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
         } 
       } catch (error) {
-        toast.error(error, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+        toast.error(error.response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
       } 
        setLoading(false)
     }
@@ -48,7 +48,7 @@ export const getCharactersName = (payload, refetch, search, page=0, rowsPerPage=
           toast.error(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
         } 
       } catch (error) {
-        toast.error(error, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+        toast.error(error.response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
       } 
        setLoading(false)
     }
@@ -59,31 +59,33 @@ export const getCharactersName = (payload, refetch, search, page=0, rowsPerPage=
   return { data, loading, total }
 }
 
-export const getCharacterPerks = (payload, refetch, search) => {
+export const getCharacterPerks = (payload, refetch, search, page, rowsPerPage) => {
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(true)
+  const [total, setTotal] = useState(true)
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true)
       try {
        const character_id = payload?.character_id || ''
-       const response = await api.get(`/character-perk?character_id=${character_id}&search=${search}`);
+       const response = await api.get(`/character-perk?character_id=${character_id}&search=${search}&page=${page}&rows_per_page=${rowsPerPage}`);
        
         if (response?.data?.success) {
-          setData(response?.data?.character_perks)
+          setData(response?.data?.character_perks?.data)
+          setTotal(response?.data?.character_perks?.total)
         } else if (!response?.data?.message) {
           toast.error(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
         } 
       } catch (error) {
-        toast.error(error, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+        toast.error(error.response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
       } 
       setLoading(false)
     }
 
     fetchData()
-  }, [payload, refetch, search])
+  }, [payload, refetch, search, page, rowsPerPage])
 
-  return { data, loading }
+  return { data, loading, total }
 }
 
 export const addCharacter = async (payload) => {
@@ -96,7 +98,7 @@ export const addCharacter = async (payload) => {
     }
     return response
   } catch (error) {
-    toast.error(error, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+    toast.error(error.response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
   } 
 }
 
@@ -151,7 +153,7 @@ export const addCharacterPerk = async (payload) => {
     }
     return response
   } catch (error) {
-    toast.error(error, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+    toast.error(error.response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
   } 
 }
 
@@ -165,7 +167,7 @@ export const deleteCharacterPerk = async (payload) => {
     }
     return response
   } catch (error) {
-     toast.error(error, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+     toast.error(error.response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
   } 
 }
 

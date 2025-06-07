@@ -1,5 +1,13 @@
 import { Grid, Box, TextField, Stack, Chip } from "@mui/material";
-const AddPerkForm = ({ perkFormData, setPerkFormData, changeFormData, commonsData, clickAddCommon }) => {
+const AddPerkForm = ({ perkFormData, setPerkFormData, changeFormData, commonsData }) => {
+
+    const handleFillCommon = (name) => {
+        setPerkFormData((prev) => ({
+            ...prev,
+            name: prev.name + (name + ' ')
+        }));
+    }
+
     return (
         <Box sx={{ width: '100%' }}>
             <Grid container spacing={2}>
@@ -10,9 +18,9 @@ const AddPerkForm = ({ perkFormData, setPerkFormData, changeFormData, commonsDat
                         { commonsData?.map((common, index) => (
                             <Chip
                                 key={index}
-                                onClick={() => clickAddCommon(value?.name)}
+                                onClick={() => handleFillCommon(common?.name)}
                                 label={common?.name}
-                                color="primary"
+                                color={common?.color}
                                 variant="contained" />
                             ))
                         }
@@ -22,7 +30,7 @@ const AddPerkForm = ({ perkFormData, setPerkFormData, changeFormData, commonsDat
                     <TextField fullWidth 
                                 label="Name" 
                                 name="name" 
-                                placeholder="pyro infusion"
+                                placeholder="Name"
                                 variant="outlined"
                                 value={perkFormData?.name} 
                                 onChange={(e) => changeFormData(e, perkFormData, setPerkFormData)} />
@@ -31,7 +39,7 @@ const AddPerkForm = ({ perkFormData, setPerkFormData, changeFormData, commonsDat
                     <TextField fullWidth 
                                 label="Description" 
                                 name="description" 
-                                placeholder="all normal attacks and charge atacks will deal pyro damage"
+                                placeholder="Description"
                                 variant="outlined" 
                                 value={perkFormData?.description} 
                                 onChange={(e) => changeFormData(e, perkFormData, setPerkFormData)} />

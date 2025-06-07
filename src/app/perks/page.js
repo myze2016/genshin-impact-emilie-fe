@@ -1,7 +1,7 @@
 'use client'
 import { Grid, Button } from "@mui/material"
 import { useState } from "react";
-import { addCommon, getCommons } from "@/hooks/useCommon";
+import { addCommon, getCommons, removeCommon } from "@/hooks/useCommon";
 import { addPerk, getPerks } from "@/hooks/usePerk";
 import CustomDialog from "@/components/dialog";
 import CustomTableV2 from "@/components/table/tableV2";
@@ -10,6 +10,7 @@ import AddCommonsForm from "./forms/AddCommonsForm";
 import AddPerkForm from "./forms/AddPerkForm";
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import Spinner from "@/components/Spinner";
 
 
 
@@ -33,6 +34,7 @@ export default function Page() {
 
   const [ commonFormData, setCommonFormData ] = useState({
     name: '',
+    color: 'primary',
   })
 
   const [ perkFormData, setPerkFormData] = useState({
@@ -44,16 +46,31 @@ export default function Page() {
     setAddPerkDialog(true)
   }
 
-  const closeAddPerkDialog = (e) => {
+
+  const handleClosePerkDialog = (e) => {
     setAddPerkDialog(false)
+    resetPerkFormData()
   }
 
-  const clickCommon = (name) => {
-    setFormDataPerk((prev) => ({
-      ...prev,
-      name: prev.name + (name + ' ')
-    }));
+  const resetPerkFormData = () => {
+    setPerkFormData({
+      name: '',
+      description: '',
+    })
   }
+
+  const handleCloseCommonDialog = (e) => {
+    setAddCommonsDialog(false)
+    resetCommonFormData()
+  }
+
+  const resetCommonFormData = () => {
+    setCommonFormData({
+      name: '',
+      color: 'primary',
+    })
+  }
+
 
   const changeFormData = (e, formData, setFormData) => {
     const { name, value } = e.target
@@ -75,26 +92,38 @@ export default function Page() {
     setApiLoading(false)
   }
 
-  const closeAddCommonsDialog = () => {
-    setAddCommonsDialog(false)
-  }
-
   const openAddCommonsDialog = () => {
     setAddCommonsDialog(true)
   }
 
-  const clickAddCommon = async (e) => {
-    setApiLoading(true)
-    let response = await addCommon(commonFormData)
-    if (response?.data?.success) {
-      setCommonFormData({
-        name: '',
-        description: '',
-      })
-      setRefetchCommons((prev) => !prev)
+
+
+  const handleRefetch = (query) => {
+     switch (query) {
+      case 'commons':
+        setRefetchCommons((prev) => !prev)
+        break;
+      default:
+        break;
     }
-    setApiLoading(false)
   }
+
+
+  const handleClear = (query) => {
+     switch (query) {
+      case 'common':
+        setCommonFormData({
+          name: '',
+          color: 'primary',
+        })
+        break;
+      default:
+        break;
+    }
+  }
+
+
+
 
   
   const clickPerksPage = (e, page) => {
@@ -112,27 +141,28 @@ export default function Page() {
     <>
       { apiLoading && <Spinner /> }
       <CustomDialog open={addPerkDialog}
-        handleClose={closeAddPerkDialog} 
+        handleClose={handleClosePerkDialog} 
         handleConfirm={confirmAddPerkDialog}  
         title="Add Perk" 
         size="md"
         content={<AddPerkForm perkFormData={perkFormData} 
                           setPerkFormData={setPerkFormData}
                           changeFormData={changeFormData}
-                          commonsData={commonsData} 
-                          clickCommon={clickCommon} />}
+                          commonsData={commonsData} />}
       />
       <CustomDialog open={addCommonsDialog}
-          handleClose={closeAddCommonsDialog} 
-          handleConfirm={()=>{}}  
+          handleClose={handleCloseCommonDialog} 
+          handleConfirm={handleCloseCommonDialog}  
           title="Add Commons" 
           size="md"
           content={<AddCommonsForm commonFormData={commonFormData} 
                               setCommonFormData={setCommonFormData}
                               changeFormData={changeFormData}
                               commonsData={commonsData}
-                              clickAddCommon={clickAddCommon}
-                              loading={loadingCommons}/>}
+                              loading={loadingCommons}
+                              setApiLoading={setApiLoading} 
+                              handleRefetch={handleRefetch}
+                              handleClear={handleClear} />}
       />
       <Grid container spacing={2}>
         <Grid size={12}>

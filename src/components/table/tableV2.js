@@ -1,4 +1,4 @@
-import { TableContainer, Paper, Table, TableHead, TableRow, TableBody, TableCell, TablePagination, Box, CircularProgress } from "@mui/material"
+import { TableContainer, Paper, Table, TableHead, TableRow, TableBody, TableCell, TablePagination, Box, CircularProgress, Typography } from "@mui/material"
 const CustomTableV2 = ({ minWidth=650, headers=[], data=[], page=0, handleChangePage=(()=>{}), rowsPerPage=5, handleChangeRowsPerPage=(()=>{}), total=10, loading=false }) => {
     return (
         <>
@@ -22,20 +22,25 @@ const CustomTableV2 = ({ minWidth=650, headers=[], data=[], page=0, handleChange
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        { loading ?  <TableRow>
+                        { loading ? <TableRow>
       <TableCell colSpan={headers.length} align="center">
         <CircularProgress />
-      </TableCell></TableRow> :
-                            (data.map((value, index) => (
-                                <TableRow
-                                key={index}
-                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                >
-                                {headers.map((header, index) => (
-                                header.cell(value, index)
-                                ))}
+      </TableCell></TableRow> : ( data?.length > 0 ? (data.map((value, index) => (
+                                    <TableRow
+                                    key={index}
+                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                    >
+                                    {headers.map((header, index) => (
+                                    header.cell(value, index)
+                                    ))}
+                                    </TableRow>
+                                ))) :  <TableRow
+                                    >
+                                    <TableCell colSpan={headers.length} align="center">
+                                        <Typography>No Data Found</Typography>
+                                    </TableCell>
                                 </TableRow>
-                            )))
+                            )
                         }
                     </TableBody>
                 </Table>

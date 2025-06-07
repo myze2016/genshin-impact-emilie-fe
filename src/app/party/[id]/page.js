@@ -161,6 +161,16 @@ export default function Party() {
 
   }
 
+    const handleCharactersChangePage = (e, page) => {
+    setPerksPage(page);
+  };
+
+  const handleCharactersRowsPerPage = (e) => {
+    setPerksRows(parseInt(e.target.value, 10));
+    setPerksPage(0);
+  };
+
+
   const { columns } = characterTable({handleClickAddCharacterPosition})
 
   return (
@@ -172,7 +182,8 @@ export default function Party() {
               size="xs"
               content={<AddPartyPosition positionFormData={positionFormData} 
                                  setPositionFormData={setPositionFormData}
-                                 changeFormData={changeFormData} />}
+                                 changeFormData={changeFormData}
+                                  />}
             />
        <CustomTableDialog open={addCharacterPositionDialog}
               size="lg"
@@ -185,6 +196,11 @@ export default function Party() {
                                   searchCharactersInput={searchCharactersInput}
                                   handleClickCommon={handleClickCommon}
                                   commonsData={commonsData}
+                                  page={charactersPage} 
+                                  handleChangePage={handleCharactersChangePage} 
+                                  rowsPerPage={charactersRows}
+                                  handleChangeRowsPerPage={handleCharactersRowsPerPage} 
+                                  total={charactersTotal}
                                   />}
             />
       <Grid container spacing={2}>

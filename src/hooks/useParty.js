@@ -16,7 +16,7 @@ export const getParties = (payload, refetch) => {
           toast.error(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
         } 
       } catch (error) {
-        toast.error(error, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+        toast.error(error.response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
       }
     }
 
@@ -39,7 +39,7 @@ export const getParty = (payload, refetch) => {
           toast.error(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
         } 
       } catch (error) {
-        toast.error(error, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+        toast.error(error.response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
       }
     }
 
@@ -60,7 +60,8 @@ export const addParty = async (payload) => {
     }
     return response
   } catch (error) {
-    toast.error(error, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+    console.log('error', error)
+    toast.error(error.response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
   } 
 }
 
@@ -75,7 +76,7 @@ export const addPartyImage = async (payload) => {
     }
     return response
   } catch (error) {
-    toast.error(error, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+    toast.error(error.response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
   } 
 }
 
@@ -90,7 +91,7 @@ export const addPartyPosition = async (payload) => {
     }
     return response
   } catch (error) {
-    toast.error(error, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+    toast.error(error.response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
   } 
 }
 
@@ -106,7 +107,7 @@ export const addPartyPositionCharacter = async (payload) => {
     }
     return response
   } catch (error) {
-    toast.error(error, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+    toast.error(error.response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
   } 
 }
 
@@ -121,6 +122,6 @@ export const removePartyPositionCharacter = async (payload) => {
     }
     return response
   } catch (error) {
-    toast.error(error, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+    toast.error(error.response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
   } 
 }
