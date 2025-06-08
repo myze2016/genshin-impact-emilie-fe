@@ -43,3 +43,17 @@ export const addPerk = async (payload) => {
     toast.error(error.response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
   }
 }
+
+export const removePerk = async (payload) => {
+  try {
+    const response = await api.delete(`/perk/${payload.id}`)
+    if (response?.data?.success) {
+      toast.success(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+    } else {
+      toast.error(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+    }
+    return response
+  } catch (error) {
+    toast.error(error.response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+  }
+}

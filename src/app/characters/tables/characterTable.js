@@ -25,7 +25,6 @@ const characterTable = ({openAddCharacterPerksDialog}) => {
      { name: 'Perk', value: 'perk',  cell: (item,index) => {
         return (
           <TableCell  key={index} sx={{width: '50%'}} align="left"> <Stack direction="row"
-                                spacing={1}
                                 sx={{ flexWrap: 'wrap', rowGap: 1 }}>
                                 {item?.perks?.map((perk, index) => (
                                         <Chip
@@ -33,7 +32,7 @@ const characterTable = ({openAddCharacterPerksDialog}) => {
                                         label={perk?.perk?.name}
                                         color="primary"
                                         variant={ "contained" }
-                                        style={{ fontSize: '16px' }}
+                                        sx={{ fontSize: '16px', mr: 1 }}
                                         />
                                     ))
                                 }

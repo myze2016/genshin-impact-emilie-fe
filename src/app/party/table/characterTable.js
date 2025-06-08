@@ -5,29 +5,28 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 const characterTable = ({handleClickAddCharacterPosition}) => {
 
   const columns = [
+    { name: 'Element', value: 'element', width: '80px',  cell: (item,index) => {
+        return (
+            <TableCell  sx={{textAlign: 'center'}} key={index}><Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'flex-start'}} ><img src={item?.element?.image_url} alt={item?.element?.name}  style={{ width: 40, height: 40 }}/> </Box></TableCell>
+        )
+      }
+    },
     { name: 'Name', value: 'name', cell: (item,index) => {
       return (
         <TableCell key={index} align="left">{item?.name}</TableCell>
       )
     } },
-    { name: 'Element', value: 'element',  cell: (item,index) => {
-        return (
-            <TableCell  sx={{minWidth: '100px', textAlign: 'center'}} key={index}><Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'flex-start'}} ><img src={item?.element?.image_url} alt={item?.element?.name}  style={{ width: 40, height: 40 }}/> </Box></TableCell>
-        )
-      }
-    },
       { name: 'Perk', value: 'perk',  cell: (item,index) => {
         return (
           <TableCell  key={index} sx={{width: '50%'}} align="left"> <Stack direction="row"
-                                spacing={1}
                                 sx={{ flexWrap: 'wrap', rowGap: 1 }}>
                                 {item?.perks?.map((perk, index) => (
                                         <Chip
                                         key={index}
                                         label={perk?.perk?.name}
                                         color="primary"
+                                        sx={{ fontSize: '16px', mr: 1 }}
                                         variant={ "contained" }
-                                        style={{ fontSize: '16px' }}
                                         />
                                     ))
                                 }

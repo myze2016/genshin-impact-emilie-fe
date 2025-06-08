@@ -300,15 +300,15 @@ export default function Characters() {
       <Grid container spacing={2}>
         <Grid item size={12}>
           <Grid container spacing={2} >
-            <Grid item size={6}>
+            <Grid item size={8}>
               <Button  startIcon={<AddCircleOutlineIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} />} 
-                                      sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }, mr: 1}} onClick={(e) => setCharacterDialog(true)} variant="contained">Add Character</Button>
+                                      sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }, mr: 1, mb: 1}} onClick={(e) => setCharacterDialog(true)} variant="contained">Add Character</Button>
                <Button  startIcon={<AddCircleOutlineIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} />} 
-                                      sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }, mr: 1}} onClick={(e) => setAddPerkDialog(true)} variant="contained">Create Perk</Button>
+                                      sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }, mr: 1, mb: 1}} onClick={(e) => setAddPerkDialog(true)} variant="contained">Create Perk</Button>
               <Button startIcon={<FileUploadIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} />} 
-                                      sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }}} onClick={(e) => setApiDialog(true)} variant="contained">Add Character Api</Button>
+                                      sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }, mr: 1, mb: 1}} onClick={(e) => setApiDialog(true)} variant="contained">Add Character Api</Button>
             </Grid>
-             <Grid item size={6} >
+             <Grid item size={4} >
                <Grid container  justifyContent="flex-end" spacing={2} >
                 <CustomSearch  search={searchCharactersInput}
                   handleSearch={changeSearchCharactersInput}

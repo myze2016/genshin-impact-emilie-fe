@@ -114,7 +114,7 @@ export const addPartyPositionCharacter = async (payload) => {
 export const removePartyPositionCharacter = async (payload) => {
   try {
 
-    const response = await api.post(`/party-position-character`, payload)
+    const response = await api.delete(`/party-position-character/${payload.id}`)
          if (response?.data?.success) {
               toast.success(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
  } else {

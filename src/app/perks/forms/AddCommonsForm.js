@@ -79,7 +79,6 @@ const AddCommonsForm = ({ commonFormData, setCommonFormData, changeFormData, com
                     {
                       
 <Stack direction="row"
-                        spacing={1}
                         sx={{ flexWrap: 'wrap', rowGap: 1 }}>
                         {commonsData.map((common, index) => (
                                 <Chip
@@ -88,7 +87,7 @@ const AddCommonsForm = ({ commonFormData, setCommonFormData, changeFormData, com
                                     label={common?.name}
                                     color={common?.color}
                                     variant="contained"
-                                    style={{ fontSize: '16px' }}
+                                     sx={{ fontSize: '16px', mr: 1 }}
                                 />
                             ))
                         }

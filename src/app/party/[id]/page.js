@@ -12,6 +12,9 @@ import characterTable from "../table/characterTable";
 import { useParams, useRouter } from "next/navigation";
 import CustomTableDialog from "@/components/dialog/table";
 import { getCommons } from "@/hooks/useCommon";
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import DeleteIcon from '@mui/icons-material/Delete';
+import SwapVerticalCircleIcon from '@mui/icons-material/SwapVerticalCircle';
 
 export default function Party() {
   const params = useParams();
@@ -22,7 +25,8 @@ export default function Party() {
     id: party_id,
   })
   const { data: partyData, loading: partyLoading } = getParty(partyPayload, refetchParty)
-
+  
+  const [ apiLoading, setApiLoading] = useState(false)
    
   const [charactersPage, setCharactersPage] = useState(0)
   const [charactersPayload, setCharactersPayload] = useState('')
@@ -148,28 +152,27 @@ export default function Party() {
     }
   }
 
-  const handleClickRemoveAddCharacterPosition = async (item) => {
-    const payload = {
-      perk_id: item?.id,
-      character_id: characterId
-    };
-    await removePartyPositionCharacter(payload)
-    if (response?.data?.success) {
-        setRefetchParty((prev) => !prev)
-        setAddCharacterPositionDialog(false)
-    }
-
-  }
 
     const handleCharactersChangePage = (e, page) => {
-    setPerksPage(page);
+    setCharactersPage(page);
   };
 
   const handleCharactersRowsPerPage = (e) => {
-    setPerksRows(parseInt(e.target.value, 10));
-    setPerksPage(0);
+    setCharactersRows(parseInt(e.target.value, 10));
+    setCharactersPage(0);
   };
 
+  const handleRemoveCharacter = async (character) => {
+      setApiLoading(true)
+      const payload = {
+        id: character?.id,
+      };
+      let response = await removePartyPositionCharacter(payload)
+      if (response?.data?.success) {
+        setRefetchParty((prev) => !prev)
+      }
+      setApiLoading(false)
+    }
 
   const { columns } = characterTable({handleClickAddCharacterPosition})
 
@@ -201,6 +204,7 @@ export default function Party() {
                                   rowsPerPage={charactersRows}
                                   handleChangeRowsPerPage={handleCharactersRowsPerPage} 
                                   total={charactersTotal}
+                                  loading={charactersLoading}
                                   />}
             />
       <Grid container spacing={2}>
@@ -218,12 +222,16 @@ export default function Party() {
                             <Grid item size={12} sx={{mb: 1}}>
                               <Box display="flex" justifyContent="space-between" alignItems="center">
                                 <Typography variant="h6">{party?.name}</Typography>
-                                <Button onClick={(e) => handleOpenAddPositionDialog(party)} variant="contained">Add Party Position</Button>
+                                <Box>
+                                  <Button startIcon={<AddCircleOutlineIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} />} 
+                                      sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }, mr: 1}} onClick={(e) => handleOpenAddPositionDialog(party)} color="primary" variant="contained" size="small"> Add Position</Button>
+                                  <Button sx={{mr: 1, px: 1, minWidth: 0 }} color="error" variant="contained" size="small"><DeleteOutlineIcon></DeleteOutlineIcon></Button>
+                                </Box>
                               </Box>
                             </Grid>
                             <hr style={{ width: '100%' }} />
                             <Grid item size={12} >
-                              <Typography variant="subtitle1">{party?.element}&nbsp;&nbsp;•&nbsp;&nbsp;{party?.reaction}</Typography>
+                              <Typography variant="subtitle1">{party?.element?.name}&nbsp;&nbsp;•&nbsp;&nbsp;{party?.reaction}</Typography>
                             </Grid>
                             <Grid item size={12} sx={{mt: 1}}>
                               <Typography>{party?.description}</Typography>
@@ -294,6 +302,27 @@ export default function Party() {
                                           ))
                                         }
                                         
+                                      </TableCell>
+                                      <TableCell>
+                                            <Box display="flex" justifyContent="flex-end" alignItems="center">
+                                              
+                                             <IconButton
+                                                color="info"
+                                                onClick={(e) => {
+                                                  handleRemoveCharacter(character);
+                                                }}
+                                              >
+                                                <SwapVerticalCircleIcon sx={{ fontSize: '24px' }} />
+                                            </IconButton>
+                                            <IconButton
+                                                color="error"
+                                                onClick={(e) => {
+                                                  handleRemoveCharacter(character);
+                                                }}
+                                              >
+                                                <DeleteIcon sx={{ fontSize: '24px' }} />
+                                            </IconButton>
+                                          </Box>
                                       </TableCell>
                                     </TableRow>
                                   ))}

@@ -160,39 +160,51 @@ export default function Dashboard() {
             {
               partiesData && partiesData?.map((party, index) => (
                 <Fragment key={index}>
-                    <Card sx={{ width: 345, height: 160, 
-                       backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.4), rgba(0,0,0,0.8)), url(${party?.character?.gacha_splash_url})`,
-                          backgroundSize: 'cover',
-                          backgroundPosition: 'top', overflowY: 'auto' }}>
-                            <CardActions sx={{ pb: 0, px: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start'}}>
-                            <Typography gutterBottom variant="h6" component="div">
-                            {party?.name}
-                          </Typography>
-                            <IconButton
+                    <Card
+                    sx={{
+                      width: 345,
+                      height: 160,
+                      backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.4), rgba(0,0,0,0.8)), url(${party?.character?.gacha_splash_url})`,
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'top',
+                      overflowY: 'auto',
+                      position: 'relative'
+                    }}
+                  >
+                    <CardActionArea
+                      component="a"
+                      href={`/party/${party.id}`}
+                      sx={{ height: '100%', display: 'block' }}
+                    >
+                      <CardContent
+                        sx={{
+                          height: '100%',
+                          pt: 2,
+                          px: 2
+                        }}
+                      >
+                        <Typography gutterBottom variant="h6" component="div">
+                          {party?.name}
+                        </Typography>
+                        <Typography variant="body2" color="secondary">
+                          {party?.description}
+                        </Typography>
+                      </CardContent>
+                    </CardActionArea>
+
+                   
+                    <IconButton
                       color="primary"
-                      onClick={(e) => clickAddPartyImage(e, party)}
-                      
+                      onClick={(e) => {
+                        e.stopPropagation(); // prevent navigation
+                        e.preventDefault();
+                        clickAddPartyImage(e, party);
+                      }}
+                      sx={{ position: 'absolute', top: 8, right: 8 }}
                     >
                       <AddCircleOutlineIcon sx={{ fontSize: '28px' }} />
                     </IconButton>
-                            </CardActions>
-                             
-                           
-                          <CardActionArea href={`/party/${party.id}`} sx={{ height: '100%' }}>
-                        
-                        <CardContent sx={{
-                            height: '100%',
-                            pt: 0,
-                            px: 2
-                          }}>
-                             
-                        
-                          <Typography  variant="body2" color="secondary">
-                            {party?.description}
-                          </Typography>
-                        </CardContent>
-                      </CardActionArea>
-                          </Card>
+                  </Card>
                 </Fragment>
               ))
             }

@@ -102,6 +102,21 @@ export const addCharacter = async (payload) => {
   } 
 }
 
+
+export const removeCharacter = async (payload) => {
+  try {
+    const response = await api.delete(`/character/${payload.id}`)
+    if (response?.data?.success) {
+      toast.success(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+    } else {
+      toast.error(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+    }
+    return response
+  } catch (error) {
+    toast.error(error.response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+  } 
+}
+
 export const addCharacterApi = async (payload) => {
   toast.info(
     <CustomToast title="Please Wait..." msg='Saving data from api..' icon={<AddCircleOutlineIcon size={15} />} color="#4da58d" />,

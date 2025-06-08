@@ -10,7 +10,6 @@ const CustomTableRowSearchV2 = ({ minWidth=650, headers=[], data=[], chipData=[]
                             <TableRow>
                         <TableCell colSpan={headers.length}>
                             <Stack direction="row"
-                                spacing={1}
                                 sx={{ flexWrap: 'wrap', rowGap: 1 }}>
                                 {   chipData.map((chip, index) => (
                                         <Chip
@@ -18,7 +17,7 @@ const CustomTableRowSearchV2 = ({ minWidth=650, headers=[], data=[], chipData=[]
                                             onClick={() => handleSearchChip(chip?.name)}
                                             label={chip?.name}
                                             color={chip?.color}
-                                            style={{ fontSize: '16px' }}
+                                            sx={{ fontSize: '16px', mr: 1 }}
                                             variant={ search.includes(chip?.name) ? "contained" : "outlined"}
                                         />
                                     ))
@@ -51,12 +50,20 @@ const CustomTableRowSearchV2 = ({ minWidth=650, headers=[], data=[], chipData=[]
                  
                                 <TableRow sx={{borderBottom: `1.5px solid #a9cbb3`}}>
                         {headers.map((header, index) => (
-                                <TableCell  sx={{
+                            header?.width ? (<TableCell  sx={{
+                                    // backgroundColor: '#81c784',
+                                    fontSize: '1rem',
+                                    color: `#a9cbb3`,
+                                      width: header?.width,
+                                    letterSpacing: '0.5px',
+                                  }} key={index} align="left">{header.name}</TableCell>) : (
+                                        <TableCell  sx={{
                                     // backgroundColor: '#81c784',
                                     fontSize: '1rem',
                                     color: `#a9cbb3`,
                                     letterSpacing: '0.5px',
                                   }} key={index} align="left">{header.name}</TableCell>
+                                  )
                         ))}
                     </TableRow>
                     

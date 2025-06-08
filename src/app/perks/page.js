@@ -2,7 +2,7 @@
 import { Grid, Button } from "@mui/material"
 import { useState } from "react";
 import { addCommon, getCommons, removeCommon } from "@/hooks/useCommon";
-import { addPerk, getPerks } from "@/hooks/usePerk";
+import { addPerk, getPerks, removePerk } from "@/hooks/usePerk";
 import CustomDialog from "@/components/dialog";
 import CustomTableV2 from "@/components/table/tableV2";
 import perkTable from "./tables/perkTable";
@@ -122,6 +122,17 @@ export default function Page() {
     }
   }
 
+  const handleRemovePerk = async (perk) => {
+    setApiLoading(true)
+    const payload = {
+      id: perk?.id,
+    };
+    let response = await removePerk(payload)
+    if (response?.data?.success) {
+      setRefetchPerks((prev) => !prev)
+    }
+    setApiLoading(false)
+  }
 
 
 
@@ -135,7 +146,7 @@ export default function Page() {
     setPerksPage(0);
   };
   
-  const { columns } = perkTable()
+  const { columns } = perkTable({handleRemovePerk})
   
   return (
     <>

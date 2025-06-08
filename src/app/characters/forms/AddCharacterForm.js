@@ -10,7 +10,7 @@ const AddCharacterForm = ({ characterFormData, setCharacterFormData, changeFormD
                      <Grid item size={{xs: 12, md: 6, lg: 6}}>
                             <FormControl fullWidth>
                                 <InputLabel id="element-label" >
-                                    Color
+                                    Element
                                 </InputLabel>
                                 <Select
                                         id="element-label"
