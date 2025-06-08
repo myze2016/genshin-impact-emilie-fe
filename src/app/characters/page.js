@@ -1,9 +1,10 @@
 'use client'
 
-import { Grid, Typography, Button, Box, Paper, TextField, CircularProgress } from "@mui/material"
+import { Grid, Typography, Button, Box, Paper, TextField, InputAdornment } from "@mui/material"
 import { Fragment, useState, useEffect } from "react";
 import CustomDialog from "@/components/dialog";
-import { addCharacter, getCharacters, addCharacterPerk, getCharacterPerks, deleteCharacterPerk, addCharacterApi, getCharactersName } from "@/hooks/useCharacter";
+import { addCharacter, addCharacterPerk, getCharacterPerks, deleteCharacterPerk, addCharacterApi, getCharactersName } from "@/hooks/useCharacter";
+import { getElements } from "@/hooks/useElements";
 import characterTable from "./tables/characterTable";
 import perkTable from "./tables/perkTable";
 import AddCharacterForm from "./forms/AddCharacterForm";
@@ -12,9 +13,12 @@ import CustomTableV2 from "@/components/table/tableV2";
 import CustomTableDialog from "@/components/dialog/table";
 import { getCommons } from "@/hooks/useCommon";
 import Spinner from "@/components/Spinner";
-import { Add } from "@mui/icons-material";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
+import CustomConfirmDialog from "@/components/dialog/confirm";
+import AddPerkForm from "./forms/AddPerkForm";
+import { addPerk } from "@/hooks/usePerk";
+import CustomSearch from "@/components/Search";
 
 export default function Characters() {
 
@@ -26,6 +30,10 @@ export default function Characters() {
   const [charactersRows, setCharacterRows] = useState(10)
   const { data: charactersData, loading: charactersLoading, total: charactersTotal } = getCharactersName(charactersPayload, refetchCharacters, searchCharacters, charactersPage+1, charactersRows)
   
+  const [ elementsPayload, setElementsPayload] = useState('')
+  const [ refetchElements, setRefetchElements] = useState(false)
+  const { data: elementsData, loading: elementsLoading } = getElements(elementsPayload, refetchElements)
+
   const [characterPerksPayload, setCharacterPerksPayload] = useState('')
   const [refetchCharacterPerks, setRefetchCharacterPerks] = useState(false)
   const [searchPerks, setSearchPerks] = useState('')
@@ -39,11 +47,18 @@ export default function Characters() {
   const [searchCommons, setSearchCommons] = useState('')
   const { data: commonsData, loading: commonsLoading } = getCommons(commonsPayload, refetchCommons, searchCommons)
 
+  const [ apiDialog, setApiDialog] = useState(false)
+  const [ addPerkDialog, setAddPerkDialog] = useState(false)
+  const [ perkFormData, setPerkFormData] = useState({
+    name: '',
+    description: '',
+  })
+
   const [characterId, setCharacterId] = useState(0)
 
   const [ apiLoading, setApiLoading ] = useState(false)
   const [addCharacterPerksDialog, setAddCharacterPerksDialog] = useState(false)
-  const [addCharacterDialog, setAddCharacterDialog] = useState(false)
+  const [ characterDialog, setCharacterDialog] = useState(false);
 
   const [characterPerkFormData, setCharacterPerkFormData] = useState({
     character_id: '',
@@ -52,7 +67,7 @@ export default function Characters() {
 
   const [characterFormData, setCharacterFormData] = useState({
     name: '',
-    element: ''
+    element_id: ''
   })
 
   const changeFormData = (e, formData, setFormData) => {
@@ -68,7 +83,7 @@ export default function Characters() {
      if (response?.data?.success) {
       resetCharacterFormData()
       setRefetchCharacters((prev) => !prev)
-      setAddCharacterDialog(false)
+      setCharacterDialog(false)
     }
     setApiLoading(false)
   }
@@ -86,6 +101,7 @@ export default function Characters() {
   }
 
   const handleClosePerkDialog = (e) => {
+    setRefetchCharacters((prev) => !prev)
     resetSearchPerksInput()
     setAddCharacterPerksDialog(false)
   }
@@ -97,12 +113,12 @@ export default function Characters() {
   const handleCloseCharacterDialog = (e) => {
     setRefetchCharacters((prev) => !prev)
     resetCharacterFormData()
-    setAddCharacterDialog(false)
+    setCharacterDialog(false)
   }
 
   
   const openAddCharacterDialog = (e) => {
-    setAddCharacterDialog(true)
+    setCharacterDialog(true)
   }
 
 
@@ -163,18 +179,18 @@ export default function Characters() {
   }
 
 
-  const clickAddCharacterApi = async (item) => {
-    let response = await addCharacterApi(payload)
-    if (response?.data?.success) {
-      setRefetchCharacters((prev) => !prev)
-    }
+  const handleAddCharacterApi = async (item) => {
+    setApiDialog(false)
+    let response = await addCharacterApi()
+    setRefetchCharacters((prev) => !prev)
+    
   }
 
   
   const resetCharacterFormData = () => {
       setCharacterFormData({
         name: '',
-        element: ''
+        element_id: ''
       })
   }
 
@@ -198,6 +214,33 @@ export default function Characters() {
     setPerksPage(0);
   };
 
+  const handleCloseAddPerkDialog = (e) => {
+    setAddPerkDialog(false)
+    resetPerkFormData()
+  }
+
+   const resetPerkFormData = () => {
+    setPerkFormData({
+      name: '',
+      description: '',
+    })
+  }
+
+  const confirmAddPerkDialog = async (e) => {
+    setApiLoading(true)
+    let response = await addPerk(perkFormData)
+    if (response?.data?.success) {
+      setPerkFormData({
+        name: '',
+        description: '',
+      })
+      setRefetchCharacterPerks((prev) => !prev)
+      setAddPerkDialog(false)
+    }
+    setApiLoading(false)
+  }
+  
+
 
   
   const { columns: characterColumns  } = characterTable({openAddCharacterPerksDialog})
@@ -206,13 +249,29 @@ export default function Characters() {
   return (
     <>
       { apiLoading && <Spinner /> }
-      <CustomDialog size="sm" open={addCharacterDialog}
+      <CustomDialog open={addPerkDialog}
+        handleClose={handleCloseAddPerkDialog} 
+        handleConfirm={confirmAddPerkDialog}  
+        title="Add Perk" 
+        size="md"
+        content={<AddPerkForm perkFormData={perkFormData} 
+                          setPerkFormData={setPerkFormData}
+                          changeFormData={changeFormData}
+                          commonsData={commonsData} />} />
+      <CustomConfirmDialog size="xs" open={apiDialog}
+              handleClose={(e) => setApiDialog(false)} 
+              handleConfirm={(e) => handleAddCharacterApi()}  
+              title="Add Character Api" 
+              message="Are you sure you want to retrieve characters from Api?"
+            />
+      <CustomDialog size="sm" open={characterDialog}
               handleClose={handleCloseCharacterDialog} 
               handleConfirm={handleAddCharacter}  
               title="Add Character" 
               content={<AddCharacterForm characterFormData={characterFormData} 
                                  setCharacterFormData={setCharacterFormData}
-                                 changeFormData={changeFormData} />}
+                                 changeFormData={changeFormData}
+                                 options={elementsData} />}
             />
      <CustomTableDialog size="md" open={addCharacterPerksDialog}
             handleClose={handleClosePerkDialog} 
@@ -229,7 +288,7 @@ export default function Characters() {
                                searchCharacterPerksInput={searchPerksInput}
                                clickCommon={handleFillCommon}
                                commonsData={commonsData}
-                               loading={commonsLoading && perksLoading}
+                               loading={commonsLoading || perksLoading}
                                page={perksPage} 
                                handleChangePage={handlePerksChangePage} 
                                rowsPerPage={perksRows}
@@ -243,19 +302,18 @@ export default function Characters() {
           <Grid container spacing={2} >
             <Grid item size={6}>
               <Button  startIcon={<AddCircleOutlineIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} />} 
-                                      sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }, mr: 1}} onClick={(e) => openAddCharacterDialog()} variant="contained">{ 'Add Character' }</Button>
+                                      sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }, mr: 1}} onClick={(e) => setCharacterDialog(true)} variant="contained">Add Character</Button>
+               <Button  startIcon={<AddCircleOutlineIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} />} 
+                                      sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }, mr: 1}} onClick={(e) => setAddPerkDialog(true)} variant="contained">Create Perk</Button>
               <Button startIcon={<FileUploadIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} />} 
-                                      sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }}} onClick={(e) => clickAddCharacterApi()} variant="contained">Add Character Api</Button>
+                                      sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }}} onClick={(e) => setApiDialog(true)} variant="contained">Add Character Api</Button>
             </Grid>
              <Grid item size={6} >
                <Grid container  justifyContent="flex-end" spacing={2} >
-                <TextField
-                    label="Search"
-                    variant="outlined"
-                    size="small"
-                    value={searchCharactersInput}
-                    onChange={(e) => changeSearchCharactersInput(e.target.value)}
-                />
+                <CustomSearch  search={searchCharactersInput}
+                  handleSearch={changeSearchCharactersInput}
+                  fullWidth={false}>
+                </CustomSearch>
               </Grid>
             </Grid>
           </Grid>

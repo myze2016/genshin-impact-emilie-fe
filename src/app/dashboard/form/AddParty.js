@@ -1,5 +1,5 @@
-import { FormControl, InputLabel, Input, FormHelperText, Grid, TextareaAutosize, TextField, Box } from "@mui/material";
-const AddParty = ({ partyFormData, setPartyFormData, changeFormData }) => {
+import { FormControl, InputLabel, Input, FormHelperText, Grid, TextareaAutosize, TextField, Box, Select, MenuItem } from "@mui/material";
+const AddParty = ({ partyFormData, setPartyFormData, changeFormData, options }) => {
     return (
         <Box sx={{ width: '100%' }}>
             <Grid container spacing={2} >
@@ -7,7 +7,36 @@ const AddParty = ({ partyFormData, setPartyFormData, changeFormData }) => {
                     <TextField fullWidth name="name" value={partyFormData?.name}  onChange={(e) => changeFormData(e, partyFormData, setPartyFormData)} label="Name" variant="outlined" />
                 </Grid>
                 <Grid item size={{xs: 12, md: 6, lg: 6}}>
-                    <TextField fullWidth name="element" value={partyFormData?.element}  onChange={(e) => changeFormData(e, partyFormData, setPartyFormData)} label="Element" variant="outlined"/>
+                    <FormControl fullWidth>
+                                <InputLabel id="element-label" >
+                                    Color
+                                </InputLabel>
+                                <Select
+                                        id="element-label"
+                                        name="element_id"
+                                        value={partyFormData?.element_id}
+                                        label="Element"
+                                        onChange={(e) => changeFormData(e, partyFormData, setPartyFormData)}
+                                    >
+                                        {options.map((option, index) => (
+                                            <MenuItem key={index} value={option.id}>
+                                                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                                    <Box
+                                                        sx={{
+                                                            width: 16,
+                                                            height: 16,
+                                                            backgroundColor: option.color,
+                                                            borderRadius: '4px',
+                                                            marginRight: 1,
+                                                            display: 'inline-block',
+                                                        }}
+                                                    />
+                                                    {option.name}
+                                                </Box>
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                            </FormControl>
                 </Grid>
                 <Grid item size={{xs: 12, md: 12, lg: 12}} >
                     <TextField

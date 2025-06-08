@@ -7,7 +7,7 @@ const AddPartyPositionCharacter = ({ columns, charactersData, handleSearchCharac
         <Box sx={{ width: '100%' }}>
             <Grid container spacing={2} >
                 <Grid item size={{xs: 12, md: 12, lg: 12}}>
-                    <CustomTableRowSearchV2 headers={columns} data={charactersData}  handleSearch={handleSearchCharactersInput} search={searchCharactersInput}  handleSearchChip={handleClickCommon} dataChips={commonsData} page={page} handleChangePage={handleChangePage} rowsPerPage={rowsPerPage} handleChangeRowsPerPage={handleChangeRowsPerPage} total={total}  />
+                    <CustomTableRowSearchV2 headers={columns} chipData={commonsData} data={charactersData}  handleSearch={handleSearchCharactersInput} search={searchCharactersInput}  handleSearchChip={handleClickCommon} dataChips={commonsData} page={page} handleChangePage={handleChangePage} rowsPerPage={rowsPerPage} handleChangeRowsPerPage={handleChangeRowsPerPage} total={total}  />
                 </Grid>
             </Grid>
         </Box>

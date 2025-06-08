@@ -5,47 +5,26 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
 const characterTable = ({openAddCharacterPerksDialog}) => {
 
-  const getElementColor = (element) => {
-    switch (element?.toLowerCase()) {
-      case 'pyro':
-        return '#8b3a2f'; // darker red-brown
-      case 'hydro':
-        return '#336b87'; // dark teal-blue
-      case 'electro':
-        return '#5e4b8b'; // dark violet
-      case 'cryo':
-        return '#4a707a'; // cool dark cyan
-      case 'anemo':
-        return '#3a5f4f'; // dark muted green
-      case 'geo':
-        return '#7a6652'; // earthy brown
-      case 'dendro':
-        return '#486b45'; // dark forest green
-      default:
-        return 'transparent';
-    }
-    };
-
   const columns = [
-     { name: ' ', value: 'icon_side_url', cell: (item,index) => {
+     { name: ' ', value: 'icon_side_url', width: '100px', cell: (item,index) => {
       return (
-        <TableCell  sx={{paddingRight: 0, minWidth: '80px', display: 'flex', justifyContent: 'flex-end', alignItems: 'center'}} key={index}><img src={item?.icon_side_url} alt={item?.name} style={{ width: 50, height: 57, display: 'block' }}/> </TableCell>
+        <TableCell  sx={{minWidth: '100px', textAlign: 'center'}} key={index}><Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'flex-end'}} ><img src={item?.icon_side_url} alt={item?.name} style={{ width: 50, height: 57 }}/> </Box></TableCell>
       )
     } },
     { name: 'Name', value: 'name', cell: (item,index) => {
       return (
-        <TableCell sx={{width: '15%'}}  key={index} align="left">{item?.name}</TableCell>
+        <TableCell key={index}  align="left">{item?.name}</TableCell>
       )
     } },
     { name: 'Element', value: 'element',  cell: (item,index) => {
         return (
-          <TableCell sx={{width: '10%'}}   key={index} align="left">{item?.element}</TableCell>
+             <TableCell sx={{width: '10%'}}   key={index} align="left">{item?.element?.name}</TableCell>
         )
       }
     },
      { name: 'Perk', value: 'perk',  cell: (item,index) => {
         return (
-          <TableCell sx={{width: '50%'}}  key={index} align="left"> <Stack direction="row"
+          <TableCell  key={index} sx={{width: '50%'}} align="left"> <Stack direction="row"
                                 spacing={1}
                                 sx={{ flexWrap: 'wrap', rowGap: 1 }}>
                                 {item?.perks?.map((perk, index) => (
@@ -54,6 +33,7 @@ const characterTable = ({openAddCharacterPerksDialog}) => {
                                         label={perk?.perk?.name}
                                         color="primary"
                                         variant={ "contained" }
+                                        style={{ fontSize: '16px' }}
                                         />
                                     ))
                                 }
@@ -65,7 +45,7 @@ const characterTable = ({openAddCharacterPerksDialog}) => {
       cell: (item, index) => {
           return (
             <Fragment key={index}>
-              <TableCell sx={{width: '20%'}} key={index} align="left"> <Button startIcon={<AddCircleOutlineIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} />} 
+              <TableCell key={index} align="left"> <Button startIcon={<AddCircleOutlineIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} />} 
                                       sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }}} onClick={(e) => openAddCharacterPerksDialog(item)} color="primary" variant="contained" size="small"> Add Perks</Button></TableCell>
             </Fragment>
           )

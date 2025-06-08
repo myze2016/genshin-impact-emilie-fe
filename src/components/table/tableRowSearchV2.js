@@ -1,3 +1,4 @@
+import CustomSearch from "../Search"
 import { TableContainer, Paper, Table, TableHead, TableRow, TableBody, TableCell, TextField, Chip, Stack, CircularProgress, TablePagination  } from "@mui/material"
 const CustomTableRowSearchV2 = ({ minWidth=650, headers=[], data=[], chipData=[], handleSearch=((e) => {}), handleSearchChip=((e) => {}), dataChips=[], search="", loading=false, apiLoading=false, page=0, handleChangePage=(()=>{}), rowsPerPage=5, handleChangeRowsPerPage=(()=>{}), total=10, }) => {
     return (
@@ -6,10 +7,6 @@ const CustomTableRowSearchV2 = ({ minWidth=650, headers=[], data=[], chipData=[]
             <Table sx={{overflowY: 'auto'}}>
                 <TableBody>
                     {
-                        loading ? <TableRow>
-                              <TableCell colSpan={headers.length} align="center">
-                                <CircularProgress />
-                              </TableCell></TableRow> : (
                             <TableRow>
                         <TableCell colSpan={headers.length}>
                             <Stack direction="row"
@@ -20,7 +17,8 @@ const CustomTableRowSearchV2 = ({ minWidth=650, headers=[], data=[], chipData=[]
                                             key={index}
                                             onClick={() => handleSearchChip(chip?.name)}
                                             label={chip?.name}
-                                            color="primary"
+                                            color={chip?.color}
+                                            style={{ fontSize: '16px' }}
                                             variant={ search.includes(chip?.name) ? "contained" : "outlined"}
                                         />
                                     ))
@@ -28,7 +26,6 @@ const CustomTableRowSearchV2 = ({ minWidth=650, headers=[], data=[], chipData=[]
                             </Stack>
                         </TableCell>
                     </TableRow>
-                              )
                     }
                     
                 </TableBody>
@@ -42,23 +39,16 @@ const CustomTableRowSearchV2 = ({ minWidth=650, headers=[], data=[], chipData=[]
                                 backgroundColor: 'background.paper', 
                                 zIndex: 10,
                             }}>
-                            <TextField
-                                label="Search"
-                                variant="outlined"
-                                size="small"
-                                fullWidth
-                                value={search}
-                                onChange={(e) => handleSearch(e.target.value)}
+                            <CustomSearch
+                                fullWidth={true}
+                                search={search}
+                                handleSearch={handleSearch}
                             />
                         </TableCell>
                     </TableRow>
                 </TableBody>
                 <TableBody>
-                    {
-                        loading ? <TableRow>
-                              <TableCell colSpan={headers.length} align="center">
-                                <CircularProgress />
-                              </TableCell></TableRow> : (
+                 
                                 <TableRow sx={{borderBottom: `1.5px solid #a9cbb3`}}>
                         {headers.map((header, index) => (
                                 <TableCell  sx={{
@@ -69,21 +59,24 @@ const CustomTableRowSearchV2 = ({ minWidth=650, headers=[], data=[], chipData=[]
                                   }} key={index} align="left">{header.name}</TableCell>
                         ))}
                     </TableRow>
-                              )
-                    }
                     
                 </TableBody>
                 <TableBody>
-                    {data.map((value, index) => (
-                        <TableRow
-                        key={index}
-                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                        >
-                        {headers.map((header, index) => (
-                            header.cell(value, index)
-                        ))}
-                        </TableRow>
-                    ))}
+                       {
+                        loading ? <TableRow>
+                              <TableCell colSpan={headers.length} align="center">
+                                <CircularProgress />
+                                </TableCell></TableRow> : (
+                        data.map((value, index) => (
+                            <TableRow
+                            key={index}
+                            >
+                            {headers.map((header, index) => (
+                                header.cell(value, index)
+                            ))}
+                            </TableRow>
+                        ))
+                    )}
                 </TableBody>
             </Table>
         </TableContainer>

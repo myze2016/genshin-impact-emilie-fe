@@ -29,7 +29,7 @@ export default function Party() {
   const [refetchCharacters, setRefetchCharacters] = useState(false)
   const [searchCharacters, setSearchCharacters] = useState('')
   const [searchCharactersInput, setSearchCharactersInput] = useState('')
-  const [charactersRows, setCharactersRows] = useState(10)
+  const [charactersRows, setCharactersRows] = useState(5)
   const { data: charactersData, loading: charactersLoading, total: charactersTotal } = getCharacters(charactersPayload, refetchCharacters, searchCharacters, charactersPage+1, charactersRows)
 
 
@@ -179,14 +179,14 @@ export default function Party() {
               handleClose={handleCancelAddPosition} 
               handleConfirm={handleConfirmAddPositionDialog}  
               title="Add Party Position" 
-              size="xs"
+              size="sm"
               content={<AddPartyPosition positionFormData={positionFormData} 
                                  setPositionFormData={setPositionFormData}
                                  changeFormData={changeFormData}
                                   />}
             />
        <CustomTableDialog open={addCharacterPositionDialog}
-              size="lg"
+              size="md"
               handleClose={handleCancelAddCharacterPositionDialog} 
               handleConfirm={handleCancelAddCharacterPositionDialog}  
               title="Add Party Position Character" 
@@ -208,53 +208,60 @@ export default function Party() {
           partyData && partyData?.map((party, index) => (
             <Fragment key={index}>
               <Grid item size={12}>
-                <Paper sx={{ padding: 2, backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.4), rgba(0,0,0,0.8)), url(${party?.character?.namecard_background_url})`,
-                          backgroundSize: 'cover',
-                          backgroundPosition: 'center', }}>
-                  <Grid container>
-                    <Grid item size={12} sx={{mb: 1}}>
-                      <Box display="flex" justifyContent="space-between" alignItems="center">
-                        <Typography variant="h6">{party?.name}</Typography>
-                        <Button onClick={(e) => handleOpenAddPositionDialog(party)} variant="contained">Add Party Position</Button>
-                      </Box>
-                    </Grid>
-                    <hr style={{ width: '100%' }} />
-                    <Grid item size={12} >
-                      <Typography variant="subtitle1">{party?.element}&nbsp;&nbsp;•&nbsp;&nbsp;{party?.reaction}</Typography>
-                    </Grid>
-                    <Grid item size={12} sx={{mt: 1}}>
-                      <Typography>{party?.description}</Typography>
-                    </Grid>
-                  </Grid>
-                </Paper>
+                <Grid container spacing={2}>
+                      <Grid item size={8}>
+                           <Paper sx={{ padding: 2, height: '100%', backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.4), rgba(0,0,0,0.8)), url(${party?.character?.namecard_background_url})`,
+                          backgroundSize: 'cover', // or 'contain' depending on your layout
+                          backgroundRepeat: 'no-repeat',
+                          backgroundPosition: 'right' }}>
+                          <Grid container>
+                            <Grid item size={12} sx={{mb: 1}}>
+                              <Box display="flex" justifyContent="space-between" alignItems="center">
+                                <Typography variant="h6">{party?.name}</Typography>
+                                <Button onClick={(e) => handleOpenAddPositionDialog(party)} variant="contained">Add Party Position</Button>
+                              </Box>
+                            </Grid>
+                            <hr style={{ width: '100%' }} />
+                            <Grid item size={12} >
+                              <Typography variant="subtitle1">{party?.element}&nbsp;&nbsp;•&nbsp;&nbsp;{party?.reaction}</Typography>
+                            </Grid>
+                            <Grid item size={12} sx={{mt: 1}}>
+                              <Typography>{party?.description}</Typography>
+                            </Grid>
+                          </Grid>
+                        </Paper>
+                      </Grid>
+                      <Grid item size={4}>
+                        <Paper >
+                          <Table>
+                            <TableBody>
+                              {party?.positions?.map((position, index) => (
+                                <TableRow key={index}>
+                                  <TableCell>
+                                    <Typography>{position?.name}</Typography>
+                                  </TableCell>
+                                  <TableCell>
+                                    <Typography>{position?.description}</Typography>
+                                  </TableCell>
+                                </TableRow>
+                              ))}
+                            </TableBody>
+                          </Table>
+                        </Paper>
+                      </Grid>
+
+                </Grid> 
               </Grid>
-              <Grid item size={12}>
-                <Paper >
-                  <Table>
-                    <TableBody>
-                      {party?.positions?.map((position, index) => (
-                        <TableRow key={index}>
-                          <TableCell>
-                            <Typography>{position?.name}</Typography>
-                          </TableCell>
-                          <TableCell>
-                            <Typography>{position?.description}</Typography>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </Paper>
-              </Grid>
+              
                <Grid item size={12}>
                 <Grid container spacing={2}>
                   {
                     party && party?.positions?.map((position, index) => (
                       <Grid key={index} item size={6}>
-                        <Paper sx={{ padding: 2 }}>
+                        <Paper  >
                           <Grid container spacing={0}>
                             <Grid item size={12} >
-                              <Box display="flex" justifyContent="space-between" alignItems="center">
+                              <Box sx={{px: 2}} display="flex" justifyContent="space-between" alignItems="center">
                                 <Typography sx={{ fontWeight: 'bold' }}>{position?.name}</Typography>
                                   <IconButton
                                     color="primary"
@@ -266,30 +273,34 @@ export default function Party() {
                               </Box>
                             </Grid>
                             <hr style={{ width: '100%' }} />
-                            {
-                              position && position?.characters_value?.map((character, index) => (
-                                <Grid key={index} item size={12}>
-                                  <Grid container spacing={0}>
-                                      <Grid item size={12}>
+                             <Grid key={index} item size={12}>
+                                <Table>
+                                <TableBody>
+                                  { position && position?.characters_value?.map((character, index) => (
+                                    <TableRow key={index}>
+                                      <TableCell>
                                         <Typography>{character?.character?.name}</Typography>
-                                        <Stack direction="row" alignItems="center" spacing={2} flexWrap="wrap" useFlexGap>
+                                      </TableCell>
+                                      <TableCell>
                                         {
-                                          character && character?.character?.perks.slice(0, 3).map((perk, index) => (
+                                          character && character?.character?.perks.map((perk, index) => (
                                             <Chip
                                               key={index}
                                               label={perk.perk.name}
                                               color="primary"
                                               variant="contained"
+                                              sx={{mr: 1, mb: 1, fontSize: '16px'}}
                                             />
-                                          
                                           ))
                                         }
-                                        </Stack>
-                                      </Grid>
-                                    </Grid>
-                                </Grid>
-                              ))
-                            }
+                                        
+                                      </TableCell>
+                                    </TableRow>
+                                  ))}
+                                </TableBody>
+                                </Table>
+                             </Grid>
+                            
                           </Grid>
                         </Paper>
                       </Grid>

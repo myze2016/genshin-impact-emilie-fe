@@ -5,7 +5,6 @@ import { addCommon, removeCommon } from "@/hooks/useCommon";
 const AddCommonsForm = ({ commonFormData, setCommonFormData, changeFormData, commonsData, loading=false, setApiLoading, handleRefetch, handleClear }) => {
 
     const handleRemoveCommon = async (e, common) => {
-        setApiLoading(true)
         const payload = {
             id: common.id
         }
@@ -13,17 +12,14 @@ const AddCommonsForm = ({ commonFormData, setCommonFormData, changeFormData, com
         if (response?.data?.success) {
             handleRefetch('commons')
         }
-        setApiLoading(false)
     }
 
     const handleAddCommon = async (e) => {
-        setApiLoading(true)
         let response = await addCommon(commonFormData)
         if (response?.data?.success) {
             handleRefetch('commons')
             handleClear('common')
         }
-        setApiLoading(false)
   }
 
     
@@ -92,6 +88,7 @@ const AddCommonsForm = ({ commonFormData, setCommonFormData, changeFormData, com
                                     label={common?.name}
                                     color={common?.color}
                                     variant="contained"
+                                    style={{ fontSize: '16px' }}
                                 />
                             ))
                         }

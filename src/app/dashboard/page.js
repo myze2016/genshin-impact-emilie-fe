@@ -11,6 +11,8 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import Spinner from "@/components/Spinner";
 import AddIcon from '@mui/icons-material/Add';
 import { Add } from "@mui/icons-material";
+import CustomTableDialog from "@/components/dialog/table";
+import { getElements } from "@/hooks/useElements";
 
 export default function Dashboard() {
 
@@ -18,12 +20,16 @@ export default function Dashboard() {
   const [partiesPayload, setPartiesPayload] = useState('')
   const { data: partiesData, loading: partiesLoading } = getParties(partiesPayload, refetchParties)
 
+  const [ elementsPayload, setElementsPayload] = useState('')
+  const [ refetchElements, setRefetchElements] = useState(false)
+  const { data: elementsData, loading: elementsLoading } = getElements(elementsPayload, refetchElements)
+
   const [charactersPage, setCharactersPage] = useState(0)
   const [charactersPayload, setCharactersPayload] = useState('')
   const [refetchCharacters, setRefetchCharacters] = useState(false)
   const [searchCharacters, setSearchCharacters] = useState('')
   const [searchCharactersInput, setSearchCharactersInput] = useState('')
-  const [charactersRows, setCharactersRows] = useState(10)
+  const [charactersRows, setCharactersRows] = useState(9)
   const { data: charactersData, loading: charactersLoading, total: charactersTotal } = getCharactersName(charactersPayload, refetchCharacters, searchCharacters, charactersPage+1, charactersRows)
 
   const [ apiLoading, setApiLoading ] = useState(false)
@@ -34,17 +40,12 @@ export default function Dashboard() {
 
   const [partyFormData, setPartyFormData] = useState({
     name: '',
-    element: '',
+    element_id: '',
     reaction: '',
   })
   const [imageFormData, setImageFormData] = useState({
     character_id: '',
   })
-
-  
-  const changeSearchCharactersInput = (search) => {
-    setSearchCharactersInput(search)
-  }
 
   
   useEffect(() => {
@@ -102,10 +103,19 @@ export default function Dashboard() {
   };
 
   const selectCharactersRows = (e) => {
-    console.log('e.target.value',e.target.value)
     setCharactersRows(parseInt(e.target.value, 10));
     setCharactersPage(0);
   };
+
+  
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setSearchCharacters(searchCharactersInput)
+    }, 300)
+
+    return () => clearTimeout(timeout)
+  }, [searchCharactersInput])
+
 
   return (
     <>
@@ -117,10 +127,11 @@ export default function Dashboard() {
               title="Add Party" 
               content={<AddParty partyFormData={partyFormData} 
                                  setPartyFormData={setPartyFormData}
-                                 changeFormData={changeFormData} />}
+                                 changeFormData={changeFormData}
+                                 options={elementsData} />}
             />
-      <CustomDialog open={addImageDialog}
-              size="xl"
+      <CustomTableDialog open={addImageDialog}
+              size="lg"
               handleClose={closeAddImageDialog} 
               handleConfirm={closeAddImageDialog}  
               title="Add Party Image" 
@@ -131,7 +142,9 @@ export default function Dashboard() {
                                  charactersTotal={charactersTotal}
                                   clickCharactersPage={clickCharactersPage} 
                                   charactersRows={charactersRows} 
-                                  selectCharactersRows={selectCharactersRows} />}
+                                  selectCharactersRows={selectCharactersRows}
+                                  search={searchCharactersInput}
+                                  setSearch={setSearchCharactersInput} />}
             />
        
       <Grid container spacing={2}>

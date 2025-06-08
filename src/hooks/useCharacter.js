@@ -121,25 +121,18 @@ export const addCharacterApi = async (payload) => {
   )
   try {
     const response = await api.post(`/character/create/api`, payload)
-  } catch (error) {
-    console.log(error)
-  } 
-  toast.dismiss('fetch-api')
-  toast.success(
-    <CustomToast title="Success" msg='Saving data Complete' icon={<AddCircleOutlineIcon size={15} />} color="#4da58d" />,
-    {
-      transition: Slide,
-      hideProgressBar: true,
-      autoClose: 2000, // Slight delay for user feedback
-      closeButton: true, // Optional: cleaner look
-      icon: false,
-      style: {
-        background: 'transparent', // Use internal box styling
-        boxShadow: 'none',
-        padding: 0,
-      },
+      toast.dismiss('fetch-api')
+     if (response?.data?.success) {
+      toast.success(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+    } else {
+      toast.error(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
     }
-  )
+    return response
+  } catch (error) {
+      toast.dismiss('fetch-api')
+      console.log('error', error)
+    toast.error(error.response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+  } 
 }
 
 

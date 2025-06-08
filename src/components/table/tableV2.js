@@ -9,7 +9,16 @@ const CustomTableV2 = ({ minWidth=650, headers=[], data=[], page=0, handleChange
                             sx={{borderBottom: `1.5px solid #a9cbb3`}}
                             >
                             {headers.map((header, index) => (
-                                    <TableCell sx={{
+                                    header?.width ? (<TableCell sx={{
+                                        // backgroundColor: '#81c784',
+                                        fontWeight: 'bold',
+                                        fontSize: '1rem',
+                                        color: `#a9cbb3`,
+                                        width: header?.width,
+                                        textTransform: 'uppercase',
+                                        letterSpacing: '0.5px',
+                                    }}
+                        key={index} align="left"> {header.name}</TableCell>) : (<TableCell sx={{
                                         // backgroundColor: '#81c784',
                                         fontWeight: 'bold',
                                         fontSize: '1rem',
@@ -17,7 +26,8 @@ const CustomTableV2 = ({ minWidth=650, headers=[], data=[], page=0, handleChange
                                         textTransform: 'uppercase',
                                         letterSpacing: '0.5px',
                                     }}
-                        key={index} align="left"> {header.name}</TableCell>
+                        key={index} align="left"> {header.name}</TableCell>)
+                                    
                             ))}
                         </TableRow>
                     </TableHead>
