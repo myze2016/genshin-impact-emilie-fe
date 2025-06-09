@@ -68,7 +68,7 @@ export const addParty = async (payload) => {
 export const editParty = async (payload) => {
   try {
 
-    const response = await api.put(`/party`, payload)
+    const response = await api.put(`/party/${payload.id}`, payload)
          if (response?.data?.success) {
               toast.success(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
  } else {
@@ -127,10 +127,42 @@ export const addPartyPositionCharacter = async (payload) => {
   } 
 }
 
+
+export const moveVerticalCharacter = async (payload) => {
+  try {
+
+    const response = await api.post(`/arrange`, payload)
+         if (response?.data?.success) {
+              toast.success(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+ } else {
+      toast.error(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+    }
+    return response
+  } catch (error) {
+    toast.error(error.response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+  } 
+}
+
 export const removePartyPositionCharacter = async (payload) => {
   try {
 
     const response = await api.delete(`/party-position-character/${payload.id}`)
+         if (response?.data?.success) {
+              toast.success(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+ } else {
+      toast.error(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+    }
+    return response
+  } catch (error) {
+    toast.error(error.response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+  } 
+}
+
+
+export const removePosition = async (payload) => {
+  try {
+
+    const response = await api.delete(`/party-position/${payload.id}`)
          if (response?.data?.success) {
               toast.success(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
  } else {

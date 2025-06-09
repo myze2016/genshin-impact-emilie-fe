@@ -2,7 +2,7 @@
 
 import { Grid, Typography, Button, Box, Chip, Stack, Paper, Table, TableRow, TableCell, TableBody, IconButton } from "@mui/material"
 import { Fragment, useState, useEffect } from "react";
-import { getParty, addPartyPosition, addPartyPositionCharacter, removePartyPositionCharacter, editParty } from "../../../hooks/useParty";
+import { getParty, addPartyPosition, addPartyPositionCharacter, removePartyPositionCharacter, editParty, moveVerticalCharacter, removePosition } from "../../../hooks/useParty";
 import AddPartyPosition from "../form/AddPartyPosition";
 import AddPartyPositionCharacter from "../form/AddPartyPositionCharacter";
 import CustomDialog from "@/components/dialog";
@@ -17,6 +17,7 @@ import SwapVerticalCircleIcon from '@mui/icons-material/SwapVerticalCircle';
 import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
 import EditPartyForm from "../form/EditPartyForm";
 import { getElements } from "@/hooks/useElements";
+import Spinner from "@/components/Spinner";
 
 export default function Party() {
   const params = useParams();
@@ -89,6 +90,7 @@ export default function Party() {
    const changeFormData = (e, formData, setFormData) => {
     const { name, value } = e.target
     const updatedForm = { ...formData, [name]: value }
+    console.log('updatedForm', updatedForm)
     setFormData(updatedForm)
   }
 
@@ -187,6 +189,21 @@ export default function Party() {
   }
 
 
+  const handleMoveVertical = async (character_position) => {
+     setApiLoading(true)
+    const payload = {
+        id: character_position?.id,
+    };
+    
+    let response = await moveVerticalCharacter(payload)
+
+    if (response?.data?.success) {
+      setRefetchParty((prev) => !prev)
+    }
+     setApiLoading(false)
+  }
+
+
     const handleCharactersChangePage = (e, page) => {
     setCharactersPage(page);
   };
@@ -209,12 +226,27 @@ export default function Party() {
     }
 
 
+    
+  const handleRemovePosition = async (position) => {
+      setApiLoading(true)
+      const payload = {
+        id: position?.id,
+      };
+      let response = await removePosition(payload)
+      if (response?.data?.success) {
+        setRefetchParty((prev) => !prev)
+      }
+      setApiLoading(false)
+    }
+
+
     useEffect(() => {
       setPartyFormData({
-        name: partyData[0]?.name || '',
-        element_id: partyData[0]?.element_id || '',
-        reaction: partyData[0]?.reaction || '',
-        description: partyData[0]?.description || '',
+        id: partyData[0]?.id,
+        name: partyData[0]?.name,
+        element_id: partyData[0]?.element_id,
+        reaction: partyData[0]?.reaction,
+        description: partyData[0]?.description,
       })
     }, [partyData])
 
@@ -222,6 +254,7 @@ export default function Party() {
 
   return (
     <>
+        { apiLoading && <Spinner /> }
         <CustomDialog open={editPartyDialog}
               size="sm"
               handleClose={() => setEditPartyDialog(false)} 
@@ -277,23 +310,25 @@ export default function Party() {
                               <Box display="flex" justifyContent="space-between" alignItems="center">
                                 <Typography variant="h6">{party?.name}</Typography>
                                 <Box>
-                                <Button
-                                  variant="outlined"
-                                  color="error"
-                                  startIcon={<DeleteOutlineIcon />}
-                                  onClick={() => handleDelete()}
-                                >
-                                  Delete
-                                </Button>
+                              <Button
+                                variant="contained"
+                                color="error"
+                                size="small"
+                                onClick={() => handleDelete()}
+                                sx={{ mr: 1, minWidth: '36px', padding: '6px' }} // Make button compact
+                              >
+                                <DeleteOutlineIcon fontSize="small" />
+                              </Button>
 
-                                <Button
-                                  variant="outlined"
-                                  color="info"
-                                  startIcon={<ModeEditOutlineOutlinedIcon />}
-                                  onClick={() => setEditPartyDialog(true)}
-                                >
-                                  Edit
-                                </Button>
+                              <Button
+                                variant="contained"
+                                color="info"
+                                size="small"
+                                onClick={() => setEditPartyDialog(true)}
+                                sx={{ mr: 1, minWidth: '36px', padding: '6px' }}
+                              >
+                                <ModeEditOutlineOutlinedIcon fontSize="small" />
+                              </Button>
                                   <Button startIcon={<AddCircleOutlineIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} />} 
                                       sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }, mr: 1}} onClick={(e) => handleOpenAddPositionDialog(party)} color="primary" variant="contained" size="small"> Add Position</Button>
                                             
@@ -342,6 +377,7 @@ export default function Party() {
                             <Grid item size={12} >
                               <Box sx={{px: 2}} display="flex" justifyContent="space-between" alignItems="center">
                                 <Typography sx={{ fontWeight: 'bold' }}>{position?.name}</Typography>
+                                <Box  display="flex" justifyContent="flex-end" alignItems="center">
                                   <IconButton
                                     color="primary"
                                     onClick={() => handleOpenAddCharacterPositionDialog(position)}
@@ -349,6 +385,15 @@ export default function Party() {
                                   >
                                     <AddCircleOutlineIcon />
                                   </IconButton>
+                                   <IconButton
+                                                color="error"
+                                                onClick={(e) => {
+                                                  handleRemovePosition(position);
+                                                }}
+                                              >
+                                                <DeleteOutlineIcon sx={{ fontSize: '24px' }} />
+                                            </IconButton>
+                                            </Box>
                               </Box>
                             </Grid>
                             <hr style={{ width: '100%' }} />
@@ -380,7 +425,7 @@ export default function Party() {
                                              <IconButton
                                                 color="info"
                                                 onClick={(e) => {
-                                                  handleRemoveCharacter(character);
+                                                  handleMoveVertical(character);
                                                 }}
                                               >
                                                 <SwapVerticalCircleIcon sx={{ fontSize: '24px' }} />
