@@ -65,6 +65,22 @@ export const addParty = async (payload) => {
   } 
 }
 
+export const editParty = async (payload) => {
+  try {
+
+    const response = await api.put(`/party`, payload)
+         if (response?.data?.success) {
+              toast.success(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+ } else {
+      toast.error(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+    }
+    return response
+  } catch (error) {
+    console.log('error', error)
+    toast.error(error.response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+  } 
+}
+
 export const addPartyImage = async (payload) => {
   try {
     

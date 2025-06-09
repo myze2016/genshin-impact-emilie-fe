@@ -1,6 +1,5 @@
 import { TableCell, Button, IconButton } from "@mui/material"
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import DeleteIcon from '@mui/icons-material/Delete';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 
 const perkTable = ({handleRemovePerk}) => {
   const columns = [
@@ -23,7 +22,7 @@ const perkTable = ({handleRemovePerk}) => {
                     handleRemovePerk(item);
                   }}
                 >
-                  <DeleteIcon color="error" sx={{ fontSize: '24px' }} />
+                  <DeleteOutlineIcon color="error" sx={{ fontSize: '24px' }} />
                 </IconButton> </TableCell>
         )
       }

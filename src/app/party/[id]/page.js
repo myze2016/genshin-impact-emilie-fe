@@ -2,7 +2,7 @@
 
 import { Grid, Typography, Button, Box, Chip, Stack, Paper, Table, TableRow, TableCell, TableBody, IconButton } from "@mui/material"
 import { Fragment, useState, useEffect } from "react";
-import { getParty, addPartyPosition, addPartyPositionCharacter, removePartyPositionCharacter } from "../../../hooks/useParty";
+import { getParty, addPartyPosition, addPartyPositionCharacter, removePartyPositionCharacter, editParty } from "../../../hooks/useParty";
 import AddPartyPosition from "../form/AddPartyPosition";
 import AddPartyPositionCharacter from "../form/AddPartyPositionCharacter";
 import CustomDialog from "@/components/dialog";
@@ -13,8 +13,10 @@ import { useParams, useRouter } from "next/navigation";
 import CustomTableDialog from "@/components/dialog/table";
 import { getCommons } from "@/hooks/useCommon";
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import DeleteIcon from '@mui/icons-material/Delete';
 import SwapVerticalCircleIcon from '@mui/icons-material/SwapVerticalCircle';
+import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
+import EditPartyForm from "../form/EditPartyForm";
+import { getElements } from "@/hooks/useElements";
 
 export default function Party() {
   const params = useParams();
@@ -27,6 +29,11 @@ export default function Party() {
   const { data: partyData, loading: partyLoading } = getParty(partyPayload, refetchParty)
   
   const [ apiLoading, setApiLoading] = useState(false)
+  const [ editPartyDialog, setEditPartyDialog] = useState(false)
+
+  const [ elementsPayload, setElementsPayload] = useState('')
+  const [ refetchElements, setRefetchElements] = useState(false)
+  const { data: elementsData, loading: elementsLoading } = getElements(elementsPayload, refetchElements)
    
   const [charactersPage, setCharactersPage] = useState(0)
   const [charactersPayload, setCharactersPayload] = useState('')
@@ -48,6 +55,11 @@ export default function Party() {
 
   const [partyId, setPartyId] = useState('')
   const [positionId, setPositionId] = useState('')
+  const [partyFormData, setPartyFormData] = useState({
+    name: '',
+    element_id: '',
+    reaction: '',
+  })
 
   const [positionFormData, setPositionFormData] = useState({
     name: '',
@@ -124,10 +136,25 @@ export default function Party() {
     };
     let response = await addPartyPosition(updatedForm)
     if (response?.data?.success) {
+      setPositionFormData({
+        name: '',
+        description: '',
+        party_id: '',
+      })
       setRefetchParty((prev) => !prev)
       setAddPositionDialog(false)
     }
   }
+
+   const confirmEditPartyDialog = async (e) => {
+      setApiLoading(true)
+      let response = await editParty(partyFormData)
+      if (response?.data?.success) {  
+        setRefetchParty((prev) => !prev)
+        setEditPartyDialog(false)
+      }
+      setApiLoading(false)
+    }
 
   const handleOpenAddPositionDialog = (party) => {
     setAddPositionDialog(true)
@@ -147,6 +174,13 @@ export default function Party() {
     let response = await addPartyPositionCharacter(payload)
 
     if (response?.data?.success) {
+      setCharacterPoisitionFormData({
+        name: '',
+        description: '',
+        element: '',
+        value: 100,
+        party_position_id: '',
+      })
       setRefetchParty((prev) => !prev)
       setAddCharacterPositionDialog(false)
     }
@@ -174,10 +208,30 @@ export default function Party() {
       setApiLoading(false)
     }
 
+
+    useEffect(() => {
+      setPartyFormData({
+        name: partyData[0]?.name || '',
+        element_id: partyData[0]?.element_id || '',
+        reaction: partyData[0]?.reaction || '',
+        description: partyData[0]?.description || '',
+      })
+    }, [partyData])
+
   const { columns } = characterTable({handleClickAddCharacterPosition})
 
   return (
     <>
+        <CustomDialog open={editPartyDialog}
+              size="sm"
+              handleClose={() => setEditPartyDialog(false)} 
+              handleConfirm={confirmEditPartyDialog}  
+              title="Edit Party" 
+              content={<EditPartyForm partyFormData={partyFormData} 
+                                 setPartyFormData={setPartyFormData}
+                                 changeFormData={changeFormData}
+                                 options={elementsData} />} />
+
        <CustomDialog open={addPositionDialog}
               handleClose={handleCancelAddPosition} 
               handleConfirm={handleConfirmAddPositionDialog}  
@@ -223,9 +277,26 @@ export default function Party() {
                               <Box display="flex" justifyContent="space-between" alignItems="center">
                                 <Typography variant="h6">{party?.name}</Typography>
                                 <Box>
+                                <Button
+                                  variant="outlined"
+                                  color="error"
+                                  startIcon={<DeleteOutlineIcon />}
+                                  onClick={() => handleDelete()}
+                                >
+                                  Delete
+                                </Button>
+
+                                <Button
+                                  variant="outlined"
+                                  color="info"
+                                  startIcon={<ModeEditOutlineOutlinedIcon />}
+                                  onClick={() => setEditPartyDialog(true)}
+                                >
+                                  Edit
+                                </Button>
                                   <Button startIcon={<AddCircleOutlineIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} />} 
                                       sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }, mr: 1}} onClick={(e) => handleOpenAddPositionDialog(party)} color="primary" variant="contained" size="small"> Add Position</Button>
-                                  <Button sx={{mr: 1, px: 1, minWidth: 0 }} color="error" variant="contained" size="small"><DeleteOutlineIcon></DeleteOutlineIcon></Button>
+                                            
                                 </Box>
                               </Box>
                             </Grid>
@@ -320,7 +391,7 @@ export default function Party() {
                                                   handleRemoveCharacter(character);
                                                 }}
                                               >
-                                                <DeleteIcon sx={{ fontSize: '24px' }} />
+                                                <DeleteOutlineIcon sx={{ fontSize: '24px' }} />
                                             </IconButton>
                                           </Box>
                                       </TableCell>

@@ -79,10 +79,14 @@ export default function Dashboard() {
 
   const confirmAddPartyDialog = async (e) => {
     setApiLoading(true)
-    console.log('add')
     let response = await addParty(partyFormData)
     if (response?.data?.success) {  
       setRefetchParties((prev) => !prev)
+      setPartyFormData({
+        name: '',
+        element_id: '',
+        reaction: '',
+      })
       setAddPartyDialog(false)
     }
     setApiLoading(false)
