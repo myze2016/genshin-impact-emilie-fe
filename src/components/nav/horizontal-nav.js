@@ -13,6 +13,8 @@ export default function Nav() {
     { label: 'Home', href: '/dashboard', icon: <HomeIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} /> },
     { label: 'Character', href: '/characters', icon: <PersonIcon/> },
     { label: 'Perk', href: '/perks', icon: <ArrowCircleUpIcon/> },
+    { label: 'Artifact', href: '/artifacts', icon: <PersonIcon/> },
+    { label: 'Weapon', href: '/weapons', icon: <ArrowCircleUpIcon/> },
   ]
 
   return (
@@ -65,7 +67,7 @@ export default function Nav() {
 >
   {/* Image */}
  
-   <Box
+   {/* <Box
     component="img"
     src="https://genshin.jmp.blue/characters/emilie/gacha-card.png"
     alt="Emilie"
@@ -76,7 +78,7 @@ export default function Nav() {
       transformOrigin: '20% 315%',
       display: 'block',
     }}
-  />
+  /> */}
 
   {/* Gradient to hide edges */}
   <Box
