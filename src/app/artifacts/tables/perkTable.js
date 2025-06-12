@@ -8,7 +8,7 @@ const perkTable = ({handleAddPerk, handleRemovePerk}) => {
     { name: 'Name', value: 'name', cell: (item,index) => {
       return (
         <TableCell sx={{
-          backgroundColor: item?.character_perks?.length > 0 
+          backgroundColor: item?.artifact_perks?.length > 0 
           ? 'rgba(165, 214, 167, 0.15)' // soft success green
           : 'transparent'
   }} key={index} align="left">{item?.name}</TableCell>
@@ -17,7 +17,7 @@ const perkTable = ({handleAddPerk, handleRemovePerk}) => {
     { name: 'Description', value: 'description',  cell: (item,index) => {
         return (
           <TableCell sx={{
-            backgroundColor: item?.character_perks?.length > 0 
+            backgroundColor: item?.artifact_perks?.length > 0 
             ? 'rgba(165, 214, 167, 0.15)' // soft success green
             : 'transparent'
   }} key={index} align="left">{item?.description}</TableCell>
@@ -28,7 +28,7 @@ const perkTable = ({handleAddPerk, handleRemovePerk}) => {
       cell: (item, index) => {
           return (
               <TableCell key={index} sx={{
-                backgroundColor: item?.character_perks?.length > 0 
+                backgroundColor: item?.artifact_perks?.length > 0 
                 ? 'rgba(165, 214, 167, 0.15)' // soft success green
                 : 'transparent',
   }} align="left"> 

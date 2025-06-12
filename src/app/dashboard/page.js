@@ -1,6 +1,6 @@
 'use client'
 
-import { Grid, Typography, Button, Card, CardContent, CardActionArea, IconButton, CardActions } from "@mui/material"
+import { Grid, Typography, Button, Card, CardContent, CardActionArea, IconButton, CardActions, TablePagination, Box} from "@mui/material"
 import { Fragment, useState, useEffect } from "react";
 import { getParties, addParty, addPartyImage } from "../../hooks/useParty";
 import AddParty from "./form/AddParty";
@@ -13,12 +13,17 @@ import AddIcon from '@mui/icons-material/Add';
 import { Add } from "@mui/icons-material";
 import CustomTableDialog from "@/components/dialog/table";
 import { getElements } from "@/hooks/useElements";
+import CustomSearch from "@/components/Search";
 
 export default function Dashboard() {
 
   const [refetchParties, setRefetchParties] = useState(false)
   const [partiesPayload, setPartiesPayload] = useState('')
-  const { data: partiesData, loading: partiesLoading } = getParties(partiesPayload, refetchParties)
+  const [page, setPage] = useState(0)
+  const [search, setSearch] = useState('')
+  const [searchInput, setSearchInput] = useState('')
+  const [rowsPerPage, setRowsPerPage] = useState(10)
+  const { data: partiesData, loading: partiesLoading, total: partiesTotal } = getParties(partiesPayload, refetchParties, search, page+1, rowsPerPage)
 
   const [ elementsPayload, setElementsPayload] = useState('')
   const [ refetchElements, setRefetchElements] = useState(false)
@@ -120,6 +125,30 @@ export default function Dashboard() {
     return () => clearTimeout(timeout)
   }, [searchCharactersInput])
 
+  const handleSearch = (search) => {
+    setSearchInput(search)
+  }
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setSearch(searchInput)
+    }, 300)
+
+    return () => clearTimeout(timeout)
+  }, [searchInput])
+
+
+  const handleChangeRowsPerPage = (e) => {
+    setRowsPerPage(parseInt(e.target.value, 10));
+    setPage(0);
+  };
+
+  
+  const handleChangePage = (e, page) => {
+    setPage(page);
+  };
+
+
 
   return (
     <>
@@ -152,10 +181,18 @@ export default function Dashboard() {
             />
        
       <Grid container spacing={2}>
-        <Grid item size={12}>
+        <Grid item size={8}>
           <Button startIcon={<AddCircleOutlineIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} />} 
           sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }}} 
           onClick={(e) => setAddPartyDialog(true)} variant="contained">Add Party</Button>
+        </Grid>
+        <Grid item size={4} >
+            <Grid container  justifyContent="flex-end" spacing={2} >
+            <CustomSearch  search={search}
+              handleSearch={handleSearch}
+              fullWidth={false}>
+            </CustomSearch>
+          </Grid>
         </Grid>
         <Grid item size={12}>
 
@@ -213,6 +250,27 @@ export default function Dashboard() {
               ))
             }
           </Grid>
+        </Grid>
+        <Grid item size={{xs: 12, md: 12, lg: 12}}>
+            <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'flex-end', // or 'flex-end'
+              mt: 4,
+            }}
+          >
+
+              <TablePagination
+                component="div"
+                count={partiesTotal}
+                page={page}
+                onPageChange={handleChangePage}
+                rowsPerPage={rowsPerPage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+                rowsPerPageOptions={[5, 10, 25, 50]}
+            />
+              </Box>
+
         </Grid>
       </Grid>
       

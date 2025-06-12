@@ -5,7 +5,8 @@ import { Fragment, useState, useEffect } from "react";
 import CustomDialog from "@/components/dialog";
 import { addCharacter, addCharacterPerk, getCharacterPerks, deleteCharacterPerk, addCharacterApi, getCharactersName } from "@/hooks/useCharacter";
 import { getElements } from "@/hooks/useElements";
-import { addWeapon, addWeaponApi, addWeaponPerk, getWeaponPerks, getWeapons } from "@/hooks/useWeapon";
+import { getWeaponTypes } from "@/hooks/useWeaponType";
+import { addWeapon, addWeaponApi, addWeaponPerk, getWeaponPerks, getWeapons, removeWeaponPerk } from "@/hooks/useWeapon";
 import characterTable from "./tables/weaponTable";
 import perkTable from "./tables/perkTable";
 import AddWeaponForm from "./forms/AddWeaponForm";
@@ -31,13 +32,17 @@ export default function Weapons() {
   const [rowsPerPage, setRowsPerPage] = useState(10)
   const { data: weapons, loading: loading, total: total } = getWeapons(payload, refetch, search, page+1, rowsPerPage)
 
+  const [ weaponTypesPayload, setWeaponTypesPayload] = useState('')
+  const [ refetchWeaponTypes, setRefetchWeaponTypes] = useState(false)
+  const { data: weaponTypes, loading: weaponTypesLoading } = getWeaponTypes(weaponTypesPayload, refetchWeaponTypes)
+
   const [perksPayload, setPerksPayload] = useState('')
   const [refetchPerks, setRefetchPerks] = useState(false)
   const [searchPerks, setSearchPerks] = useState('')
   const [searchPerksInput, setSearchPerksInput] = useState('')
   const [perksPage, setPerksPage] = useState(0)
   const [perksRowsPerPage, setPerksRowsPerPage] = useState(10)
-  const { data: perks, loading: perksLoading, total: perksTotal } = getWeaponPerks(perksPayload, refetch, searchPerks, perksPage+1, perksRowsPerPage)
+  const { data: perks, loading: perksLoading, total: perksTotal } = getWeaponPerks(perksPayload, refetchPerks, searchPerks, perksPage+1, perksRowsPerPage)
 
   const [commonsPayload, setCommonsPayload] = useState('')
   const [refetchCommons, setRefetchCommons] = useState(false)
@@ -53,12 +58,13 @@ export default function Weapons() {
   const [ formData, setFormData] = useState({
     name: '',
     description: '',
+    weapon_type_id: '',
   })
 
   const [apiLoading, setApiLoading ] = useState(false)
   const [perkFormData, setPerkFormData] = useState({
-    character_id: '',
-    perk_id: ''
+    name: '',
+    description: '',
   })
 
   const changeFormData = (e, formData, setFormData) => {
@@ -92,7 +98,8 @@ export default function Weapons() {
   const resetFormData = () => {
     setFormData({
       name: '',
-      element_id: ''
+      element_id: '',
+      weapon_type_id: ''
     })
 }
 
@@ -162,7 +169,7 @@ useEffect(() => {
   const handleRemovePerk = async (perk) => {
     const payload = {
       perk_id: perk?.id,
-      character_id: weaponId
+      weapon_id: weaponId
     };
     let response = await removeWeaponPerk(payload)
     if (response?.data?.success) {
@@ -192,7 +199,7 @@ useEffect(() => {
   };
 
   const handleChangePerksRowsPerPage = (e) => {
-    setPerksRows(parseInt(e.target.value, 10));
+    setPerksRowsPerPage(parseInt(e.target.value, 10));
     setPerksPage(0);
   };
 
@@ -252,7 +259,8 @@ useEffect(() => {
               title="Add Weapon" 
               content={<AddWeaponForm formData={formData} 
                                  setFormData={setFormData}
-                                 changeFormData={changeFormData} />}
+                                 changeFormData={changeFormData}
+                                 options={weaponTypes} />}
             />
      <CustomTableDialog size="md" open={perksDialog}
             handleClose={handleClosePerksDialog} 

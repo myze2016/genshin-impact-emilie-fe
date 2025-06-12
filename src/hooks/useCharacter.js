@@ -62,7 +62,7 @@ export const getCharactersName = (payload, refetch, search, page=0, rowsPerPage=
 export const getCharacterPerks = (payload, refetch, search, page, rowsPerPage) => {
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(true)
-  const [total, setTotal] = useState(true)
+  const [total, setTotal] = useState(0)
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true)

@@ -19,6 +19,16 @@ import CustomConfirmDialog from "@/components/dialog/confirm";
 import AddPerkForm from "./forms/AddPerkForm";
 import { addPerk } from "@/hooks/usePerk";
 import CustomSearch from "@/components/Search";
+import weaponTable from "./tables/weaponTable";
+import artifactTable from "./tables/artifactTable";
+import AddArtifactsForm from "./forms/AddArtifactsForm";
+import AddWeaponsForm from "./forms/AddWeaponsForm";
+import { getWeaponPerks } from "@/hooks/useWeapon";
+import { getArtifactPerks } from "@/hooks/useArtifact";
+import { getWeaponSearch } from "@/hooks/useWeapon";
+import { getWeaponTypes } from "@/hooks/useWeaponType";
+import { addCharacterWeapon, removeCharacterWeapon } from "@/hooks/useCharacterWeapon";
+import { getArtifactSearch } from "@/hooks/useArtifact";
 
 export default function Characters() {
 
@@ -34,6 +44,10 @@ export default function Characters() {
   const [ refetchElements, setRefetchElements] = useState(false)
   const { data: elementsData, loading: elementsLoading } = getElements(elementsPayload, refetchElements)
 
+    const [ weaponTypesPayload, setWeaponTypesPayload] = useState('')
+    const [ refetchWeaponTypes, setRefetchWeaponTypes] = useState(false)
+    const { data: typeData, loading: typeLoading } = getWeaponTypes(weaponTypesPayload, refetchWeaponTypes)
+
   const [characterPerksPayload, setCharacterPerksPayload] = useState('')
   const [refetchCharacterPerks, setRefetchCharacterPerks] = useState(false)
   const [searchPerks, setSearchPerks] = useState('')
@@ -41,6 +55,22 @@ export default function Characters() {
   const [ perksPage, setPerksPage] = useState(0)
   const [ perksRows, setPerksRows] = useState(10)
   const { data: perksData, loading: perksLoading, total: perksTotal } = getCharacterPerks(characterPerksPayload, refetchCharacterPerks, searchPerks, perksPage+1, perksRows)
+
+  const [weaponsPayload, setWeaponsPayload] = useState('')
+  const [refetchWeapons, setRefetchWeapons] = useState(false)
+  const [searchWeapons, setSearchWeapons] = useState('')
+  const [searchWeaponsInput, setSearchWeaponsInput] = useState('')
+  const [ weaponsPage, setWeaponsPage] = useState(0)
+  const [ weaponsRowsPerPage, setWeaponsRowsPerPage] = useState(10)
+  const { data: weapons, loading: weaponsLoading, total: weaponsTotal } = getWeaponSearch(weaponsPayload, refetchWeapons, searchWeapons, weaponsPage+1, weaponsRowsPerPage)
+
+    const [artifactsPayload, setArtifactsPayload] = useState('')
+  const [retechArtifacts, setRefetchArtifacts] = useState(false)
+  const [searchArtifacts, setSearchArtifacts] = useState('')
+  const [searchArtifactsInput, setSearchArtifactsInput] = useState('')
+  const [ artifactsPage, setArtifactsPage] = useState(0)
+  const [ artifactsRowsPerPage, setArtifactRowsPerpage] = useState(10)
+  const { data: artifacts, loading: artifactsLoading, total: artifactsTotal } = getArtifactSearch(artifactsPayload, retechArtifacts, searchArtifacts, artifactsPage+1, artifactsRowsPerPage)
 
   const [commonsPayload, setCommonsPayload] = useState('')
   const [refetchCommons, setRefetchCommons] = useState(false)
@@ -58,6 +88,8 @@ export default function Characters() {
 
   const [ apiLoading, setApiLoading ] = useState(false)
   const [addCharacterPerksDialog, setAddCharacterPerksDialog] = useState(false)
+  const [weaponDialog, setWeaponDialog] = useState(false)
+  const [artifactDialog, setArtifactDialog] = useState(false)
   const [ characterDialog, setCharacterDialog] = useState(false);
 
   const [characterPerkFormData, setCharacterPerkFormData] = useState({
@@ -67,7 +99,8 @@ export default function Characters() {
 
   const [characterFormData, setCharacterFormData] = useState({
     name: '',
-    element_id: ''
+    element_id: '',
+    weapon_type_id: '',
   })
 
   const changeFormData = (e, formData, setFormData) => {
@@ -100,11 +133,44 @@ export default function Characters() {
     setAddCharacterPerksDialog(true)
   }
 
+   const handleOpenWeaponDialog = (character) => {
+    setCharacterId(character?.id)
+    setWeaponsPayload(prev => ({
+      ...prev,
+      weapon_type_id: character?.weapon_type_id, 
+      character_id: character?.id
+    }));
+    setWeaponDialog(true)
+  }
+
+   const handlOpenArtifactDialog = (character) => {
+    setCharacterId(character?.id)
+    setArtifactsPayload(prev => ({
+      ...prev,
+      character_id: character?.id, 
+    }));
+    setArtifactDialog(true)
+  }
+
   const handleClosePerkDialog = (e) => {
     setRefetchCharacters((prev) => !prev)
     resetSearchPerksInput()
     setAddCharacterPerksDialog(false)
   }
+
+   const handleCloseWeaponDialog = (e) => {
+    setRefetchCharacters((prev) => !prev)
+    setSearchWeaponsInput('')
+    setWeaponDialog(false)
+  }
+
+
+   const handleCloseArtifactDialog = (e) => {
+    setRefetchCharacters((prev) => !prev)
+    resetSearchPerksInput()
+    setArtifactDialog(false)
+  }
+
 
   const resetSearchPerksInput = () => {
       setSearchPerksInput('')
@@ -121,11 +187,6 @@ export default function Characters() {
     setCharacterDialog(true)
   }
 
-
-  const changeSearchCharactersInput = (search) => {
-    setSearchCharactersInput(search)
-  }
-
   
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -135,17 +196,39 @@ export default function Characters() {
     return () => clearTimeout(timeout)
   }, [searchCharactersInput])
 
-  const handleFillCommon = (value) => {
-    if (!searchPerksInput.includes(value)) {
-      setSearchPerksInput((prev) => prev + (value + ' '))
+
+   const changeSearchCharactersInput = (search) => {
+    setSearchCharactersInput(search)
+  }
+
+  
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setSearchWeapons(searchWeaponsInput)
+    }, 300)
+
+    return () => clearTimeout(timeout)
+  }, [searchWeaponsInput])
+
+  const handleFillCommon = (value, searchInput, setSearchInput) => {
+    if (!searchInput.includes(value)) {
+      setSearchInput((prev) => prev + (value + ' '))
     } else {
-      setSearchPerksInput((prev) => prev.replace(value + ' ', ''))
+      setSearchInput((prev) => prev.replace(value + ' ', ''))
     }
   }
 
 
   const changeSearchPerksInput = (search) => {
     setSearchPerksInput(search)
+  }
+
+    const handleSearchWeapon = (search) => {
+    setSearchWeaponsInput(search)
+  }
+
+      const handleSearchArtifact = (search) => {
+    setSearchArtifactsInput(search)
   }
 
   useEffect(() => {
@@ -157,6 +240,53 @@ export default function Characters() {
   }, [searchPerksInput])
 
   const clickAddCharacterPerk = async (perk) => {
+    const payload = {
+      perk_id: perk?.id,
+      character_id: characterId
+    };
+    let response = await addCharacterPerk(payload)
+    if (response?.data?.success) {
+      setRefetchCharacterPerks((prev) => !prev)
+    }
+  }
+
+   const handleAddWeapon = async (weapon) => {
+    const payload = {
+      weapon_id: weapon?.id,
+      character_id: characterId
+    };
+    let response = await addCharacterWeapon(payload)
+    if (response?.data?.success) {
+      setRefetchWeapons((prev) => !prev)
+    }
+  }
+
+
+  const handleRemoveWeapon = async (weapon) => {
+    const payload = {
+      weapon_id: weapon?.id,
+      character_id: characterId
+    };
+    let response = await removeCharacterWeapon(payload)
+    if (response?.data?.success) {
+      setRefetchWeapons((prev) => !prev)
+    }
+  }
+
+   const handleAddArtifact = async (perk) => {
+    const payload = {
+      perk_id: perk?.id,
+      character_id: characterId
+    };
+    let response = await addCharacterPerk(payload)
+    if (response?.data?.success) {
+      setRefetchCharacterPerks((prev) => !prev)
+      
+    }
+  }
+
+
+  const handleRemoveArtifact = async (perk) => {
     const payload = {
       perk_id: perk?.id,
       character_id: characterId
@@ -190,7 +320,8 @@ export default function Characters() {
   const resetCharacterFormData = () => {
       setCharacterFormData({
         name: '',
-        element_id: ''
+        element_id: '',
+        weapon_type_id: '',
       })
   }
 
@@ -213,6 +344,26 @@ export default function Characters() {
     setPerksRows(parseInt(e.target.value, 10));
     setPerksPage(0);
   };
+
+
+   const handleWeaponsChangePage = (e, page) => {
+    setWeaponsPage(page);
+  };
+
+  const handleWeaponsChangeRowsPerPage = (e) => {
+    setWeaponsRowsPerPage(parseInt(e.target.value, 10));
+    setWeaponsPage(0);
+  };
+
+     const handleArtifactsChangePage = (e, page) => {
+    setArtifactsPage(page);
+  };
+
+  const handleArtifactsChangeRowsPerPage = (e) => {
+    setArtifactRowsPerpage(parseInt(e.target.value, 10));
+    setArtifactsPage(0);
+  };
+
 
   const handleCloseAddPerkDialog = (e) => {
     setAddPerkDialog(false)
@@ -243,8 +394,10 @@ export default function Characters() {
 
 
   
-  const { columns: characterColumns  } = characterTable({openAddCharacterPerksDialog})
+  const { columns: characterColumns  } = characterTable({openAddCharacterPerksDialog, handleOpenWeaponDialog, handlOpenArtifactDialog})
   const { columns: perkTableColumns } = perkTable({clickAddCharacterPerk, clickRemoveCharacterPerk})
+  const { columns: weaponTableColumns } = weaponTable({handleAddWeapon, handleRemoveWeapon })
+  const { columns: artifactTableColumns } = artifactTable({handleAddArtifact, handleRemoveArtifact})
 
   return (
     <>
@@ -271,29 +424,61 @@ export default function Characters() {
               content={<AddCharacterForm characterFormData={characterFormData} 
                                  setCharacterFormData={setCharacterFormData}
                                  changeFormData={changeFormData}
-                                 options={elementsData} />}
+                                 options={elementsData}
+                                 typeOptions={typeData} />}
             />
      <CustomTableDialog size="md" open={addCharacterPerksDialog}
             handleClose={handleClosePerkDialog} 
             handleConfirm={handleClosePerkDialog}  
-            title="Add Character Perks" 
-            page={charactersPage} 
-            handleChangePage={clickCharactersPage} 
-            rowsPerPage={charactersRows} 
-            handleChangeRowsPerPage={selectCharactersRow} 
-            total={charactersTotal}
+            title="Add Character Perks"
             content={<AddCharacterPerksForm perkTableColumns={perkTableColumns}
                                perksData={perksData}
                                changeSearchPerksInput={changeSearchPerksInput}
                                searchCharacterPerksInput={searchPerksInput}
                                clickCommon={handleFillCommon}
                                commonsData={commonsData}
-                               loading={commonsLoading || perksLoading}
+                               loading={commonsLoading || weaponsLoading}
                                page={perksPage} 
                                handleChangePage={handlePerksChangePage} 
                                rowsPerPage={perksRows}
                                 handleChangeRowsPerPage={handlePerksRowsPerPage} 
                                 total={perksTotal}
+                                />}
+          />
+        <CustomTableDialog size="md" open={weaponDialog}
+            handleClose={handleCloseWeaponDialog} 
+            handleConfirm={handleCloseWeaponDialog}  
+            title="Add Weapons" 
+            content={<AddWeaponsForm tableColumns={weaponTableColumns}
+                               data={weapons}
+                               handleSearch={handleSearchWeapon}
+                               searchInput={searchWeaponsInput}
+                               handleChip={handleFillCommon}
+                               commonsData={commonsData}
+                               loading={commonsLoading || perksLoading}
+                               page={weaponsPage} 
+                               handleChangePage={handleWeaponsChangePage} 
+                               rowsPerPage={weaponsRowsPerPage}
+                                handleChangeRowsPerPage={handleWeaponsChangeRowsPerPage} 
+                                total={weaponsTotal}
+                                />}
+          />
+          <CustomTableDialog size="md" open={artifactDialog}
+            handleClose={handleCloseArtifactDialog} 
+            handleConfirm={handleCloseArtifactDialog}  
+            title="Add Artifacts" 
+            content={<AddArtifactsForm tableColumns={artifactTableColumns}
+                               data={artifacts}
+                               handleSearch={handleSearchArtifact}
+                               searchInput={searchArtifactsInput}
+                               handleChip={handleFillCommon}
+                               commonsData={commonsData}
+                               loading={commonsLoading || perksLoading}
+                               page={artifactsPage} 
+                               handleChangePage={handleArtifactsChangePage} 
+                               rowsPerPage={artifactsRowsPerPage}
+                                handleChangeRowsPerPage={handleArtifactsChangeRowsPerPage} 
+                                total={artifactsTotal}
                                 />}
           />
         

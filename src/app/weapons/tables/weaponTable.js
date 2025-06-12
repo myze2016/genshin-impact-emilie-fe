@@ -11,6 +11,11 @@ const weaponTable = ({handleOpenPerksDialog}) => {
         <TableCell key={index}  align="left">{item?.name}</TableCell>
       )
     } },
+     { name: 'Type', value: 'weapon_type', cell: (item,index) => {
+      return (
+        <TableCell key={index}  align="left">{item?.weapon_type?.name}</TableCell>
+      )
+    } },
     { name: 'Perk', value: 'perk',  cell: (item,index) => {
       return (
         <TableCell  key={index} sx={{width: '50%'}} align="left"> <Stack direction="row"

@@ -3,15 +3,17 @@ import { api } from "../utils/axios"
 import { useState, useEffect } from "react"
 import { toast, Slide } from "react-toastify"
 
-export const getParties = (payload, refetch) => {
+export const getParties = (payload, refetch, search, page, rowsPerPage) => {
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(true)
+    const [total, setTotal] = useState(0)
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await api.get(`/party`)
+        const response = await api.get(`/party?search=${search}&page=${page}&rows_per_page=${rowsPerPage}`)
          if (response?.data?.success) {
-        setData(response?.data?.parties)
+           setTotal(response?.data?.parties?.total)
+        setData(response?.data?.parties?.data)
            } else if (!response?.data?.message) {
           toast.error(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
         } 
@@ -21,9 +23,9 @@ export const getParties = (payload, refetch) => {
     }
 
     fetchData()
-  }, [payload, refetch])
+  }, [payload, refetch, search, page, rowsPerPage])
 
-  return { data, loading }
+  return { data, loading, total }
 }
 
 export const getParty = (payload, refetch) => {

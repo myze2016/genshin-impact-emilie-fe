@@ -3,7 +3,7 @@ import { Fragment } from "react"
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
 
-const weaponTable = ({handleOpenPerksDialog}) => {
+const artifactTable = ({handleOpenPerksDialog}) => {
 
   const columns = [
     { name: 'Name', value: 'name', cell: (item,index) => {
@@ -46,4 +46,4 @@ const weaponTable = ({handleOpenPerksDialog}) => {
   }
 }
   
-export default weaponTable
+export default artifactTable

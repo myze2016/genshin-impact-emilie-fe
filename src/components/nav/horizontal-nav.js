@@ -5,7 +5,8 @@ import HomeIcon from '@mui/icons-material/Home';
 import PersonIcon from '@mui/icons-material/Person';
 import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp';
 import Link from 'next/link'
-
+import ConstructionOutlinedIcon from '@mui/icons-material/ConstructionOutlined';
+import CompostOutlinedIcon from '@mui/icons-material/CompostOutlined';
 export default function Nav() {
   const theme = useTheme()
 
@@ -13,8 +14,8 @@ export default function Nav() {
     { label: 'Home', href: '/dashboard', icon: <HomeIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} /> },
     { label: 'Character', href: '/characters', icon: <PersonIcon/> },
     { label: 'Perk', href: '/perks', icon: <ArrowCircleUpIcon/> },
-    { label: 'Artifact', href: '/artifacts', icon: <PersonIcon/> },
-    { label: 'Weapon', href: '/weapons', icon: <ArrowCircleUpIcon/> },
+    { label: 'Artifact', href: '/artifacts', icon: <CompostOutlinedIcon/> },
+    { label: 'Weapon', href: '/weapons', icon: <ConstructionOutlinedIcon/> },
   ]
 
   return (
@@ -67,7 +68,7 @@ export default function Nav() {
 >
   {/* Image */}
  
-   {/* <Box
+   <Box
     component="img"
     src="https://genshin.jmp.blue/characters/emilie/gacha-card.png"
     alt="Emilie"
@@ -78,7 +79,7 @@ export default function Nav() {
       transformOrigin: '20% 315%',
       display: 'block',
     }}
-  /> */}
+  />
 
   {/* Gradient to hide edges */}
   <Box

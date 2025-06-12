@@ -5,7 +5,7 @@ import { toast, Slide } from "react-toastify"
 import { CustomToast } from "../components/CustomToast"
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 
-export const getWeapons = (payload, refetch, search, page=1, rowsPerPage=99) => {
+export const getArtifacts = (payload, refetch, search, page=1, rowsPerPage=99) => {
   const [data, setData] = useState([])
   const [total, setTotal] = useState([])
   const [loading, setLoading] = useState(true)
@@ -13,10 +13,10 @@ export const getWeapons = (payload, refetch, search, page=1, rowsPerPage=99) => 
     const fetchData = async () => {
        setLoading(true)
       try {
-        const response = await api.get(`/weapon?search=${search}&page=${page}&rows_per_page=${rowsPerPage}`)
+        const response = await api.get(`/artifact?search=${search}&page=${page}&rows_per_page=${rowsPerPage}`)
          if (response?.data?.success) {
-          setData(response?.data?.weapons?.data)
-          setTotal(response?.data?.weapons?.total)
+          setData(response?.data?.artifacts?.data)
+          setTotal(response?.data?.artifacts?.total)
         } else if (!response?.data?.message) {
           toast.error(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
         } 
@@ -32,7 +32,7 @@ export const getWeapons = (payload, refetch, search, page=1, rowsPerPage=99) => 
   return { data, loading, total }
 }
 
-export const getWeaponPerks = (payload, refetch, search, page, rowsPerPage) => {
+export const getArtifactPerks = (payload, refetch, search, page, rowsPerPage) => {
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(true)
   const [total, setTotal] = useState(true)
@@ -40,12 +40,13 @@ export const getWeaponPerks = (payload, refetch, search, page, rowsPerPage) => {
     const fetchData = async () => {
       setLoading(true)
       try {
-       const weapon_id = payload?.id || ''
-       const response = await api.get(`/weapon-perk?weapon_id=${weapon_id}&search=${search}&page=${page}&rows_per_page=${rowsPerPage}`);
-       
+       const artifact_id = payload?.id || ''
+   
+       const response = await api.get(`/artifact-perk?artifact_id=${artifact_id}&search=${search}&page=${page}&rows_per_page=${rowsPerPage}`);
+           console.log('artifact_id', response?.data?.artifact_perks?.data)
         if (response?.data?.success) {
-          setData(response?.data?.weapon_perks?.data)
-          setTotal(response?.data?.weapon_perks?.total)
+          setData(response?.data?.artifact_perks?.data)
+          setTotal(response?.data?.artifact_perks?.total)
         } else if (!response?.data?.message) {
           toast.error(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
         } 
@@ -61,7 +62,7 @@ export const getWeaponPerks = (payload, refetch, search, page, rowsPerPage) => {
   return { data, loading, total }
 }
 
-export const getWeaponSearch = (payload, refetch, search, page, rowsPerPage) => {
+export const getArtifactSearch = (payload, refetch, search, page, rowsPerPage) => {
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(true)
   const [total, setTotal] = useState(true)
@@ -69,13 +70,13 @@ export const getWeaponSearch = (payload, refetch, search, page, rowsPerPage) => 
     const fetchData = async () => {
       setLoading(true)
       try {
-       const weapon_type_id = payload?.weapon_type_id || ''
-       const character_id = payload?.character_id || ''
-       const response = await api.get(`/weapon-search?weapon_type_id=${weapon_type_id}&character_id=${character_id}&search=${search}&page=${page}&rows_per_page=${rowsPerPage}`);
-       
+       const artifact_id = payload?.id || ''
+   
+       const response = await api.get(`/artifact-search?search=${search}&page=${page}&rows_per_page=${rowsPerPage}`);
+           console.log('artifact_id', response?.data?.artifact_perks?.data)
         if (response?.data?.success) {
-          setData(response?.data?.weapons?.data)
-          setTotal(response?.data?.weapons?.total)
+          setData(response?.data?.artifact_perks?.data)
+          setTotal(response?.data?.artifact_perks?.total)
         } else if (!response?.data?.message) {
           toast.error(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
         } 
@@ -91,9 +92,10 @@ export const getWeaponSearch = (payload, refetch, search, page, rowsPerPage) => 
   return { data, loading, total }
 }
 
-export const addWeapon = async (payload) => {
+
+export const addArtifact = async (payload) => {
   try {
-    const response = await api.post(`/weapon`, payload)
+    const response = await api.post(`/artifact`, payload)
     if (response?.data?.success) {
       toast.success(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
     } else {
@@ -106,9 +108,9 @@ export const addWeapon = async (payload) => {
 }
 
 
-export const removeWeapon = async (payload) => {
+export const removeArtifact = async (payload) => {
   try {
-    const response = await api.delete(`/weapon/${payload.id}`)
+    const response = await api.delete(`/artifact/${payload.id}`)
     if (response?.data?.success) {
       toast.success(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
     } else {
@@ -120,7 +122,7 @@ export const removeWeapon = async (payload) => {
   } 
 }
 
-export const addWeaponApi = async (payload) => {
+export const addArtifactApi = async (payload) => {
   toast.info(
     <CustomToast title="Please Wait..." msg='Saving data from api..' icon={<AddCircleOutlineIcon size={15} />} color="#4da58d" />,
     {
@@ -138,7 +140,7 @@ export const addWeaponApi = async (payload) => {
     }
   )
   try {
-    const response = await api.post(`/weapon/create/api`, payload)
+    const response = await api.post(`/artifact/create/api`, payload)
       toast.dismiss('fetch-api')
      if (response?.data?.success) {
       toast.success(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
@@ -154,9 +156,9 @@ export const addWeaponApi = async (payload) => {
 }
 
 
-export const addWeaponPerk = async (payload) => {
+export const addArtifactPerk = async (payload) => {
   try {
-    const response = await api.post(`/weapon-perk`, payload)
+    const response = await api.post(`/artifact-perk`, payload)
      if (response?.data?.success) {
       toast.success(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
     } else {
@@ -168,9 +170,9 @@ export const addWeaponPerk = async (payload) => {
   } 
 }
 
-export const removeWeaponPerk = async (payload) => {
+export const removeArtifactPerk = async (payload) => {
   try {
-    const response = await api.post(`/weapon-perk/delete-by-perk`, payload)
+    const response = await api.post(`/artifact-perk/delete-by-character`, payload)
      if (response?.data?.success) {
       toast.success(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
     } else {

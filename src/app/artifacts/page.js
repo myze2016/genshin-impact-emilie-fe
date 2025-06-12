@@ -3,13 +3,11 @@
 import { Grid, Typography, Button, Box, Paper, TextField, InputAdornment } from "@mui/material"
 import { Fragment, useState, useEffect } from "react";
 import CustomDialog from "@/components/dialog";
-import { addCharacter, addCharacterPerk, getCharacterPerks, deleteCharacterPerk, addCharacterApi, getCharactersName } from "@/hooks/useCharacter";
-import { getElements } from "@/hooks/useElements";
-import { addWeapon, addWeaponApi, addWeaponPerk, getWeaponPerks, getWeapons } from "@/hooks/useWeapon";
-import characterTable from "./tables/weaponTable";
+import { addArtifact, addArtifactApi, addArtifactPerk, getArtifactPerks, getArtifacts } from "@/hooks/useArtifact";
+import characterTable from "./tables/artifactTable";
 import perkTable from "./tables/perkTable";
-import AddWeaponForm from "./forms/AddWeaponForm";
-import AddWeaponPerksForm from "./forms/AddWeaponPerksForm";
+import AddArtifactForm from "./forms/AddArtifactForm";
+import AddArtifactPerksForm from "./forms/AddArtifactPerksForm";
 import CustomTableV2 from "@/components/table/tableV2";
 import CustomTableDialog from "@/components/dialog/table";
 import { getCommons } from "@/hooks/useCommon";
@@ -21,7 +19,7 @@ import AddPerkForm from "./forms/AddPerkForm";
 import { addPerk } from "@/hooks/usePerk";
 import CustomSearch from "@/components/Search";
 
-export default function Weapons() {
+export default function Artifacts() {
 
   const [page, setPage] = useState(0)
   const [payload, setPayload] = useState('')
@@ -29,7 +27,7 @@ export default function Weapons() {
   const [search, setSearch] = useState('')
   const [searchInput, setSearchInput] = useState('')
   const [rowsPerPage, setRowsPerPage] = useState(10)
-  const { data: weapons, loading: loading, total: total } = getWeapons(payload, refetch, search, page+1, rowsPerPage)
+  const { data: artifacts, loading: loading, total: total } = getArtifacts(payload, refetch, search, page+1, rowsPerPage)
 
   const [perksPayload, setPerksPayload] = useState('')
   const [refetchPerks, setRefetchPerks] = useState(false)
@@ -37,7 +35,7 @@ export default function Weapons() {
   const [searchPerksInput, setSearchPerksInput] = useState('')
   const [perksPage, setPerksPage] = useState(0)
   const [perksRowsPerPage, setPerksRowsPerPage] = useState(10)
-  const { data: perks, loading: perksLoading, total: perksTotal } = getWeaponPerks(perksPayload, refetch, searchPerks, perksPage+1, perksRowsPerPage)
+  const { data: perks, loading: perksLoading, total: perksTotal } = getArtifactPerks(perksPayload, refetch, searchPerks, perksPage+1, perksRowsPerPage)
 
   const [commonsPayload, setCommonsPayload] = useState('')
   const [refetchCommons, setRefetchCommons] = useState(false)
@@ -45,7 +43,7 @@ export default function Weapons() {
   const { data: commons, loading: commonsLoading } = getCommons(commonsPayload, refetchCommons, searchCommons)
 
   const [ apiDialog, setApiDialog] = useState(false)
-  const [weaponId, setWeaponId] = useState('')
+  const [artifactId, setArtifactId] = useState('')
 
   const [ addDialog, setAddDialog] = useState(false)
   const [ perkDialog, setPerkDialog] = useState(false)
@@ -57,8 +55,8 @@ export default function Weapons() {
 
   const [apiLoading, setApiLoading ] = useState(false)
   const [perkFormData, setPerkFormData] = useState({
-    character_id: '',
-    perk_id: ''
+    name: '',
+    description: '',
   })
 
   const changeFormData = (e, formData, setFormData) => {
@@ -68,9 +66,9 @@ export default function Weapons() {
   }
 
   
-  const handleAddWeapon = async (e) => {
+  const handleAddArtifact = async (e) => {
     setApiLoading(true)
-    let response = await addWeapon(formData)
+    let response = await addArtifact(formData)
      if (response?.data?.success) {
       resetFormData()
       setRefetch((prev) => !prev)
@@ -79,13 +77,13 @@ export default function Weapons() {
     setApiLoading(false)
   }
 
-  const handleCloseWeaponDialog = (e) => {
+  const handleCloseArtifactDialog = (e) => {
     setRefetch((prev) => !prev)
     resetFormData()
     setAddDialog(false)
   }
 
-  const handleOpenWeaponDialog = (e) => {
+  const handleOpenArtifactDialog = (e) => {
     setPerksDialog(true)
   }
 
@@ -109,11 +107,11 @@ useEffect(() => {
   return () => clearTimeout(timeout)
 }, [searchInput])
 
-  const handleOpenPerksDialog = (weapon) => {
-    setWeaponId(weapon?.id)
+  const handleOpenPerksDialog = (artifact) => {
+    setArtifactId(artifact?.id)
     setPerksPayload(prev => ({
       ...prev,
-      id: weapon?.id, 
+      id: artifact?.id, 
     }));
     setPerksDialog(true)
   }
@@ -151,9 +149,9 @@ useEffect(() => {
   const handleAddPerk = async (perk) => {
     const payload = {
       perk_id: perk?.id,
-      weapon_id: weaponId
+      artifact_id: artifactId
     };
-    let response = await addWeaponPerk(payload)
+    let response = await addArtifactPerk(payload)
     if (response?.data?.success) {
       setRefetchPerks((prev) => !prev)
     }
@@ -162,18 +160,18 @@ useEffect(() => {
   const handleRemovePerk = async (perk) => {
     const payload = {
       perk_id: perk?.id,
-      character_id: weaponId
+      character_id: artifactId
     };
-    let response = await removeWeaponPerk(payload)
+    let response = await removeArtifactPerk(payload)
     if (response?.data?.success) {
       setRefetchPerks((prev) => !prev)
     }
   }
 
 
-  const handleAddWeaponApi = async (item) => {
+  const handleAddArtifactApi = async (item) => {
     setApiDialog(false)
-    let response = await addWeaponApi()
+    let response = await addArtifactApi()
     setRefetch((prev) => !prev)
   }
 
@@ -242,28 +240,28 @@ useEffect(() => {
                           commons={commons} />} />
       <CustomConfirmDialog size="xs" open={apiDialog}
               handleClose={(e) => setApiDialog(false)} 
-              handleConfirm={(e) => handleAddWeaponApi()}  
+              handleConfirm={(e) => handleAddArtifactApi()}  
               title="Add Character Api" 
-              message="Are you sure you want to retrieve weapons from Api?"
+              message="Are you sure you want to retrieve artifacts from Api?"
             />
       <CustomDialog size="sm" open={addDialog}
-              handleClose={handleCloseWeaponDialog} 
-              handleConfirm={handleAddWeapon}  
-              title="Add Weapon" 
-              content={<AddWeaponForm formData={formData} 
+              handleClose={handleCloseArtifactDialog} 
+              handleConfirm={handleAddArtifact}  
+              title="Add Artifact" 
+              content={<AddArtifactForm formData={formData} 
                                  setFormData={setFormData}
                                  changeFormData={changeFormData} />}
             />
      <CustomTableDialog size="md" open={perksDialog}
             handleClose={handleClosePerksDialog} 
             handleConfirm={handleClosePerksDialog}  
-            title="Add Weapon Perks" 
+            title="Add Artifact Perks" 
             page={page} 
             handleChangePage={handleChangePage} 
             rowsPerPage={rowsPerPage} 
             handleChangeRowsPerPage={handleChangeRowsPerPage} 
             total={total}
-            content={<AddWeaponPerksForm tableColumns={perksTableColumns}
+            content={<AddArtifactPerksForm tableColumns={perksTableColumns}
                                data={perks}
                                handleSearch={handleSearchPerks}
                                searchInput={searchPerksInput}
@@ -283,11 +281,11 @@ useEffect(() => {
           <Grid container spacing={2} >
             <Grid item size={8}>
               <Button  startIcon={<AddCircleOutlineIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} />} 
-                                      sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }, mr: 1, mb: 1}} onClick={(e) => setAddDialog(true)} variant="contained">Add Weapon</Button>
+                                      sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }, mr: 1, mb: 1}} onClick={(e) => setAddDialog(true)} variant="contained">Add Artifact</Button>
                <Button  startIcon={<AddCircleOutlineIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} />} 
                                       sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }, mr: 1, mb: 1}} onClick={(e) => setPerkDialog(true)} variant="contained">Create Perk</Button>
               <Button startIcon={<FileUploadIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} />} 
-                                      sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }, mr: 1, mb: 1}} onClick={(e) => setApiDialog(true)} variant="contained">Add Weapon Api</Button>
+                                      sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }, mr: 1, mb: 1}} onClick={(e) => setApiDialog(true)} variant="contained">Add Artifact Api</Button>
             </Grid>
              <Grid item size={4} >
                <Grid container  justifyContent="flex-end" spacing={2} >
@@ -300,7 +298,7 @@ useEffect(() => {
           </Grid>
         </Grid>
         <Grid item size={12}>
-           <CustomTableV2 minWidth="650" headers={charactersColumns} data={weapons} page={page} handleChangePage={handleChangePage} rowsPerPage={rowsPerPage} handleChangeRowsPerPage={handleChangeRowsPerPage} total={total} loading={loading} />
+           <CustomTableV2 minWidth="650" headers={charactersColumns} data={artifacts} page={page} handleChangePage={handleChangePage} rowsPerPage={rowsPerPage} handleChangeRowsPerPage={handleChangeRowsPerPage} total={total} loading={loading} />
         </Grid>
       </Grid>
       
