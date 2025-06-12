@@ -14,16 +14,12 @@ const perkTable = ({handleRemovePerk}) => {
         )
       }
     },
-    { name: 'Actions', value: 'actions', width: '240px',  cell: (item,index) => {
+    { name: 'Actions', value: 'actions', width: '480px',  cell: (item,index) => {
         return (
-          <TableCell key={index} align="left">    <IconButton
-                  color="primary"
-                  onClick={(e) => {
-                    handleRemovePerk(item);
-                  }}
-                >
-                  <DeleteOutlineIcon color="error" sx={{ fontSize: '24px' }} />
-                </IconButton> </TableCell>
+          <TableCell key={index} align="left">    
+          <Button startIcon={<DeleteOutlineIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} />} 
+                                      sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }}} onClick={(e) => handleRemovePerk(item)} color="error" variant="contained" size="small"> Remove Perk</Button>
+             </TableCell>
         )
       }
     },

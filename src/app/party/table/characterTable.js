@@ -20,6 +20,30 @@ const characterTable = ({handleClickAddCharacterPosition}) => {
         return (
           <TableCell  key={index} sx={{width: '50%'}} align="left"> <Stack direction="row"
                                 sx={{ flexWrap: 'wrap', rowGap: 1 }}>
+                                   {item?.weapons?.map((weapon, index) => (
+                                        weapon.weapon?.perks?.map((perk, index) => (
+                                          <Chip
+                                          key={index}
+                                          label={perk?.perk?.name}
+                                          color="secondary"
+                                          variant={ "contained" }
+                                          sx={{ fontSize: '16px', mr: 1 }}
+                                          />
+                                        ))
+                                    ))
+                                }
+                                {item?.artifacts?.map((artifact, index) => (
+                                        artifact.artifact?.perks?.map((perk, index) => (
+                                          <Chip
+                                          key={index}
+                                          label={perk?.perk?.name}
+                                          color="info"
+                                          variant={ "contained" }
+                                          sx={{ fontSize: '16px', mr: 1 }}
+                                          />
+                                        ))
+                                    ))
+                                }
                                 {item?.perks?.map((perk, index) => (
                                         <Chip
                                         key={index}

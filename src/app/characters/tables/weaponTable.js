@@ -44,6 +44,7 @@ const weaponTable = ({handleAddWeapon, handleRemoveWeapon}) => {
   }} align="left"> 
         <Box sx={{ display: 'inline-flex', gap: 1, alignItems: 'center' }}>
            <IconButton
+                hidden={item?.character_weapon?.length > 0}
                 color="primary"
                 onClick={() => handleAddWeapon(item)}
                 aria-label="add character to position"
@@ -52,6 +53,7 @@ const weaponTable = ({handleAddWeapon, handleRemoveWeapon}) => {
                { <AddCircleOutlineIcon /> }
               </IconButton>
           <IconButton
+                hidden={item?.character_weapon?.length === 0}
                 color="error"
                 onClick={() => handleRemoveWeapon(item)}
                 aria-label="add character to position"

@@ -47,6 +47,18 @@ const characterTable = ({openAddCharacterPerksDialog, handleOpenWeaponDialog, ha
                                         ))
                                     ))
                                 }
+                                {item?.artifacts?.map((artifact, index) => (
+                                        artifact.artifact?.perks?.map((perk, index) => (
+                                          <Chip
+                                          key={index}
+                                          label={perk?.perk?.name}
+                                          color="info"
+                                          variant={ "contained" }
+                                          sx={{ fontSize: '16px', mr: 1 }}
+                                          />
+                                        ))
+                                    ))
+                                }
                                 {item?.perks?.map((perk, index) => (
                                         <Chip
                                         key={index}

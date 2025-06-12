@@ -29,6 +29,7 @@ import { getWeaponSearch } from "@/hooks/useWeapon";
 import { getWeaponTypes } from "@/hooks/useWeaponType";
 import { addCharacterWeapon, removeCharacterWeapon } from "@/hooks/useCharacterWeapon";
 import { getArtifactSearch } from "@/hooks/useArtifact";
+import { addCharacterArtifact, removeCharacterArtifact } from "@/hooks/useCharacterArtifact";
 
 export default function Characters() {
 
@@ -201,6 +202,16 @@ export default function Characters() {
     setSearchCharactersInput(search)
   }
 
+
+   
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setSearchArtifacts(searchArtifactsInput)
+    }, 300)
+
+    return () => clearTimeout(timeout)
+  }, [searchArtifactsInput])
+
   
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -273,27 +284,27 @@ export default function Characters() {
     }
   }
 
-   const handleAddArtifact = async (perk) => {
+   const handleAddArtifact = async (artifact) => {
     const payload = {
-      perk_id: perk?.id,
+      artifact_id: artifact?.id,
       character_id: characterId
     };
-    let response = await addCharacterPerk(payload)
+    let response = await addCharacterArtifact(payload)
     if (response?.data?.success) {
-      setRefetchCharacterPerks((prev) => !prev)
+      setRefetchArtifacts((prev) => !prev)
       
     }
   }
 
 
-  const handleRemoveArtifact = async (perk) => {
+  const handleRemoveArtifact = async (artifact) => {
     const payload = {
-      perk_id: perk?.id,
+      artifact_id: artifact?.id,
       character_id: characterId
     };
-    let response = await addCharacterPerk(payload)
+    let response = await removeCharacterArtifact(payload)
     if (response?.data?.success) {
-      setRefetchCharacterPerks((prev) => !prev)
+      setRefetchArtifacts((prev) => !prev)
     }
   }
 

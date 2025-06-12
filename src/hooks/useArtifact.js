@@ -70,13 +70,13 @@ export const getArtifactSearch = (payload, refetch, search, page, rowsPerPage) =
     const fetchData = async () => {
       setLoading(true)
       try {
-       const artifact_id = payload?.id || ''
+       const character_id = payload?.character_id || ''
    
-       const response = await api.get(`/artifact-search?search=${search}&page=${page}&rows_per_page=${rowsPerPage}`);
-           console.log('artifact_id', response?.data?.artifact_perks?.data)
+       const response = await api.get(`/artifact-search?character_id=${character_id}&search=${search}&page=${page}&rows_per_page=${rowsPerPage}`);
+           console.log('artifact_id', response?.data?.artifacts?.data)
         if (response?.data?.success) {
-          setData(response?.data?.artifact_perks?.data)
-          setTotal(response?.data?.artifact_perks?.total)
+          setData(response?.data?.artifacts?.data)
+          setTotal(response?.data?.artifacts?.total)
         } else if (!response?.data?.message) {
           toast.error(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
         } 
@@ -172,7 +172,7 @@ export const addArtifactPerk = async (payload) => {
 
 export const removeArtifactPerk = async (payload) => {
   try {
-    const response = await api.post(`/artifact-perk/delete-by-character`, payload)
+    const response = await api.post(`/artifact-perk/delete-by-perk`, payload)
      if (response?.data?.success) {
       toast.success(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
     } else {

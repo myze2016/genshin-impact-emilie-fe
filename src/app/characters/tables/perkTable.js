@@ -34,6 +34,7 @@ const perkTable = ({clickAddCharacterPerk, clickRemoveCharacterPerk}) => {
   }} align="left"> 
         <Box sx={{ display: 'inline-flex', gap: 1, alignItems: 'center' }}>
            <IconButton
+                hidden={ item?.character_perks?.length > 0 }
                 color="primary"
                 onClick={() => clickAddCharacterPerk(item)}
                 aria-label="add character to position"
@@ -42,6 +43,7 @@ const perkTable = ({clickAddCharacterPerk, clickRemoveCharacterPerk}) => {
                { <AddCircleOutlineIcon /> }
               </IconButton>
           <IconButton
+                hidden={ item?.character_perks?.length === 0 }
                 color="error"
                 onClick={() => clickRemoveCharacterPerk(item)}
                 aria-label="add character to position"

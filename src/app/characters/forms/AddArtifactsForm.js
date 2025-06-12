@@ -2,6 +2,8 @@ import { FormControl, InputLabel, Input, FormHelperText, Grid, Paper, Typography
 import CustomTableRowSearchV2 from "@/components/table/tableRowSearchV2";
 import { Widgets } from "@mui/icons-material";
 const AddArtifactsForm = ({ tableColumns, data, handleSearch, searchInput, handleChip, commonsData, loading, apiLoading=false, page, handleChangePage, rowsPerPage, handleChangeRowsPerPage, total }) => {
+    console.log('data', data)
+    console.log('tableColumns', tableColumns)
     return (
         <Box sx={{Width: '100%'}}>
             <Grid container spacing={2}>

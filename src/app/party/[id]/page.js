@@ -405,9 +405,43 @@ export default function Party() {
                                       <TableCell>
                                         <Typography>{character?.character?.name}</Typography>
                                       </TableCell>
-                                      <TableCell>
+                                      <TableCell width="50%">
+  <Box
+    sx={{
+      maxHeight: 80,              // Limit visible height (2 Chip rows)
+      overflowY: 'auto',
+       display: 'flex',
+       flexWrap: 'wrap',  
+       alignContent: 'flex-start',
+      pr: 1,  
+    }}
+  >
+                                         {character?.character?.weapons?.map((weapon, index) => (
+                                        weapon.weapon?.perks?.map((perk, index) => (
+                                          <Chip
+                                          key={index}
+                                          label={perk?.perk?.name}
+                                          color="secondary"
+                                          variant={ "contained" }
+                                            sx={{mr: 1, mb: 1, fontSize: '16px'}}
+                                          />
+                                        ))
+                                    ))
+                                }
+                                         {character?.character?.artifacts?.map((artifact, index) => (
+                                        artifact.artifact?.perks?.map((perk, index) => (
+                                          <Chip
+                                          key={index}
+                                          label={perk?.perk?.name}
+                                          color="info"
+                                          variant={ "contained" }
+                                            sx={{mr: 1, mb: 1, fontSize: '16px'}}
+                                          />
+                                        ))
+                                    ))
+                                }
                                         {
-                                          character && character?.character?.perks.map((perk, index) => (
+                                          character?.character?.perks.map((perk, index) => (
                                             <Chip
                                               key={index}
                                               label={perk.perk.name}
@@ -417,7 +451,7 @@ export default function Party() {
                                             />
                                           ))
                                         }
-                                        
+                                        </Box>
                                       </TableCell>
                                       <TableCell>
                                             <Box display="flex" justifyContent="flex-end" alignItems="center">

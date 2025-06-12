@@ -3,7 +3,7 @@
 import { Grid, Typography, Button, Box, Paper, TextField, InputAdornment } from "@mui/material"
 import { Fragment, useState, useEffect } from "react";
 import CustomDialog from "@/components/dialog";
-import { addArtifact, addArtifactApi, addArtifactPerk, getArtifactPerks, getArtifacts } from "@/hooks/useArtifact";
+import { addArtifact, addArtifactApi, addArtifactPerk, getArtifactPerks, getArtifacts, removeArtifactPerk } from "@/hooks/useArtifact";
 import characterTable from "./tables/artifactTable";
 import perkTable from "./tables/perkTable";
 import AddArtifactForm from "./forms/AddArtifactForm";
@@ -35,7 +35,7 @@ export default function Artifacts() {
   const [searchPerksInput, setSearchPerksInput] = useState('')
   const [perksPage, setPerksPage] = useState(0)
   const [perksRowsPerPage, setPerksRowsPerPage] = useState(10)
-  const { data: perks, loading: perksLoading, total: perksTotal } = getArtifactPerks(perksPayload, refetch, searchPerks, perksPage+1, perksRowsPerPage)
+  const { data: perks, loading: perksLoading, total: perksTotal } = getArtifactPerks(perksPayload, refetchPerks, searchPerks, perksPage+1, perksRowsPerPage)
 
   const [commonsPayload, setCommonsPayload] = useState('')
   const [refetchCommons, setRefetchCommons] = useState(false)
@@ -160,7 +160,7 @@ useEffect(() => {
   const handleRemovePerk = async (perk) => {
     const payload = {
       perk_id: perk?.id,
-      character_id: artifactId
+      artifact_id: artifactId
     };
     let response = await removeArtifactPerk(payload)
     if (response?.data?.success) {
@@ -267,7 +267,7 @@ useEffect(() => {
                                searchInput={searchPerksInput}
                                handleClickChip={handleFillCommon}
                                chipData={commons}
-                               loading={commonsLoading || perksLoading}
+                               loading={false}
                                page={perksPage} 
                                handleChangePage={handleChangePerksPage} 
                                rowsPerPage={perksRowsPerPage}
