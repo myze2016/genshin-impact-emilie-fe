@@ -9,7 +9,11 @@ import "./globals.css";
 import { ToastContainer } from "react-toastify";
 import VerticalNav from "@/components/nav/vertical-nav";
 import { useState } from "react";
-
+import { usePathname } from "next/navigation";
+import { getUser } from "@/hooks/useAuth";
+import { useRouter } from 'next/navigation'
+import { useEffect } from "react";
+import { UserProvider } from "@/context/UserContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -21,20 +25,39 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+
 export default function RootLayout({ children }) {
+    const router = useRouter()
+
+  // const { data: user, loading: loading } = getUser('', false)
+
+
+  const pathname = usePathname()
+  const hideNav = ['/login', '/register'].includes(pathname)
   const [collapsed, setCollapsed] = useState(true);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token')
+    if (!token && !hideNav) {
+      router.push('/login');
+    }
+  }, []);
+
+
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+
         <ClientOnly>
-        <ThemeProvider theme={theme}>
+            <ThemeProvider theme={theme}>
+               <UserProvider>
             <ToastContainer newestOnTop />
             <CssBaseline />
 
-            <Nav />
-            <VerticalNav collapsed={collapsed} setCollapsed={setCollapsed} />
+            {!hideNav && <Nav />}
+             {!hideNav && <VerticalNav collapsed={collapsed} setCollapsed={setCollapsed} />}
 
             <Box
               sx={{
@@ -48,7 +71,8 @@ export default function RootLayout({ children }) {
                 {children}
               </Container>
             </Box>
-          </ThemeProvider>
+            </UserProvider>
+          </ThemeProvider> 
         </ClientOnly>
       </body>
     </html>

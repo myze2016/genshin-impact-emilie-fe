@@ -1,14 +1,31 @@
 'use client'
 
-import { AppBar, Toolbar, Typography, Button, Box, Container, useTheme } from '@mui/material'
+import { AppBar, Toolbar, Typography, Button, Box, Container, useTheme, Tooltip, IconButton, Avatar, Menu, MenuItem } from '@mui/material'
+import { useState } from 'react';
 import HomeIcon from '@mui/icons-material/Home';
 import PersonIcon from '@mui/icons-material/Person';
 import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp';
 import Link from 'next/link'
 import ConstructionOutlinedIcon from '@mui/icons-material/ConstructionOutlined';
 import CompostOutlinedIcon from '@mui/icons-material/CompostOutlined';
+import { getUser, logout } from '@/hooks/useAuth';
+import { useRouter } from 'next/navigation'
+import { useUser } from '@/context/UserContext';
 export default function Nav() {
+    const { user } = useUser()
+    const router = useRouter()
   const theme = useTheme()
+
+  const [anchorEl, setAnchorEl] = useState(null)
+  const open = Boolean(anchorEl)
+
+  const handleMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget)
+  }
+
+  const handleMenuClose = () => {
+    setAnchorEl(null)
+  }
 
   const navItems = [
     { label: 'Home', href: '/dashboard', icon: <HomeIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} /> },
@@ -17,6 +34,15 @@ export default function Nav() {
     { label: 'Artifact', href: '/artifacts', icon: <CompostOutlinedIcon/> },
     { label: 'Weapon', href: '/weapons', icon: <ConstructionOutlinedIcon/> },
   ]
+
+  const handleLogout = async (e) => {
+    const response = await logout('') // Assuming this logs the user out
+
+    localStorage.removeItem('token')
+    router.push('/login') // ✅ Redirect to /login
+    
+
+  }
 
   return (
     <AppBar
@@ -147,6 +173,57 @@ export default function Nav() {
                 {item.label}
               </Button>
             ))}
+            {!false && true && (
+    <>
+      <Tooltip title="Account settings">
+        <IconButton
+          onClick={handleMenuOpen}
+          sx={{ ml: 1 }}
+          size="small"
+        >
+          <Avatar sx={{ width: 32, height: 32 }}>
+            {console.log(user)}
+           {user?.name?.charAt(0).toUpperCase() || 'U'} 
+          </Avatar>
+        </IconButton>
+      </Tooltip>
+
+      <Menu
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleMenuClose}
+        onClick={handleMenuClose}
+        PaperProps={{
+          elevation: 3,
+          sx: {
+            mt: 1.5,
+            minWidth: 160,
+            borderRadius: 2,
+            overflow: 'visible',
+            '& .MuiAvatar-root': {
+              width: 24,
+              height: 24,
+              ml: -0.5,
+              mr: 1,
+            },
+          },
+        }}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+      >
+        <MenuItem disabled>
+          <Avatar /> {user?.name}
+        </MenuItem>
+        <MenuItem onClick={(e) =>  handleLogout(e)}>Logout</MenuItem>
+      </Menu>
+    </>
+  )}
           </Box>
         </Toolbar>
     </AppBar>
