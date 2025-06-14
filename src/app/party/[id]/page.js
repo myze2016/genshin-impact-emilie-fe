@@ -2,7 +2,7 @@
 
 import { Grid, Typography, Button, Box, Chip, Stack, Paper, Table, TableRow, TableCell, TableBody, IconButton } from "@mui/material"
 import { Fragment, useState, useEffect } from "react";
-import { getParty, addPartyPosition, addPartyPositionCharacter, removePartyPositionCharacter, editParty, moveVerticalCharacter, removePosition } from "../../../hooks/useParty";
+import { getParty, addPartyPosition, addPartyPositionCharacter, removePartyPositionCharacter, editParty, moveVerticalCharacter, removePosition, addMyParty, deleteParty } from "../../../hooks/useParty";
 import AddPartyPosition from "../form/AddPartyPosition";
 import AddPartyPositionCharacter from "../form/AddPartyPositionCharacter";
 import CustomDialog from "@/components/dialog";
@@ -18,15 +18,24 @@ import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutl
 import EditPartyForm from "../form/EditPartyForm";
 import { getElements } from "@/hooks/useElements";
 import Spinner from "@/components/Spinner";
+import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
+import CustomConfirmDialog from "@/components/dialog/confirm";
+import ConstructionOutlinedIcon from '@mui/icons-material/ConstructionOutlined';
+import CompostOutlinedIcon from '@mui/icons-material/CompostOutlined';
 
 export default function Party() {
+  const router = useRouter()
   const params = useParams();
   const party_id = params?.id;
+
+  const [apiDialog, setApiDialog] = useState(false)
 
   const [refetchParty, setRefetchParty] = useState(false)
   const [partyPayload, setPartyPayload] = useState({
     id: party_id,
   })
+
+  const [confirmDeletePartyDialog,setConfirmDeletePartyDialog] = useState(false)
   const { data: partyData, loading: partyLoading } = getParty(partyPayload, refetchParty)
   
   const [ apiLoading, setApiLoading] = useState(false)
@@ -239,6 +248,36 @@ export default function Party() {
       setApiLoading(false)
     }
 
+    
+      const handleAddPartyMyParty = async (item) => {
+        setApiDialog(false)
+        const payload = {
+            id: party_id,
+        };
+        
+        let response = await addMyParty(payload)
+    
+      }
+
+
+        
+      const handleDeleteParty = async (item) => {
+        setConfirmDeletePartyDialog(false)
+        const payload = {
+            id: party_id,
+        };
+        let response = await deleteParty(payload)
+          if (response?.data?.success) {
+            if (partyData[0]?.copied_from) {
+             router.push('/my-party') // ✅ Redirect to /login
+            } else {
+             router.push('/dashboard') // ✅ Redirect to /login
+            }
+      }
+    
+      }
+
+
 
     useEffect(() => {
       setPartyFormData({
@@ -255,6 +294,18 @@ export default function Party() {
   return (
     <>
         { apiLoading && <Spinner /> }
+          <CustomConfirmDialog size="xs" open={apiDialog}
+              handleClose={(e) => setApiDialog(false)} 
+              handleConfirm={(e) => handleAddPartyMyParty()}  
+              title="Add Party to My Party" 
+              message="Are you sure you want to add party to your parties?"
+            />
+             <CustomConfirmDialog size="xs" open={confirmDeletePartyDialog}
+              handleClose={(e) => setConfirmDeletePartyDialog(false)} 
+              handleConfirm={(e) => handleDeleteParty()}  
+              title="Delete Party" 
+              message="Are you sure you want to delete party?"
+            />
         <CustomDialog open={editPartyDialog}
               size="sm"
               handleClose={() => setEditPartyDialog(false)} 
@@ -308,13 +359,20 @@ export default function Party() {
                           <Grid container>
                             <Grid item size={12} sx={{mb: 1}}>
                               <Box display="flex" justifyContent="space-between" alignItems="center">
-                                <Typography variant="h6">{party?.name}</Typography>
+                                  <Typography gutterBottom variant="h6" component="div">
+                                  <Box component="span" color="secondary.main">
+                                    {party?.copied_from?.name}
+                                  </Box>
+                                  <Box component="span" color="text.primary">
+                                    {' | ' + party?.name}
+                                  </Box>
+                                </Typography>
                                 <Box>
                               <Button
                                 variant="contained"
                                 color="error"
                                 size="small"
-                                onClick={() => handleDelete()}
+                                onClick={() => setConfirmDeletePartyDialog(true)}
                                 sx={{ mr: 1, minWidth: '36px', padding: '6px' }} // Make button compact
                               >
                                 <DeleteOutlineIcon fontSize="small" />
@@ -331,7 +389,8 @@ export default function Party() {
                               </Button>
                                   <Button startIcon={<AddCircleOutlineIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} />} 
                                       sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }, mr: 1}} onClick={(e) => handleOpenAddPositionDialog(party)} color="primary" variant="contained" size="small"> Add Position</Button>
-                                            
+                                         <Button hidden={party?.copied_from} startIcon={<FileUploadOutlinedIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} />} 
+                                      sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }, mr: 1}} onClick={(e) => setApiDialog(true)} color="primary" variant="contained" size="small">Add My Party</Button>    
                                 </Box>
                               </Box>
                             </Grid>
@@ -405,7 +464,7 @@ export default function Party() {
                                       <TableCell>
                                         <Typography>{character?.character?.name}</Typography>
                                       </TableCell>
-                                      <TableCell width="50%">
+                                      <TableCell>
   <Box
     sx={{
       maxHeight: 80,              // Limit visible height (2 Chip rows)
@@ -453,9 +512,31 @@ export default function Party() {
                                         }
                                         </Box>
                                       </TableCell>
+                                      
+                                      <TableCell>
+                                        <Typography>{character?.character?.weapons[0]?.weapon.name}</Typography>
+                                      </TableCell>
+                                      <TableCell>
+                                        <Typography>{character?.character?.artifacts[0]?.artifact?.name}</Typography>
+                                      </TableCell>
                                       <TableCell>
                                             <Box display="flex" justifyContent="flex-end" alignItems="center">
-                                              
+                                              <IconButton
+                                                color="primary"
+                                                onClick={(e) => {
+                                                  handleMoveVertical(character);
+                                                }}
+                                              >
+                                                <ConstructionOutlinedIcon sx={{ fontSize: '24px' }} />
+                                            </IconButton>
+                                            <IconButton
+                                                color="primary"
+                                                onClick={(e) => {
+                                                  handleMoveVertical(character);
+                                                }}
+                                              >
+                                                <CompostOutlinedIcon sx={{ fontSize: '24px' }} />
+                                            </IconButton>
                                              <IconButton
                                                 color="info"
                                                 onClick={(e) => {

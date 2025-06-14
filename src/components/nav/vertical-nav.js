@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Drawer,
   List,
@@ -11,83 +11,122 @@ import {
   Box,
   Typography,
   Tooltip,
-  useTheme
+  Collapse,
+  useTheme,
 } from '@mui/material';
+
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+
 import MenuIcon from '@mui/icons-material/Menu';
 import HomeIcon from '@mui/icons-material/Home';
 import PersonIcon from '@mui/icons-material/Person';
 import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp';
-import Link from 'next/link';
 import ConstructionOutlinedIcon from '@mui/icons-material/ConstructionOutlined';
 import CompostOutlinedIcon from '@mui/icons-material/CompostOutlined';
+import GroupIcon from '@mui/icons-material/Group';
+import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandMore from '@mui/icons-material/ExpandMore';
+import DashboardCustomizeIcon from '@mui/icons-material/DashboardCustomize';
+import ListAltIcon from '@mui/icons-material/ListAlt';
+import AppSettingsAltOutlinedIcon from '@mui/icons-material/AppSettingsAltOutlined';
+import ArchitectureOutlinedIcon from '@mui/icons-material/ArchitectureOutlined';
+
 
 const drawerWidth = 240;
 const collapsedWidth = 72;
 
-export default function VerticalNav({collapsed,setCollapsed}) {
+const navItems = [
+  { label: 'Character', href: '/characters', icon: <PersonIcon /> },
+  { label: 'Perk', href: '/perks', icon: <ArrowCircleUpIcon /> },
+  { label: 'Artifact', href: '/artifacts', icon: <CompostOutlinedIcon /> },
+  { label: 'Weapon', href: '/weapons', icon: <ConstructionOutlinedIcon /> },
+  {
+    label: 'Party',
+    icon: <GroupIcon />,
+    children: [
+      { label: 'Parties', href: '/dashboard', icon: <ArchitectureOutlinedIcon  /> },
+      { label: 'My Parties', href: '/my-party', icon: <AppSettingsAltOutlinedIcon /> },
+    ],
+  },
+];
+
+export default function VerticalNav({ collapsed, setCollapsed }) {
   const theme = useTheme();
+  const pathname = usePathname();
 
+  const [openGroups, setOpenGroups] = useState({});
 
-  const navItems = [
-    { label: 'Home', href: '/dashboard', icon: <HomeIcon /> },
-    { label: 'Character', href: '/characters', icon: <PersonIcon /> },
-    { label: 'Perk', href: '/perks', icon: <ArrowCircleUpIcon /> },
-    { label: 'Artifact', href: '/artifacts', icon: <CompostOutlinedIcon /> },
-    { label: 'Weapon', href: '/weapons', icon: <ConstructionOutlinedIcon /> },
-  ];
+  useEffect(() => {
+    const updated = {};
+    navItems.forEach((item) => {
+      if (item.children) {
+        const activeChild = item.children.some((child) => pathname.startsWith(child.href));
+        if (activeChild) {
+          updated[item.label] = true;
+        }
+      }
+    });
+    setOpenGroups((prev) => ({ ...prev, ...updated }));
+  }, [pathname]);
+
+  const toggleGroup = (label) => {
+    setOpenGroups((prev) => ({ ...prev, [label]: !prev[label] }));
+  };
 
   return (
-      <Drawer
-        variant="permanent"
-        sx={{
+    <Drawer
+      variant="permanent"
+      sx={{
+        width: collapsed ? collapsedWidth : drawerWidth,
+        flexShrink: 0,
+        '& .MuiDrawer-paper': {
           width: collapsed ? collapsedWidth : drawerWidth,
-          flexShrink: 0,
-          '& .MuiDrawer-paper': {
-            width: collapsed ? collapsedWidth : drawerWidth,
-            transition: 'width 0.3s',
-            boxSizing: 'border-box',
-            background: `linear-gradient(180deg, #263b35 0%, #1b2a21 100%)`,
-            borderRight: `1px solid ${theme.palette.primary.main}`,
-          },
+          transition: 'width 0.3s',
+          boxSizing: 'border-box',
+          background: `linear-gradient(180deg, #263b35 0%, #1b2a21 100%)`,
+          borderRight: `1px solid ${theme.palette.primary.main}`,
+        },
+      }}
+    >
+      {/* Header */}
+      <Box
+        sx={{
+          height: 80,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: collapsed ? 'center' : 'space-between',
+          px: 2,
         }}
       >
-        {/* Top header/logo */}
-        <Box
-          sx={{
-            height: 80,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: collapsed ? 'center' : 'space-between',
-            px: 2,
-          }}
-        >
-          {!collapsed && (
-            <Typography
-              variant="h5"
-              sx={{
-                color: theme.palette.text.primary,
-                fontWeight: 700,
-                textTransform: 'uppercase',
-                letterSpacing: '0.12em',
-                textShadow: `0 0 3px ${theme.palette.primary.main}aa, 0 0 6px ${theme.palette.primary.main}66`,
-              }}
-            >
-              Emilie
-            </Typography>
-          )}
-          <IconButton sx={{  color: theme.palette.text.primary }} onClick={() => setCollapsed(!collapsed)} size="small">
-            <MenuIcon />
-          </IconButton>
-        </Box>
+        {!collapsed && (
+          <Typography
+            variant="h5"
+            sx={{
+              color: theme.palette.text.primary,
+              fontWeight: 700,
+              textTransform: 'uppercase',
+              letterSpacing: '0.12em',
+              textShadow: `0 0 3px ${theme.palette.primary.main}aa, 0 0 6px ${theme.palette.primary.main}66`,
+            }}
+          >
+            Emilie
+          </Typography>
+        )}
+        <IconButton sx={{ color: theme.palette.text.primary }} onClick={() => setCollapsed(!collapsed)} size="small">
+          <MenuIcon />
+        </IconButton>
+      </Box>
 
-        {/* Nav Items */}
-        
-        <List sx={{overflow: 'hidden'}}>
-          {navItems.map((item) => (
+      {/* Navigation */}
+      <List sx={{ overflow: 'hidden' }}>
+        {navItems.map((item) =>
+          !item.children ? (
             <ListItemButton
               key={item.href}
               component={Link}
               href={item.href}
+              selected={pathname.startsWith(item.href)}
               sx={{
                 display: 'flex',
                 alignItems: 'center',
@@ -98,15 +137,76 @@ export default function VerticalNav({collapsed,setCollapsed}) {
             >
               <Tooltip title={collapsed ? item.label : ''} placement="right">
                 <ListItemIcon
-                  sx={{  color: theme.palette.text.primary, minWidth: 0, mr: collapsed ? 0 : 2, justifyContent: 'center' }}
+                  sx={{
+                    color: theme.palette.text.primary,
+                    minWidth: 0,
+                    mr: collapsed ? 0 : 2,
+                    justifyContent: 'center',
+                  }}
                 >
                   {item.icon}
                 </ListItemIcon>
               </Tooltip>
-              {!collapsed && <ListItemText sx={{ color: theme.palette.text.primary}} primary={item.label} />}
+              {!collapsed && <ListItemText sx={{ color: theme.palette.text.primary }} primary={item.label} />}
             </ListItemButton>
-          ))}
-        </List>
-      </Drawer>
+          ) : (
+            <Box key={item.label}>
+              <ListItemButton
+                onClick={() => toggleGroup(item.label)}
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: collapsed ? 'center' : 'flex-start',
+                  px: collapsed ? 0 : 2,
+                  py: 1.5,
+                }}
+              >
+                <Tooltip title={collapsed ? item.label : ''} placement="right">
+                  <ListItemIcon
+                    sx={{
+                      color: theme.palette.text.primary,
+                      minWidth: 0,
+                      mr: collapsed ? 0 : 2,
+                      justifyContent: 'center',
+                    }}
+                  >
+                    {item.icon}
+                  </ListItemIcon>
+                </Tooltip>
+                {!collapsed && (
+                  <>
+                    <ListItemText sx={{ color: theme.palette.text.primary }} primary={item.label} />
+                    {openGroups[item.label] ? <ExpandLess /> : <ExpandMore />}
+                  </>
+                )}
+              </ListItemButton>
+
+              <Collapse in={openGroups[item.label] && !collapsed} timeout="auto" unmountOnExit>
+                <List component="div" disablePadding>
+                  {item.children.map((child) => (
+                    <ListItemButton
+                      key={child.href}
+                      component={Link}
+                      href={child.href}
+                      selected={pathname.startsWith(child.href)}
+                      sx={{
+                        pl: 4,
+                        py: 1.2,
+                        color: theme.palette.text.primary,
+                      }}
+                    >
+                      <ListItemIcon sx={{ color: theme.palette.text.primary }}>
+                        {child.icon}
+                      </ListItemIcon>
+                      <ListItemText primary={child.label} />
+                    </ListItemButton>
+                  ))}
+                </List>
+              </Collapse>
+            </Box>
+          )
+        )}
+      </List>
+    </Drawer>
   );
 }

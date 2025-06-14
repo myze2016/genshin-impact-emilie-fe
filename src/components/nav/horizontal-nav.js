@@ -11,6 +11,7 @@ import CompostOutlinedIcon from '@mui/icons-material/CompostOutlined';
 import { getUser, logout } from '@/hooks/useAuth';
 import { useRouter } from 'next/navigation'
 import { useUser } from '@/context/UserContext';
+import AppSettingsAltOutlinedIcon from '@mui/icons-material/AppSettingsAltOutlined';
 export default function Nav() {
     const { user } = useUser()
     const router = useRouter()
@@ -29,6 +30,7 @@ export default function Nav() {
 
   const navItems = [
     { label: 'Home', href: '/dashboard', icon: <HomeIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} /> },
+    { label: 'My Parties', href: '/my-party', icon: <AppSettingsAltOutlinedIcon/> },
     { label: 'Character', href: '/characters', icon: <PersonIcon/> },
     { label: 'Perk', href: '/perks', icon: <ArrowCircleUpIcon/> },
     { label: 'Artifact', href: '/artifacts', icon: <CompostOutlinedIcon/> },
