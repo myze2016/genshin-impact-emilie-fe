@@ -8,7 +8,7 @@ const artifactTable = ({handleAddArtifact, handleRemoveArtifact}) => {
     { name: 'Name', value: 'name', cell: (item,index) => {
       return (
         <TableCell sx={{
-          backgroundColor: item?.character_artifact?.length > 0 
+          backgroundColor: item?.party_artifact?.length > 0 
           ? 'rgba(165, 214, 167, 0.15)' // soft success green
           : 'transparent'
   }} key={index} align="left">{item?.name}</TableCell>
@@ -16,7 +16,7 @@ const artifactTable = ({handleAddArtifact, handleRemoveArtifact}) => {
     } },
     { name: 'Perk', value: 'perk',  cell: (item,index) => {
         return (
-          <TableCell  key={index} sx={{backgroundColor: item?.character_artifact?.length > 0 
+          <TableCell  key={index} sx={{backgroundColor: item?.party_artifact?.length > 0 
                 ? 'rgba(165, 214, 167, 0.15)' // soft success green
                 : 'transparent', width: '50%'}} align="left"> <Stack direction="row"
                                 sx={{ flexWrap: 'wrap', rowGap: 1 }}>
@@ -38,13 +38,13 @@ const artifactTable = ({handleAddArtifact, handleRemoveArtifact}) => {
       cell: (item, index) => {
           return (
               <TableCell key={index} sx={{
-                backgroundColor: item?.character_artifact?.length > 0 
+                backgroundColor: item?.party_artifact?.length > 0 
                 ? 'rgba(165, 214, 167, 0.15)' // soft success green
                 : 'transparent',
   }} align="left"> 
         <Box sx={{ display: 'inline-flex', gap: 1, alignItems: 'center' }}>
            <IconButton
-                hidden={item?.character_artifact?.length > 0 }
+                hidden={item?.party_artifact?.length > 0 }
                 color="primary"
                 onClick={() => handleAddArtifact(item)}
                 aria-label="add character to position"
@@ -53,7 +53,7 @@ const artifactTable = ({handleAddArtifact, handleRemoveArtifact}) => {
                { <AddCircleOutlineIcon /> }
               </IconButton>
           <IconButton
-          hidden={item?.character_artifact?.length == 0 }
+          hidden={item?.party_artifact?.length == 0 }
                 color="error"
                 onClick={() => handleRemoveArtifact(item)}
                 aria-label="add character to position"

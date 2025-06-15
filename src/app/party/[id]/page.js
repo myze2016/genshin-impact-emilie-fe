@@ -2,7 +2,7 @@
 
 import { Grid, Typography, Button, Box, Chip, Stack, Paper, Table, TableRow, TableCell, TableBody, IconButton } from "@mui/material"
 import { Fragment, useState, useEffect } from "react";
-import { getParty, addPartyPosition, addPartyPositionCharacter, removePartyPositionCharacter, editParty, moveVerticalCharacter, removePosition, addMyParty, deleteParty } from "../../../hooks/useParty";
+import { getParty, addPartyPosition, addPartyPositionCharacter, removePartyPositionCharacter, editParty, moveVerticalCharacter, removePosition, addMyParty, deleteParty, addPartyArtifact, addPartyWeapon, removePartyWeapon, removePartyArtifact } from "../../../hooks/useParty";
 import AddPartyPosition from "../form/AddPartyPosition";
 import AddPartyPositionCharacter from "../form/AddPartyPositionCharacter";
 import CustomDialog from "@/components/dialog";
@@ -22,13 +22,11 @@ import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
 import CustomConfirmDialog from "@/components/dialog/confirm";
 import ConstructionOutlinedIcon from '@mui/icons-material/ConstructionOutlined';
 import CompostOutlinedIcon from '@mui/icons-material/CompostOutlined';
-import { getArtifacts } from "@/hooks/useArtifact";
-import { getWeapons } from "@/hooks/useWeapon";
 import AddArtifacts from "../form/AddArtifacts";
 import weaponTable from "../table/weaponTable";
 import artifactTable from "../table/artifactTable";
-import { getWeaponSearch } from "@/hooks/useWeapon";
-import { getArtifactSearch } from "@/hooks/useArtifact";
+import { getArtifactByParty } from "@/hooks/useArtifact";
+import { getWeaponByParty } from "@/hooks/useWeapon";
 
 export default function Party() {
   const router = useRouter()
@@ -73,7 +71,7 @@ export default function Party() {
   const [artifactSearch, setArtifactSearch] = useState('')
   const [artifactSearchInput, setArtifactSearchInput] = useState('')
   const [artifactRowsPerPage, setArtifactRowsPerPage] = useState(10)
-  const { data: artifacts, loading: artifactsLoading, total: artifactsTotal } = getArtifactSearch(artifactPayload, artifactRefetch, artifactSearch, artifactPage+1, artifactRowsPerPage)
+  const { data: artifacts, loading: artifactsLoading, total: artifactsTotal } = getArtifactByParty(artifactPayload, artifactRefetch, artifactSearch, artifactPage+1, artifactRowsPerPage)
 
   const [weaponsDialog, setWeaponsDialog] = useState(false)
   const [weaponsPage, setWeaponsPage] = useState(0)
@@ -82,12 +80,13 @@ export default function Party() {
   const [weaponsSearch, setWeaponsSearch] = useState('')
   const [weaponsSearchInput, setWeaponsSearchInput] = useState('')
   const [weaponsRowsPerPage, setWeaponsRowsPerPage] = useState(10)
-  const { data: weapons, loading: weaponsLoading, total: weaponsTotal } = getWeaponSearch(weaponsPayload, weaponsRefetch, weaponsSearch, weaponsPage+1, weaponsRowsPerPage)
+  const { data: weapons, loading: weaponsLoading, total: weaponsTotal } = getWeaponByParty(weaponsPayload, weaponsRefetch, weaponsSearch, weaponsPage+1, weaponsRowsPerPage)
 
   const [addPositionDialog, setAddPositionDialog] = useState(false)
   const [addCharacterPositionDialog, setAddCharacterPositionDialog] = useState(false)
 
-
+  const [weaponTypeId, setWeaponTypeId] = useState('');
+  const [partyCharacterId, setPartyCharacterId] = useState('');
   const [partyId, setPartyId] = useState('')
   const [positionId, setPositionId] = useState('')
   const [partyFormData, setPartyFormData] = useState({
@@ -368,11 +367,11 @@ export default function Party() {
        const handleAddWeapon = async (weapon) => {
         const payload = {
           weapon_id: weapon?.id,
-          character_id: characterId
+          party_character_id: partyCharacterId
         };
-        let response = await addCharacterWeapon(payload)
+        let response = await addPartyWeapon(payload)
         if (response?.data?.success) {
-          setRefetchWeapons((prev) => !prev)
+          setWeaponsRefetch((prev) => !prev)
         }
       }
     
@@ -380,22 +379,22 @@ export default function Party() {
       const handleRemoveWeapon = async (weapon) => {
         const payload = {
           weapon_id: weapon?.id,
-          character_id: characterId
+          party_character_id: partyCharacterId
         };
-        let response = await removeCharacterWeapon(payload)
+        let response = await removePartyWeapon(payload)
         if (response?.data?.success) {
-          setRefetchWeapons((prev) => !prev)
+          setWeaponsRefetch((prev) => !prev)
         }
       }
     
        const handleAddArtifact = async (artifact) => {
         const payload = {
           artifact_id: artifact?.id,
-          character_id: characterId
+          party_character_id: partyCharacterId
         };
-        let response = await addCharacterArtifact(payload)
+        let response = await addPartyArtifact(payload)
         if (response?.data?.success) {
-          setRefetchArtifacts((prev) => !prev)
+          setArtifactRefech((prev) => !prev)
           
         }
       }
@@ -404,11 +403,11 @@ export default function Party() {
       const handleRemoveArtifact = async (artifact) => {
         const payload = {
           artifact_id: artifact?.id,
-          character_id: characterId
+          party_character_id: partyCharacterId
         };
-        let response = await removeCharacterArtifact(payload)
+        let response = await removePartyArtifact(payload)
         if (response?.data?.success) {
-          setRefetchArtifacts((prev) => !prev)
+          setArtifactRefech((prev) => !prev)
         }
       }
     
@@ -627,7 +626,6 @@ export default function Party() {
                                   { position && position?.characters_value?.map((character, index) => (
                                     
                                     <TableRow key={index}>
-                                      {console.log('party_weapon', character?.party_weapon[0])}
                                       <TableCell>
                                         <Typography>{character?.character?.name}</Typography>
                                       </TableCell>
@@ -691,6 +689,11 @@ export default function Party() {
                                               <IconButton
                                                 color="primary"
                                                 onClick={(e) => {
+                                                  setPartyCharacterId(character?.id)
+                                                  setWeaponsPayload({
+                                                    weapon_type_id: character?.character?.weapon_type_id,
+                                                    party_character_id: character?.id
+                                                  })
                                                   setWeaponsDialog(true);
                                                 }}
                                               >
@@ -699,6 +702,10 @@ export default function Party() {
                                             <IconButton
                                                 color="primary"
                                                 onClick={(e) => {
+                                                  setPartyCharacterId(character?.id)
+                                                  setArtifactPayload({
+                                                    party_character_id: character?.id
+                                                  })
                                                   setArtifactsDialog(true);
                                                 }}
                                               >

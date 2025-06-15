@@ -91,6 +91,37 @@ export const getWeaponSearch = (payload, refetch, search, page, rowsPerPage) => 
   return { data, loading, total }
 }
 
+export const getWeaponByParty = (payload, refetch, search, page, rowsPerPage) => {
+  const [data, setData] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [total, setTotal] = useState(true)
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true)
+      try {
+       const weapon_type_id = payload?.weapon_type_id || ''
+       const party_character_id = payload?.party_character_id || ''
+       const response = await api.get(`/weapon-by-party?weapon_type_id=${weapon_type_id}&party_character_id=${party_character_id}&search=${search}&page=${page}&rows_per_page=${rowsPerPage}`);
+       
+        if (response?.data?.success) {
+          setData(response?.data?.weapons?.data)
+          setTotal(response?.data?.weapons?.total)
+        } else if (!response?.data?.message) {
+          toast.error(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+        } 
+      } catch (error) {
+        toast.error(error.response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+      } 
+      setLoading(false)
+    }
+
+    fetchData()
+  }, [payload, refetch, search, page, rowsPerPage])
+
+  return { data, loading, total }
+}
+
+
 export const addWeapon = async (payload) => {
   try {
     const response = await api.post(`/weapon`, payload)

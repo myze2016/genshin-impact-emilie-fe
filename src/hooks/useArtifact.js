@@ -120,6 +120,35 @@ export const getArtifactSearch = (payload, refetch, search, page, rowsPerPage) =
   return { data, loading, total }
 }
 
+export const getArtifactByParty = (payload, refetch, search, page, rowsPerPage) => {
+  const [data, setData] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [total, setTotal] = useState(true)
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true)
+      try {
+       const party_character_id = payload?.party_character_id || ''
+   
+       const response = await api.get(`/artifact-by-party?party_character_id=${party_character_id}&search=${search}&page=${page}&rows_per_page=${rowsPerPage}`);
+        if (response?.data?.success) {
+          setData(response?.data?.artifacts?.data)
+          setTotal(response?.data?.artifacts?.total)
+        } else if (!response?.data?.message) {
+          toast.error(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+        } 
+      } catch (error) {
+        toast.error(error.response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+      } 
+      setLoading(false)
+    }
+
+    fetchData()
+  }, [payload, refetch, search, page, rowsPerPage])
+
+  return { data, loading, total }
+}
+
 
 export const addArtifact = async (payload) => {
   try {
