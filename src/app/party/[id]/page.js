@@ -1,6 +1,6 @@
 'use client'
 
-import { Grid, Typography, Button, Box, Chip, Stack, Paper, Table, TableRow, TableCell, TableBody, IconButton } from "@mui/material"
+import { Grid, Typography, Button, Box, Chip, Stack, Paper, Table, TableRow, TableCell, TableBody, IconButton, Collapse } from "@mui/material"
 import { Fragment, useState, useEffect } from "react";
 import { getParty, addPartyPosition, addPartyPositionCharacter, removePartyPositionCharacter, editParty, moveVerticalCharacter, removePosition, addMyParty, deleteParty, addPartyArtifact, addPartyWeapon, removePartyWeapon, removePartyArtifact } from "../../../hooks/useParty";
 import AddPartyPosition from "../form/AddPartyPosition";
@@ -27,6 +27,9 @@ import weaponTable from "../table/weaponTable";
 import artifactTable from "../table/artifactTable";
 import { getArtifactByParty } from "@/hooks/useArtifact";
 import { getWeaponByParty } from "@/hooks/useWeapon";
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+
 
 export default function Party() {
   const router = useRouter()
@@ -34,6 +37,7 @@ export default function Party() {
   const party_id = params?.id;
 
   const [apiDialog, setApiDialog] = useState(false)
+  const [openRows, setOpenRows] = useState({});
 
   const [refetchParty, setRefetchParty] = useState(false)
   const [partyPayload, setPartyPayload] = useState({
@@ -411,6 +415,13 @@ export default function Party() {
         }
       }
     
+
+      const toggleRow = (tableId, rowIndex) => {
+  setOpenRows((prev) => ({
+    ...prev,
+    [tableId]: prev[tableId] === rowIndex ? null : rowIndex,
+  }));
+};
     
 
   const { columns } = characterTable({handleClickAddCharacterPosition})
@@ -624,59 +635,17 @@ export default function Party() {
                                 <Table>
                                 <TableBody>
                                   { position && position?.characters_value?.map((character, index) => (
-                                    
-                                    <TableRow key={index}>
+                                    <Fragment key={index}>
+                                    <TableRow>
+                                       <TableCell>
+                                        <IconButton onClick={() => toggleRow(position?.id, index)}>
+                                          {openRows[position?.id] === index ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                                        </IconButton>
+                                    </TableCell>
                                       <TableCell>
                                         <Typography>{character?.character?.name}</Typography>
                                       </TableCell>
-                                      <TableCell>
-  <Box
-    sx={{
-      maxHeight: 80,              // Limit visible height (2 Chip rows)
-      overflowY: 'auto',
-       display: 'flex',
-       flexWrap: 'wrap',  
-       alignContent: 'flex-start',
-      pr: 1,  
-    }}
-  >
-                                         {character?.party_weapon?.map((weapon, index) => (
-                                        weapon.weapon?.perks?.map((perk, index) => (
-                                          <Chip
-                                          key={index}
-                                          label={perk?.perk?.name}
-                                          color="secondary"
-                                          variant={ "contained" }
-                                            sx={{mr: 1, mb: 1, fontSize: '16px'}}
-                                          />
-                                        ))
-                                    ))
-                                }
-                                         {character?.party_artifact?.map((artifact, index) => (
-                                        artifact.artifact?.perks?.map((perk, index) => (
-                                          <Chip
-                                          key={index}
-                                          label={perk?.perk?.name}
-                                          color="info"
-                                          variant={ "contained" }
-                                            sx={{mr: 1, mb: 1, fontSize: '16px'}}
-                                          />
-                                        ))
-                                    ))
-                                }
-                                        {
-                                          character?.character?.perks.map((perk, index) => (
-                                            <Chip
-                                              key={index}
-                                              label={perk.perk.name}
-                                              color="primary"
-                                              variant="contained"
-                                              sx={{mr: 1, mb: 1, fontSize: '16px'}}
-                                            />
-                                          ))
-                                        }
-                                        </Box>
-                                      </TableCell>
+                                     
                                       
                                       <TableCell>
                                         <Typography>{character?.party_weapon[0]?.weapon?.name}</Typography>
@@ -685,7 +654,7 @@ export default function Party() {
                                         <Typography>{character?.party_artifact[0]?.artifact?.name}</Typography>
                                       </TableCell>
                                       <TableCell>
-                                            <Box display="flex" justifyContent="flex-end" alignItems="center">
+                                            <Box display="flex" justifyContent="flex-end" alignItems="center" flexWrap="wrap" gap={1}>
                                               <IconButton
                                                 color="primary"
                                                 onClick={(e) => {
@@ -730,6 +699,70 @@ export default function Party() {
                                           </Box>
                                       </TableCell>
                                     </TableRow>
+                                    <TableRow>
+                                        <TableCell sx={{padding: 0}}>
+                                                <Collapse in={openRows[position?.id] === index}>
+                                                <Box
+                                              sx={{
+                                                p: 2,  
+                                              }}
+                                            >
+                                                <Typography>Perks</Typography>
+                                                </Box>
+                                                </Collapse>
+                                        </TableCell>
+                                        <TableCell colSpan={4} sx={{padding: 0}}>
+                                          <Collapse in={openRows[position?.id] === index}>
+  <Box
+    sx={{
+      maxHeight: 87,              // Limit visible height (2 Chip rows)
+      overflowY: 'auto',
+       display: 'flex',
+       flexWrap: 'wrap',  
+       alignContent: 'flex-start',
+      p: 1,  
+    }}
+  >
+                                         {character?.party_weapon?.map((weapon, index) => (
+                                        weapon.weapon?.perks?.map((perk, index) => (
+                                          <Chip
+                                          key={index}
+                                          label={perk?.perk?.name}
+                                          color="secondary"
+                                          variant={ "contained" }
+                                            sx={{mr: 1, mb: 1, fontSize: '16px'}}
+                                          />
+                                        ))
+                                    ))
+                                }
+                                         {character?.party_artifact?.map((artifact, index) => (
+                                        artifact.artifact?.perks?.map((perk, index) => (
+                                          <Chip
+                                          key={index}
+                                          label={perk?.perk?.name}
+                                          color="info"
+                                          variant={ "contained" }
+                                            sx={{mr: 1, mb: 1, fontSize: '16px'}}
+                                          />
+                                        ))
+                                    ))
+                                }
+                                        {
+                                          character?.character?.perks.map((perk, index) => (
+                                            <Chip
+                                              key={index}
+                                              label={perk.perk.name}
+                                              color="primary"
+                                              variant="contained"
+                                              sx={{mr: 1, mb: 1, fontSize: '16px'}}
+                                            />
+                                          ))
+                                        }
+                                        </Box>
+                                        </Collapse>
+                                      </TableCell>
+                                    </TableRow>
+                                    </Fragment>
                                   ))}
                                 </TableBody>
                                 </Table>
