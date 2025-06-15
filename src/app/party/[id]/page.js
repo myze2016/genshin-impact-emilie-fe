@@ -22,6 +22,13 @@ import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
 import CustomConfirmDialog from "@/components/dialog/confirm";
 import ConstructionOutlinedIcon from '@mui/icons-material/ConstructionOutlined';
 import CompostOutlinedIcon from '@mui/icons-material/CompostOutlined';
+import { getArtifacts } from "@/hooks/useArtifact";
+import { getWeapons } from "@/hooks/useWeapon";
+import AddArtifacts from "../form/AddArtifacts";
+import weaponTable from "../table/weaponTable";
+import artifactTable from "../table/artifactTable";
+import { getWeaponSearch } from "@/hooks/useWeapon";
+import { getArtifactSearch } from "@/hooks/useArtifact";
 
 export default function Party() {
   const router = useRouter()
@@ -59,6 +66,24 @@ export default function Party() {
   const [searchCommons, setSearchCommons] = useState('')
   const { data: commonsData, loading: commonsLoading } = getCommons(commonsPayload, refetchCommons, searchCommons)
 
+  const [artifactsDialog, setArtifactsDialog] = useState(false)
+  const [artifactPage, setArtifactPage] = useState(0)
+  const [artifactPayload, setArtifactPayload] = useState('')
+  const [artifactRefetch, setArtifactRefech] = useState(false)
+  const [artifactSearch, setArtifactSearch] = useState('')
+  const [artifactSearchInput, setArtifactSearchInput] = useState('')
+  const [artifactRowsPerPage, setArtifactRowsPerPage] = useState(10)
+  const { data: artifacts, loading: artifactsLoading, total: artifactsTotal } = getArtifactSearch(artifactPayload, artifactRefetch, artifactSearch, artifactPage+1, artifactRowsPerPage)
+
+  const [weaponsDialog, setWeaponsDialog] = useState(false)
+  const [weaponsPage, setWeaponsPage] = useState(0)
+  const [weaponsPayload, setWeaponsPayload] = useState('')
+  const [weaponsRefetch, setWeaponsRefetch] = useState(false)
+  const [weaponsSearch, setWeaponsSearch] = useState('')
+  const [weaponsSearchInput, setWeaponsSearchInput] = useState('')
+  const [weaponsRowsPerPage, setWeaponsRowsPerPage] = useState(10)
+  const { data: weapons, loading: weaponsLoading, total: weaponsTotal } = getWeaponSearch(weaponsPayload, weaponsRefetch, weaponsSearch, weaponsPage+1, weaponsRowsPerPage)
+
   const [addPositionDialog, setAddPositionDialog] = useState(false)
   const [addCharacterPositionDialog, setAddCharacterPositionDialog] = useState(false)
 
@@ -95,6 +120,29 @@ export default function Party() {
     }, 300)
     return () => clearTimeout(timeout)
   }, [searchCharactersInput])
+
+
+    const handleSearchArtifacts = (search) => {
+      setArtifactSearchInput(search)
+    }
+  
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setArtifactSearch(artifactSearchInput)
+    }, 300)
+    return () => clearTimeout(timeout)
+  }, [artifactSearchInput])
+
+    const handleSearchWeapons = (search) => {
+      setWeaponsSearchInput(search)
+    }
+  
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setWeaponsSearch(weaponsSearchInput)
+    }, 300)
+    return () => clearTimeout(timeout)
+  }, [weaponsSearchInput])
 
    const changeFormData = (e, formData, setFormData) => {
     const { name, value } = e.target
@@ -176,6 +224,11 @@ export default function Party() {
     setPositionId(position.id)
   }
 
+   const handleOpenPerksDialog = (position) => {
+    
+  }
+
+
   const handleClickAddCharacterPosition = async (character) => {
     const payload = {
         character_id: character?.id,
@@ -221,6 +274,27 @@ export default function Party() {
     setCharactersRows(parseInt(e.target.value, 10));
     setCharactersPage(0);
   };
+
+
+  const handleArtifactsPage = (e, page) => {
+    setArtifactPage(page);
+  };
+
+  const handleArtifactsRowPerPage = (e) => {
+    setArtifactRowsPerPage(parseInt(e.target.value, 10));
+    setArtifactPage(0);
+  };
+
+    const handleWeaponsPage = (e, page) => {
+    setWeaponsPage(page);
+  };
+
+  const handleWeaponsRowPerPage = (e) => {
+    setWeaponsRowsPerPage(parseInt(e.target.value, 10));
+    setWeaponsPage(0);
+  };
+
+
 
   const handleRemoveCharacter = async (character) => {
       setApiLoading(true)
@@ -289,7 +363,60 @@ export default function Party() {
       })
     }, [partyData])
 
+
+
+       const handleAddWeapon = async (weapon) => {
+        const payload = {
+          weapon_id: weapon?.id,
+          character_id: characterId
+        };
+        let response = await addCharacterWeapon(payload)
+        if (response?.data?.success) {
+          setRefetchWeapons((prev) => !prev)
+        }
+      }
+    
+    
+      const handleRemoveWeapon = async (weapon) => {
+        const payload = {
+          weapon_id: weapon?.id,
+          character_id: characterId
+        };
+        let response = await removeCharacterWeapon(payload)
+        if (response?.data?.success) {
+          setRefetchWeapons((prev) => !prev)
+        }
+      }
+    
+       const handleAddArtifact = async (artifact) => {
+        const payload = {
+          artifact_id: artifact?.id,
+          character_id: characterId
+        };
+        let response = await addCharacterArtifact(payload)
+        if (response?.data?.success) {
+          setRefetchArtifacts((prev) => !prev)
+          
+        }
+      }
+    
+    
+      const handleRemoveArtifact = async (artifact) => {
+        const payload = {
+          artifact_id: artifact?.id,
+          character_id: characterId
+        };
+        let response = await removeCharacterArtifact(payload)
+        if (response?.data?.success) {
+          setRefetchArtifacts((prev) => !prev)
+        }
+      }
+    
+    
+
   const { columns } = characterTable({handleClickAddCharacterPosition})
+  const { columns: artifactColumns } = artifactTable({handleAddArtifact, handleRemoveArtifact})
+  const { columns: weaponColumns } = weaponTable({handleAddWeapon, handleRemoveWeapon})
 
   return (
     <>
@@ -343,6 +470,44 @@ export default function Party() {
                                   handleChangeRowsPerPage={handleCharactersRowsPerPage} 
                                   total={charactersTotal}
                                   loading={charactersLoading}
+                                  />}
+            />
+            <CustomTableDialog open={artifactsDialog}
+              size="md"
+              handleClose={(e)=>setArtifactsDialog(false)} 
+              handleConfirm={(e)=>setArtifactsDialog(false)}  
+              title="Add Artifacts" 
+              content={<AddArtifacts columns={artifactColumns}
+                                  data={artifacts}
+                                  handleSearch={handleSearchArtifacts}
+                                  searchInput={artifactSearchInput}
+                                  handleChip={handleClickCommon}
+                                  chipData={commonsData}
+                                  page={artifactPage} 
+                                  handleChangePage={handleArtifactsPage} 
+                                  rowsPerPage={artifactRowsPerPage}
+                                  handleChangeRowsPerPage={handleArtifactsRowPerPage} 
+                                  total={artifactsTotal}
+                                  loading={artifactsLoading}
+                                  />}
+            />
+              <CustomTableDialog open={weaponsDialog}
+              size="md"
+              handleClose={(e)=>setWeaponsDialog(false)} 
+              handleConfirm={(e)=>setWeaponsDialog(false)}  
+              title="Add Artifacts" 
+              content={<AddArtifacts columns={weaponColumns}
+                                  data={weapons}
+                                  handleSearch={handleSearchWeapons}
+                                  searchInput={weaponsSearchInput}
+                                  handleChip={handleClickCommon}
+                                  chipData={commonsData}
+                                  page={weaponsPage} 
+                                  handleChangePage={handleWeaponsPage} 
+                                  rowsPerPage={weaponsRowsPerPage}
+                                  handleChangeRowsPerPage={handleWeaponsRowPerPage} 
+                                  total={weaponsTotal}
+                                  loading={weaponsLoading}
                                   />}
             />
       <Grid container spacing={2}>
@@ -460,7 +625,9 @@ export default function Party() {
                                 <Table>
                                 <TableBody>
                                   { position && position?.characters_value?.map((character, index) => (
+                                    
                                     <TableRow key={index}>
+                                      {console.log('party_weapon', character?.party_weapon[0])}
                                       <TableCell>
                                         <Typography>{character?.character?.name}</Typography>
                                       </TableCell>
@@ -475,7 +642,7 @@ export default function Party() {
       pr: 1,  
     }}
   >
-                                         {character?.character?.weapons?.map((weapon, index) => (
+                                         {character?.party_weapon?.map((weapon, index) => (
                                         weapon.weapon?.perks?.map((perk, index) => (
                                           <Chip
                                           key={index}
@@ -487,7 +654,7 @@ export default function Party() {
                                         ))
                                     ))
                                 }
-                                         {character?.character?.artifacts?.map((artifact, index) => (
+                                         {character?.party_artifact?.map((artifact, index) => (
                                         artifact.artifact?.perks?.map((perk, index) => (
                                           <Chip
                                           key={index}
@@ -514,17 +681,17 @@ export default function Party() {
                                       </TableCell>
                                       
                                       <TableCell>
-                                        <Typography>{character?.character?.weapons[0]?.weapon.name}</Typography>
+                                        <Typography>{character?.party_weapon[0]?.weapon?.name}</Typography>
                                       </TableCell>
                                       <TableCell>
-                                        <Typography>{character?.character?.artifacts[0]?.artifact?.name}</Typography>
+                                        <Typography>{character?.party_artifact[0]?.artifact?.name}</Typography>
                                       </TableCell>
                                       <TableCell>
                                             <Box display="flex" justifyContent="flex-end" alignItems="center">
                                               <IconButton
                                                 color="primary"
                                                 onClick={(e) => {
-                                                  handleMoveVertical(character);
+                                                  setWeaponsDialog(true);
                                                 }}
                                               >
                                                 <ConstructionOutlinedIcon sx={{ fontSize: '24px' }} />
@@ -532,7 +699,7 @@ export default function Party() {
                                             <IconButton
                                                 color="primary"
                                                 onClick={(e) => {
-                                                  handleMoveVertical(character);
+                                                  setArtifactsDialog(true);
                                                 }}
                                               >
                                                 <CompostOutlinedIcon sx={{ fontSize: '24px' }} />

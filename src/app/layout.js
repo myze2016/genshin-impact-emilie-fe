@@ -40,6 +40,10 @@ export default function RootLayout({ children }) {
     const token = localStorage.getItem('token')
     if (!token && !hideNav) {
       router.push('/login');
+    } 
+
+    if (token && hideNav) {
+      router.push('/dashboard');
     }
   }, []);
 

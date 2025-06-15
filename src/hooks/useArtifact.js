@@ -5,6 +5,34 @@ import { toast, Slide } from "react-toastify"
 import { CustomToast } from "../components/CustomToast"
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 
+export const getArtifactsUser = (payload, refetch, search, page=1, rowsPerPage=99) => {
+  const [data, setData] = useState([])
+  const [total, setTotal] = useState([])
+  const [loading, setLoading] = useState(true)
+  useEffect(() => {
+    const fetchData = async () => {
+       setLoading(true)
+      try { 
+        const response = await api.get(`/artifact-user?search=${search}&page=${page}&rows_per_page=${rowsPerPage}`)
+         if (response?.data?.success) {
+          setData(response?.data?.artifacts?.data)
+          setTotal(response?.data?.artifacts?.total)
+        } else if (!response?.data?.message) {
+          toast.error(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+        } 
+      } catch (error) {
+        toast.error(error.response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+      } 
+       setLoading(false)
+    }
+
+    fetchData()
+  }, [payload, refetch, search, page, rowsPerPage])
+
+  return { data, loading, total }
+}
+
+
 export const getArtifacts = (payload, refetch, search, page=1, rowsPerPage=99) => {
   const [data, setData] = useState([])
   const [total, setTotal] = useState([])

@@ -32,6 +32,34 @@ export const getCharacters = (payload, refetch, search, page=1, rowsPerPage=99) 
   return { data, loading, total }
 }
 
+
+export const getCharactersArtifact = (payload, refetch, search, page=1, rowsPerPage=99) => {
+  const [data, setData] = useState([])
+  const [total, setTotal] = useState([])
+  const [loading, setLoading] = useState(true)
+  useEffect(() => {
+    const fetchData = async () => {
+       setLoading(true)
+      try {
+        const response = await api.get(`/character-artifact-user?search=${search}&artifact_id=${payload.id}&page=${page}&rows_per_page=${rowsPerPage}`)
+         if (response?.data?.success) {
+          setData(response?.data?.characters?.data)
+          setTotal(response?.data?.characters?.total)
+        } else if (!response?.data?.message) {
+          toast.error(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+        } 
+      } catch (error) {
+        toast.error(error.response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+      } 
+       setLoading(false)
+    }
+
+    fetchData()
+  }, [payload, refetch, search, page, rowsPerPage])
+
+  return { data, loading, total }
+}
+
 export const getCharactersName = (payload, refetch, search, page=0, rowsPerPage=100) => {
   const [data, setData] = useState([])
   const [total, setTotal] = useState([])

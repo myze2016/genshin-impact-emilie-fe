@@ -20,7 +20,6 @@ import { usePathname } from 'next/navigation';
 
 import MenuIcon from '@mui/icons-material/Menu';
 import HomeIcon from '@mui/icons-material/Home';
-import PersonIcon from '@mui/icons-material/Person';
 import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp';
 import ConstructionOutlinedIcon from '@mui/icons-material/ConstructionOutlined';
 import CompostOutlinedIcon from '@mui/icons-material/CompostOutlined';
@@ -31,13 +30,27 @@ import DashboardCustomizeIcon from '@mui/icons-material/DashboardCustomize';
 import ListAltIcon from '@mui/icons-material/ListAlt';
 import AppSettingsAltOutlinedIcon from '@mui/icons-material/AppSettingsAltOutlined';
 import ArchitectureOutlinedIcon from '@mui/icons-material/ArchitectureOutlined';
+import PersonAddAlt1OutlinedIcon from '@mui/icons-material/PersonAddAlt1Outlined';
+import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
+import AccountBoxOutlinedIcon from '@mui/icons-material/AccountBoxOutlined';
+import PersonIcon from '@mui/icons-material/Person';
+import AccountBoxIcon from '@mui/icons-material/AccountBox';
+import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
+import GroupAddIcon from '@mui/icons-material/GroupAdd';
+import GroupsIcon from '@mui/icons-material/Groups';
+import AssistantIcon from '@mui/icons-material/Assistant';
+import BuildCircleIcon from '@mui/icons-material/BuildCircle';
 
 
 const drawerWidth = 240;
 const collapsedWidth = 72;
 
 const navItems = [
-  { label: 'Character', href: '/characters', icon: <PersonIcon /> },
+   {
+    label: 'Character',
+    href: '/characters',
+    icon: <PersonIcon />
+  },
   { label: 'Perk', href: '/perks', icon: <ArrowCircleUpIcon /> },
   { label: 'Artifact', href: '/artifacts', icon: <CompostOutlinedIcon /> },
   { label: 'Weapon', href: '/weapons', icon: <ConstructionOutlinedIcon /> },
@@ -45,10 +58,14 @@ const navItems = [
     label: 'Party',
     icon: <GroupIcon />,
     children: [
-      { label: 'Parties', href: '/dashboard', icon: <ArchitectureOutlinedIcon  /> },
-      { label: 'My Parties', href: '/my-party', icon: <AppSettingsAltOutlinedIcon /> },
+      { label: 'Party', href: '/dashboard', icon: <GroupsIcon  /> },
+      { label: 'My Party', href: '/my-party', icon: <GroupAddIcon /> },
     ],
   },
+  { label: 'Abyss', href: '/abyss', icon: <AssistantIcon /> },
+  { label: 'My Artifact', href: '/my-artifact', icon: <BuildCircleIcon /> },
+   
+   
 ];
 
 export default function VerticalNav({ collapsed, setCollapsed }) {

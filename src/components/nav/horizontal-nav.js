@@ -12,6 +12,9 @@ import { getUser, logout } from '@/hooks/useAuth';
 import { useRouter } from 'next/navigation'
 import { useUser } from '@/context/UserContext';
 import AppSettingsAltOutlinedIcon from '@mui/icons-material/AppSettingsAltOutlined';
+import AssistantIcon from '@mui/icons-material/Assistant';
+import BuildCircleIcon from '@mui/icons-material/BuildCircle';
+import GroupAddIcon from '@mui/icons-material/GroupAdd';
 export default function Nav() {
     const { user } = useUser()
     const router = useRouter()
@@ -30,11 +33,9 @@ export default function Nav() {
 
   const navItems = [
     { label: 'Home', href: '/dashboard', icon: <HomeIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} /> },
-    { label: 'My Parties', href: '/my-party', icon: <AppSettingsAltOutlinedIcon/> },
-    { label: 'Character', href: '/characters', icon: <PersonIcon/> },
-    { label: 'Perk', href: '/perks', icon: <ArrowCircleUpIcon/> },
-    { label: 'Artifact', href: '/artifacts', icon: <CompostOutlinedIcon/> },
-    { label: 'Weapon', href: '/weapons', icon: <ConstructionOutlinedIcon/> },
+     { label: 'My Party', href: '/my-party', icon: <GroupAddIcon /> },
+     { label: 'Abyss', href: '/abyss', icon: <AssistantIcon /> },
+  { label: 'My Artifact', href: '/my-artifact', icon: <BuildCircleIcon /> },
   ]
 
   const handleLogout = async (e) => {
