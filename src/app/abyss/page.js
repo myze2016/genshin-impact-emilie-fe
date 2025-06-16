@@ -1,6 +1,6 @@
 'use client'
 
-import { Grid, Typography, Button, Card, CardContent, CardActionArea, IconButton, CardActions, TablePagination, Box} from "@mui/material"
+import { Table, TableBody, TableRow, TableCell, Autocomplete, Stack, Grid, Typography, Button, Card, CardContent, CardActionArea, IconButton, CardActions, TablePagination, Box, Paper, TextField, InputLabel, FormControl, Select, MenuItem} from "@mui/material"
 import { Fragment, useState, useEffect } from "react";
 import { getParties, addParty, addPartyImage, getPartiesUser } from "../../hooks/useParty";
 import AddParty from "./form/AddParty";
@@ -15,8 +15,27 @@ import CustomTableDialog from "@/components/dialog/table";
 import { getElements } from "@/hooks/useElements";
 import CustomSearch from "@/components/Search";
 import { useUser } from "@/context/UserContext";
+   
+import { getPerks } from "@/hooks/usePerk";
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import AutorenewIcon from '@mui/icons-material/Autorenew';
 
 export default function Dashboard() {
+
+  const [ perksPayload, setPerksPayload ] = useState('')
+  const [ refetchPerks, setRefetchPerks ] = useState(false)
+  const [ searchPerks, setSearchPerks ] = useState('')
+  const [ perksRows, setPerksRows ] = useState(1000)
+  const [ perksPage, setPerksPage ] = useState(0)
+  const { data: perksData, loading: perksLoading, total: perksTotal } = getPerks(perksPayload, refetchPerks, searchPerks, perksPage+1, perksRows)
+
+  const [ elementsPayload, setElementsPayload] = useState('')
+  const [ refetchElements, setRefetchElements] = useState(false)
+  const { data: elementsData, loading: elementsLoading } = getElements(elementsPayload, refetchElements)
+
+  const [variable, setVariable] = useState([]);
+ 
+
   const [refetchParties, setRefetchParties] = useState(false)
   const [page, setPage] = useState(0)
   const [search, setSearch] = useState('')
@@ -25,9 +44,7 @@ export default function Dashboard() {
   const [partiesPayload, setPartiesPayload] = useState('')
   const { data: partiesData, loading: partiesLoading, total: partiesTotal } = getPartiesUser(partiesPayload, refetchParties, search, page+1, rowsPerPage)
 
-  const [ elementsPayload, setElementsPayload] = useState('')
-  const [ refetchElements, setRefetchElements] = useState(false)
-  const { data: elementsData, loading: elementsLoading } = getElements(elementsPayload, refetchElements)
+
 
   const [charactersPage, setCharactersPage] = useState(0)
   const [charactersPayload, setCharactersPayload] = useState('')
@@ -148,133 +165,153 @@ export default function Dashboard() {
     setPage(page);
   };
 
+  const handleAddVariation = () => {
+    setVariable((prev) => [
+      ...prev,
+      {
+        title: 'variable'
+      },
+    ])
+  };
+
+
+  const handleDeleteVariation = (index) => {
+     setVariable((prev) => prev.filter((_, i) => i !== index));
+  };
+
+
+
 
 
   return (
     <>
      { apiLoading && <Spinner /> }
-      <CustomDialog open={addPartyDialog}
-              size="sm"
-              handleClose={closeAddPartyDialog} 
-              handleConfirm={confirmAddPartyDialog}  
-              title="Add Party" 
-              content={<AddParty partyFormData={partyFormData} 
-                                 setPartyFormData={setPartyFormData}
-                                 changeFormData={changeFormData}
-                                 options={elementsData} />}
-            />
-      <CustomTableDialog open={addImageDialog}
-              size="lg"
-              handleClose={closeAddImageDialog} 
-              handleConfirm={closeAddImageDialog}  
-              title="Add Party Image" 
-              content={<AddPartyImage 
-                                 charactersData={charactersData}
-                                 selectImage={selectImage}
-                                 charactersPage={charactersPage}
-                                 charactersTotal={charactersTotal}
-                                  clickCharactersPage={clickCharactersPage} 
-                                  charactersRows={charactersRows} 
-                                  selectCharactersRows={selectCharactersRows}
-                                  search={searchCharactersInput}
-                                  setSearch={setSearchCharactersInput} />}
-            />
-       
+     
       <Grid container spacing={2}>
-        <Grid item size={8}>
-         
-        </Grid>
-        <Grid item size={4} >
-            <Grid container  justifyContent="flex-end" spacing={2} >
-            <CustomSearch  search={searchInput}
-              handleSearch={handleSearch}
-              fullWidth={false}>
-            </CustomSearch>
-          </Grid>
-        </Grid>
-        <Grid item size={12}>
-
-       
-          <Grid container spacing={2}>
-            {
-              partiesData && partiesData?.map((party, index) => (
-                <Fragment key={index}>
-                    <Card
-                    sx={{
-                      width: 345,
-                      height: 160,
-                      backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.4), rgba(0,0,0,0.8)), url(${party?.character?.gacha_splash_url})`,
-                      backgroundSize: 'cover',
-                      backgroundPosition: 'top',
-                      overflowY: 'auto',
-                      position: 'relative'
-                    }}
-                  >
-                    <CardActionArea
-                      component="a"
-                      href={`/party/${party.id}`}
-                      sx={{ height: '100%', display: 'block' }}
-                    >
-                      <CardContent
-                        sx={{
-                          height: '100%',
-                          pt: 2,
-                          px: 2
+                <Grid item size={{xs: 12, md: 12, lg: 12}}>
+          <Button  startIcon={<AddCircleOutlineIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} />} 
+                                      sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }, mr: 1, mb: 1}} onClick={(e) => handleAddVariation()} variant="contained">Add Variable</Button>
+              </Grid>
+        <Grid item size={{xs: 12, md: 12, lg: 12}}>
+              <Grid container spacing={2}>
+                 { variable?.map((item, index) => (
+                  <Fragment key={index} >
+                    <Grid item size={{xs: 12, md: 12, lg: 12}}>
+                      <Paper
+                        elevation={3}
+                        sx={{    // ✅ Ensures full width
+                          padding: 2
                         }}
                       >
+                        <Grid container spacing={2}>
+                          <Grid item size={{xs: 12, md: 12, lg: 12}}>
+                             <Grid container spacing={2}>
+                              <Grid item size={{xs: 3, md: 3, lg: 3}}>
+                                 <TextField fullWidth name="reaction" label="Reaction" variant="outlined" />
+                              </Grid>
+                               <Grid item size={{xs: 3, md: 3, lg: 3}}>
+                                <FormControl fullWidth>
+                                  <InputLabel id="element-label" >
+                                      Element
+                                  </InputLabel>
+                                 <Select
+                                     
+                                        id="element-label"
+                                        name="element_id"
+                                        label="Element"
+                                    >
+                                        {elementsData.map((option, index) => (
+                                            <MenuItem key={index} value={option.id}>
+                                                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                                    <Box
+                                                        sx={{
+                                                            width: 16,
+                                                            height: 16,
+                                                            backgroundColor: option.color,
+                                                            borderRadius: '4px',
+                                                            marginRight: 1,
+                                                            display: 'inline-block',
+                                                        }}
+                                                    />
+                                                    {option.name}
+                                                </Box>
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                  </FormControl>
+                              </Grid>
+                                  <Grid item size={{xs: 2, md: 2, lg: 2}}>
+                                <Stack spacing={3} >
+                                    <Autocomplete
+                                      multiple
+                                      options={perksData}
+                                      getOptionLabel={(option) => option?.name}
+                                      renderInput={(params) => (
+                                        <TextField
+                                          {...params}
+                                          variant="outlined"
+                                          label="Perks"
+                                          placeholder="Perks"
+                                        />
+                                      )}
+                                    />
+                                </Stack>
+                                </Grid>
+                               <Grid item size={{xs: 2, md: 2, lg: 2}}>
+                                <FormControl fullWidth>
+                                  <InputLabel id="select-label">Choose Option</InputLabel>
+                                  <Select
+                                    labelId="select-label"
+                                    label="Choose Option"
+                                    defaultValue="party"
+                                  >
+                                    <MenuItem value="party"> All Party </MenuItem>
+                                    <MenuItem value="my-party"> My Party</MenuItem>
+                                  </Select>
+                                </FormControl>
+                                </Grid>
+                                   <Grid item sx={{display: 'flex', justifyContent: 'flex-end', alignItems: 'center'}} size={{xs: 2, md: 2, lg: 2}}>
+                                     
+                                        <IconButton
+                                            color="info"
+                                            onClick={(e) => handleDeleteVariation(index)}
+                                          >
+                                            <AutorenewIcon sx={{ fontSize: '24px' }} />
+                                        </IconButton>
+                                        <IconButton
+                                            color="error"
+                                            onClick={(e) => handleDeleteVariation(index)}
+                                          >
+                                            <DeleteOutlineIcon sx={{ fontSize: '24px' }} />
+                                        </IconButton>
+                                     
+                                  
+                                  </Grid>
+                                </Grid>
+                          </Grid>
+                          <Grid item size={{xs: 12, md: 12, lg: 12}}>
+                            <Table>
+                                <TableBody>
+                                
+                                    <TableRow >
+                                      <TableCell>
+                                        <Typography>asdasd</Typography>
+                                      </TableCell>
+                                      <TableCell>
+                                        <Typography>asdasd</Typography>
+                                      </TableCell>
+                                    </TableRow>
+                                </TableBody>
+                              </Table>
+                          </Grid>
+                        </Grid>
+                      </Paper>
                        
-                          <Typography gutterBottom variant="h6" component="div">
-                        <Box component="span" color="secondary.main">
-                          {party?.copied_from?.name}
-                        </Box>
-                        <Box component="span" color="text.primary">
-                          {' | ' + party?.name}
-                        </Box>
-                      </Typography>
-                        <Typography variant="body2" color="text.primary">
-                          {party?.description}
-                        </Typography>
-                      </CardContent>
-                    </CardActionArea>
-
-                   
-                    <IconButton
-                      color="primary"
-                      onClick={(e) => {
-                        e.stopPropagation(); // prevent navigation
-                        e.preventDefault();
-                        clickAddPartyImage(e, party);
-                      }}
-                      sx={{ position: 'absolute', top: 8, right: 8 }}
-                    >
-                      <AddCircleOutlineIcon sx={{ fontSize: '28px' }} />
-                    </IconButton>
-                  </Card>
-                </Fragment>
-              ))
-            }
-          </Grid>
-        </Grid>
-        <Grid item size={{xs: 12, md: 12, lg: 12}}>
-            <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'flex-end', // or 'flex-end'
-              mt: 4,
-            }}
-          >
-
-              <TablePagination
-                component="div"
-                count={partiesTotal}
-                page={page}
-                onPageChange={handleChangePage}
-                rowsPerPage={rowsPerPage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-                rowsPerPageOptions={[5, 10, 25, 50]}
-            />
-              </Box>
-
+                    </Grid>
+                        </Fragment>
+                 ))}
+              </Grid>
+         
         </Grid>
       </Grid>
       
