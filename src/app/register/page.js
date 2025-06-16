@@ -32,7 +32,10 @@ export default function Register() {
     try {
       const payload = { name, email, password }
       const response = await register(payload)
-      console.log('response', response)
+      if (response?.data?.success) {
+        localStorage.setItem('token', response?.data?.token)
+        router.push('/dashboard')
+      }
       // TODO: redirect or toast
     } catch (err) {
       setError('Something went wrong.')

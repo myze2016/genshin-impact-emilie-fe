@@ -178,53 +178,94 @@ export default function Nav() {
             ))}
             {!false && true && (
     <>
-      <Tooltip title="Account settings">
-        <IconButton
-          onClick={handleMenuOpen}
-          sx={{ ml: 1 }}
-          size="small"
-        >
-          <Avatar sx={{ width: 32, height: 32 }}>
-            {console.log(user)}
-           {user?.name?.charAt(0).toUpperCase() || 'U'} 
-          </Avatar>
-        </IconButton>
-      </Tooltip>
+     <Tooltip title="Account settings" arrow>
+  <IconButton
+    onClick={handleMenuOpen}
+    sx={{
+      ml: 1,
+      p: 0.5,
+      bgcolor: 'background.paper',
+      borderRadius: '50%',
+      transition: 'all 0.3s ease',
+      '&:hover': {
+        bgcolor: 'primary.main',
+        transform: 'scale(1.05)',
+        boxShadow: '0 0 10px rgba(129, 199, 132, 0.4)',
+      },
+    }}
+    size="small"
+  >
+    <Avatar
+      sx={{
+        width: 40,
+        height: 40,
+        bgcolor: 'primary.main',
+        color: 'background.default',
+        fontFamily: 'Cinzel, serif',
+        fontWeight: 700,
+        fontSize: '1.15rem',
+        boxShadow: '0 2px 12px rgba(129, 199, 132, 0.5)',
+      }}
+    >
+      {user?.name?.charAt(0).toUpperCase() || 'U'}
+    </Avatar>
+  </IconButton>
+</Tooltip>
 
-      <Menu
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleMenuClose}
-        onClick={handleMenuClose}
-        PaperProps={{
-          elevation: 3,
-          sx: {
-            mt: 1.5,
-            minWidth: 160,
-            borderRadius: 2,
-            overflow: 'visible',
-            '& .MuiAvatar-root': {
-              width: 24,
-              height: 24,
-              ml: -0.5,
-              mr: 1,
-            },
-          },
-        }}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'right',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
-        }}
-      >
-        <MenuItem disabled>
-          <Avatar /> {user?.name}
-        </MenuItem>
-        <MenuItem onClick={(e) =>  handleLogout(e)}>Logout</MenuItem>
-      </Menu>
+<Menu
+  anchorEl={anchorEl}
+  open={open}
+  onClose={handleMenuClose}
+  onClick={handleMenuClose}
+  PaperProps={{
+    elevation: 10,
+    sx: {
+      mt: 1.8,
+      minWidth: 220,
+      px: 1,
+      py: 1,
+      borderRadius: 3,
+      bgcolor: 'background.paper',
+      color: 'text.primary',
+      fontFamily: 'Cinzel, serif',
+      boxShadow: '0 12px 36px rgba(0,0,0,0.45)',
+      '& .MuiAvatar-root': {
+        width: 28,
+        height: 28,
+        fontSize: '0.9rem',
+        bgcolor: 'primary.main',
+        color: 'background.default',
+        fontWeight: 600,
+      },
+      '& .MuiMenuItem-root': {
+        borderRadius: 2,
+        py: 1.2,
+        px: 2,
+        fontWeight: 500,
+        transition: 'background 0.25s ease, transform 0.2s ease',
+        '&:hover': {
+          bgcolor: 'primary.main',
+          color: 'background.default',
+          transform: 'scale(1.02)',
+          boxShadow: '0 3px 14px rgba(129, 199, 132, 0.4)',
+        },
+      },
+    },
+  }}
+  anchorOrigin={{
+    vertical: 'bottom',
+    horizontal: 'right',
+  }}
+  transformOrigin={{
+    vertical: 'top',
+    horizontal: 'right',
+  }}
+>
+  <MenuItem disabled sx={{ color: 'text.primary' }}>
+    <Avatar sx={{ mr: 1 }} /> {user?.name}
+  </MenuItem>
+  <MenuItem onClick={handleLogout}>Logout</MenuItem>
+</Menu>
     </>
   )}
           </Box>

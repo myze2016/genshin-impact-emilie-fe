@@ -25,8 +25,8 @@ export default function EmilieLogin() {
     console.log({ email, password })
     const response = await login(formData)
     if (response?.data?.token) {
-      router.push('/dashboard')
       localStorage.setItem('token', response?.data?.token)
+      router.push('/dashboard')
     } else {
       alert('invalid cred')
     }
