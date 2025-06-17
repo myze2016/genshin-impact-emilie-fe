@@ -3,14 +3,21 @@ import { TableContainer, Paper, Table, TableHead, TableRow, TableBody, TableCell
 const CustomTableRowSearchV2 = ({ minWidth=650, headers=[], data=[], chipData=[], handleSearch=((e) => {}), handleSearchChip=((e) => {}), dataChips=[], search="", loading=false, apiLoading=false, page=0, handleChangePage=(()=>{}), rowsPerPage=5, handleChangeRowsPerPage=(()=>{}), total=10, }) => {
     return (
         <>
-        <TableContainer sx={{width: '100%'}} component={Paper}>
-            <Table sx={{overflowY: 'auto'}}>
+        <TableContainer sx={{ height: '168px', width: '100%', overflow: 'hidden'}} component={Paper}>
+            <Table>
                 <TableBody>
-                    {
-                            <TableRow>
-                        <TableCell colSpan={headers.length}>
-                            <Stack direction="row"
-                                sx={{ flexWrap: 'wrap', rowGap: 1 }}>
+                       <TableRow>
+                        <TableCell colSpan={headers.length}
+                            sx={{
+                                p: 0,
+                                position: 'sticky',
+                                top: 0,
+                                backgroundColor: 'background.paper', 
+                                zIndex: 10,
+                            }}>
+                              <Stack direction="row"
+                                sx={{  pt: 1, pb: 2, flexWrap: 'wrap', rowGap: 1, height: 128,         
+    overflowY: 'auto'}}>
                                 {   chipData.map((chip, index) => (
                                         <Chip
                                             key={index}
@@ -23,21 +30,6 @@ const CustomTableRowSearchV2 = ({ minWidth=650, headers=[], data=[], chipData=[]
                                     ))
                                 }
                             </Stack>
-                        </TableCell>
-                    </TableRow>
-                    }
-                    
-                </TableBody>
-                <TableBody>
-                    <TableRow>
-                        <TableCell colSpan={headers.length}
-                            sx={{
-                                p: 0,
-                                position: 'sticky',
-                                top: 0,
-                                backgroundColor: 'background.paper', 
-                                zIndex: 10,
-                            }}>
                             <CustomSearch
                                 fullWidth={true}
                                 search={search}
@@ -46,9 +38,18 @@ const CustomTableRowSearchV2 = ({ minWidth=650, headers=[], data=[], chipData=[]
                         </TableCell>
                     </TableRow>
                 </TableBody>
-                <TableBody>
+            </Table>
+        </TableContainer>
+        <TableContainer sx={{ height: '400px', width: '100%'}} component={Paper}>
+            <Table>
+                <TableBody >
+                   
                  
-                                <TableRow sx={{borderBottom: `1.5px solid #a9cbb3`}}>
+                                <TableRow sx={{borderBottom: `1.5px solid #a9cbb3`,  p: 0,
+                                position: 'sticky',
+                                top: 0,
+                                backgroundColor: 'background.paper', 
+                                zIndex: 10,}}>
                         {headers.map((header, index) => (
                             header?.width ? (<TableCell  sx={{
                                     // backgroundColor: '#81c784',
@@ -68,7 +69,7 @@ const CustomTableRowSearchV2 = ({ minWidth=650, headers=[], data=[], chipData=[]
                     </TableRow>
                     
                 </TableBody>
-                <TableBody>
+                <TableBody sx={{height: '200px', overflowY: 'auto'}}>
                        {
                         loading ? <TableRow>
                               <TableCell colSpan={headers.length} align="center">
@@ -76,6 +77,7 @@ const CustomTableRowSearchV2 = ({ minWidth=650, headers=[], data=[], chipData=[]
                                 </TableCell></TableRow> : (
                         data.map((value, index) => (
                             <TableRow
+                             sx={{borderBottom: `1.5px solid #a9cbb3`}}
                             key={index}
                             >
                             {headers.map((header, index) => (
