@@ -15,8 +15,9 @@ import AppSettingsAltOutlinedIcon from '@mui/icons-material/AppSettingsAltOutlin
 import AssistantIcon from '@mui/icons-material/Assistant';
 import BuildCircleIcon from '@mui/icons-material/BuildCircle';
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
+
 export default function Nav() {
-    const { user } = useUser()
+    const { user, partyContextId, setPartyContextId } = useUser()
     const router = useRouter()
   const theme = useTheme()
 
@@ -32,6 +33,7 @@ export default function Nav() {
   }
 
   const navItems = [
+     { label: 'Party', href: '/party', icon: <GroupAddIcon />, hidden: !partyContextId  },
     { label: 'Home', href: '/dashboard', icon: <HomeIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} /> },
      { label: 'My Party', href: '/my-party', icon: <GroupAddIcon /> },
      { label: 'Abyss', href: '/abyss', icon: <AssistantIcon /> },
@@ -165,6 +167,7 @@ export default function Nav() {
           <Box sx={{ display: 'flex', gap: 2.5, mr: 2 }}>
             {navItems.map((item) => (
               <Button
+                hidden={item.hidden}
                 startIcon={item.icon}
                 key={item.href}
                 component={Link}

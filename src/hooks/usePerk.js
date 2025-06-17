@@ -27,7 +27,7 @@ export const getPerks = (payload, refetch, search, page=0, rowsPerPage=100) => {
     fetchData()
   }, [payload, refetch, search, page, rowsPerPage])
 
-  return { data, loading }
+  return { data, loading, total }
 }
 
 export const addPerk = async (payload) => {

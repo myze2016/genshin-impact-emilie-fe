@@ -15,8 +15,11 @@ import CustomTableDialog from "@/components/dialog/table";
 import { getElements } from "@/hooks/useElements";
 import CustomSearch from "@/components/Search";
 import { useUser } from "@/context/UserContext";
+import { useRouter } from "next/navigation";
 
 export default function Dashboard() {
+   const { user, partyContextId, setPartyContextId } = useUser()
+    const router = useRouter()
   const [refetchParties, setRefetchParties] = useState(false)
   const [page, setPage] = useState(0)
   const [search, setSearch] = useState('')
@@ -148,6 +151,11 @@ export default function Dashboard() {
     setPage(page);
   };
 
+    const handleRedirectParty = (e, id) => {
+    setPartyContextId(id)
+    router.push('/party');
+  }
+
 
 
   return (
@@ -212,7 +220,7 @@ export default function Dashboard() {
                   >
                     <CardActionArea
                       component="a"
-                      href={`/party/${party.id}`}
+                       onClick={(e)=> handleRedirectParty(e, party.id)}
                       sx={{ height: '100%', display: 'block' }}
                     >
                       <CardContent

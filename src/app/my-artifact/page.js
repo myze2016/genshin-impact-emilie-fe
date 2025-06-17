@@ -216,7 +216,7 @@ useEffect(() => {
   };
 
   const handleChangePerksRowsPerPage = (e) => {
-    setPerksRows(parseInt(e.target.value, 10));
+    setPerksRowsPerPage(parseInt(e.target.value, 10));
     setPerksPage(0);
   };
 

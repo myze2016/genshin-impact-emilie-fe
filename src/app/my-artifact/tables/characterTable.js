@@ -2,8 +2,17 @@ import { TableCell, Button, IconButton, Box, Stack, Chip, Typography } from "@mu
 import { Fragment } from "react"
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import ReplyAllIcon from '@mui/icons-material/ReplyAll';
+import { useUser } from "@/context/UserContext";
+import { useRouter } from "next/navigation";
 
 const characterTable = ({handleViewParty}) => {
+    const { user, partyContextId, setPartyContextId } = useUser()
+      const router = useRouter()
+
+         const handleRedirectParty = (e, id) => {
+    setPartyContextId(id)
+    router.push('/party');
+  }
 
   const columns = [
     { name: 'Element', value: 'element', width: '80px',  cell: (item,index) => {
@@ -42,7 +51,7 @@ const characterTable = ({handleViewParty}) => {
              
               <TableCell key={index} align="left">  
                 <Button color="info" startIcon={<ReplyAllIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} />} 
-                                      sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }}}  href={`/party/${item?.party_position?.party.id}`} variant="contained" size="small"> View Party</Button>
+                                      sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }}}  onClick={(e) => handleRedirectParty(e,item?.party_position?.party.id)}  variant="contained" size="small"> View Party</Button>
                  
               </TableCell>
             </Fragment>

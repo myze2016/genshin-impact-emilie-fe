@@ -1,6 +1,6 @@
 'use client'
 import { Grid, Button } from "@mui/material"
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { addCommon, getCommons, removeCommon } from "@/hooks/useCommon";
 import { addPerk, getPerks, removePerk } from "@/hooks/usePerk";
 import CustomDialog from "@/components/dialog";
@@ -11,13 +11,14 @@ import AddPerkForm from "./forms/AddPerkForm";
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import Spinner from "@/components/Spinner";
-
+import CustomSearch from "@/components/Search";
 
 
 export default function Page() {
   const [ perksPayload, setPerksPayload ] = useState('')
   const [ refetchPerks, setRefetchPerks ] = useState(false)
   const [ searchPerks, setSearchPerks ] = useState('')
+    const [ searchPerksInput, setSearchPerksInput ] = useState('')
   const [ perksRows, setPerksRows ] = useState(10)
   const [ perksPage, setPerksPage ] = useState(0)
   const { data: perksData, loading: perksLoading, total: perksTotal } = getPerks(perksPayload, refetchPerks, searchPerks, perksPage+1, perksRows)
@@ -145,6 +146,20 @@ export default function Page() {
     setPerksRows(parseInt(e.target.value, 10));
     setPerksPage(0);
   };
+
+
+    useEffect(() => {
+      const timeout = setTimeout(() => {
+        setSearchPerks(searchPerksInput)
+      }, 300)
+  
+      return () => clearTimeout(timeout)
+    }, [searchPerksInput])
+  
+  
+     const handleSearch = (search) => {
+      setSearchPerksInput(search)
+    }
   
   const { columns } = perkTable({handleRemovePerk})
   
@@ -176,12 +191,20 @@ export default function Page() {
                               handleClear={handleClear} />}
       />
       <Grid container spacing={2}>
-        <Grid size={12}>
+        <Grid size={8}>
             <Button startIcon={<AddCircleOutlineIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} />} 
                                                   sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }, mr: 1}} onClick={openAddPerkDialog} variant="contained">Add Perk</Button>
             <Button startIcon={<MenuBookIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} />} 
                                                   sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }}} onClick={openAddCommonsDialog} variant="contained">Tag Common</Button>
         </Grid>
+         <Grid item size={4} >
+               <Grid container  justifyContent="flex-end" spacing={2} >
+                <CustomSearch  search={searchPerksInput}
+                  handleSearch={handleSearch}
+                  fullWidth={false}>
+                </CustomSearch>
+              </Grid>
+            </Grid>
         <Grid size={12}>
           <CustomTableV2 minWidth="650" headers={columns} data={perksData} page={perksPage} handleChangePage={clickPerksPage} rowsPerPage={perksRows} handleChangeRowsPerPage={selectPerksRows} total={perksTotal} loading={perksLoading} />
         </Grid>

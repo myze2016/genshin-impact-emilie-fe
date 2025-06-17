@@ -14,16 +14,18 @@ import { Add } from "@mui/icons-material";
 import CustomTableDialog from "@/components/dialog/table";
 import { getElements } from "@/hooks/useElements";
 import CustomSearch from "@/components/Search";
-import { useUser } from "@/context/UserContext";
    
 import { getPerks } from "@/hooks/usePerk";
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import AutorenewIcon from '@mui/icons-material/Autorenew';
 import { refetchAbyss } from "../../hooks/useParty";
 import ReplyAllIcon from '@mui/icons-material/ReplyAll';
+import { useUser } from "@/context/UserContext";
+import { useRouter } from "next/navigation";
 
 export default function Dashboard() {
-
+  const { user, partyContextId, setPartyContextId } = useUser()
+    const router = useRouter()
   const [ perksPayload, setPerksPayload ] = useState('')
   const [ refetchPerks, setRefetchPerks ] = useState(false)
   const [ searchPerks, setSearchPerks ] = useState('')
@@ -214,6 +216,11 @@ export default function Dashboard() {
   };
 
 
+    const handleRedirectParty = (e, id) => {
+    setPartyContextId(id)
+    router.push('/party');
+  }
+
 
   return (
     <>
@@ -361,7 +368,7 @@ export default function Dashboard() {
                                           </TableCell>
                                           <TableCell>
                                             <Button color="info" startIcon={<ReplyAllIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} />} 
-                                          sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }}}  href={`/party/${row.id}`} variant="contained" size="small"> View Party</Button>
+                                          sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }}}  onClick={(e) => handleRedirectParty(e, row.id)} variant="contained" size="small"> View Party</Button>
                                           </TableCell>
                                         </TableRow>
                                       ))
