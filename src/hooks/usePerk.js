@@ -25,7 +25,7 @@ export const getPerks = (payload, refetch, search, page=0, rowsPerPage=100) => {
     } 
 
     fetchData()
-  }, [payload, refetch, search])
+  }, [payload, refetch, search, page, rowsPerPage])
 
   return { data, loading }
 }

@@ -221,13 +221,33 @@ export default function Characters() {
     return () => clearTimeout(timeout)
   }, [searchWeaponsInput])
 
-  const handleFillCommon = (value, searchInput, setSearchInput) => {
-    if (!searchInput.includes(value)) {
-      setSearchInput((prev) => prev + (value + ' '))
+
+
+  const handleFillCommonArtifact = (value) => {
+    if (!searchPerksInput.includes(value)) {
+      setSearchArtifactsInput((prev) => prev + (value + ' '))
     } else {
-      setSearchInput((prev) => prev.replace(value + ' ', ''))
+      setSearchArtifactsInput((prev) => prev.replace(value + ' ', ''))
     }
   }
+
+
+  const handleFillCommonWeapon = (value) => {
+    if (!searchArtifactsInput.includes(value)) {
+      setSearchWeaponsInput((prev) => prev + (value + ' '))
+    } else {
+      setSearchWeaponsInput((prev) => prev.replace(value + ' ', ''))
+    }
+  }
+
+  const handleFillCommonPerk = (value) => {
+    if (!searchWeaponsInput.includes(value)) {
+      setSearchPerksInput((prev) => prev + (value + ' '))
+    } else {
+      setSearchPerksInput((prev) => prev.replace(value + ' ', ''))
+    }
+  }
+
 
 
   const changeSearchPerksInput = (search) => {
@@ -446,7 +466,7 @@ export default function Characters() {
                                perksData={perksData}
                                changeSearchPerksInput={changeSearchPerksInput}
                                searchCharacterPerksInput={searchPerksInput}
-                               clickCommon={handleFillCommon}
+                               clickCommon={handleFillCommonPerk}
                                commonsData={commonsData}
                                loading={commonsLoading || weaponsLoading}
                                page={perksPage} 
@@ -464,7 +484,7 @@ export default function Characters() {
                                data={weapons}
                                handleSearch={handleSearchWeapon}
                                searchInput={searchWeaponsInput}
-                               handleChip={handleFillCommon}
+                               handleChip={handleFillCommonWeapon}
                                commonsData={commonsData}
                                loading={commonsLoading || perksLoading}
                                page={weaponsPage} 
@@ -482,7 +502,7 @@ export default function Characters() {
                                data={artifacts}
                                handleSearch={handleSearchArtifact}
                                searchInput={searchArtifactsInput}
-                               handleChip={handleFillCommon}
+                               handleChip={handleFillCommonArtifact}
                                commonsData={commonsData}
                                loading={commonsLoading || perksLoading}
                                page={artifactsPage} 
