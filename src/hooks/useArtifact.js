@@ -71,7 +71,6 @@ export const getArtifactPerks = (payload, refetch, search, page, rowsPerPage) =>
        const artifact_id = payload?.id || ''
    
        const response = await api.get(`/artifact-perk?artifact_id=${artifact_id}&search=${search}&page=${page}&rows_per_page=${rowsPerPage}`);
-           console.log('artifact_id', response?.data?.artifact_perks?.data)
         if (response?.data?.success) {
           setData(response?.data?.artifact_perks?.data)
           setTotal(response?.data?.artifact_perks?.total)
@@ -101,7 +100,6 @@ export const getArtifactSearch = (payload, refetch, search, page, rowsPerPage) =
        const character_id = payload?.character_id || ''
    
        const response = await api.get(`/artifact-search?character_id=${character_id}&search=${search}&page=${page}&rows_per_page=${rowsPerPage}`);
-           console.log('artifact_id', response?.data?.artifacts?.data)
         if (response?.data?.success) {
           setData(response?.data?.artifacts?.data)
           setTotal(response?.data?.artifacts?.total)
@@ -207,7 +205,6 @@ export const addArtifactApi = async (payload) => {
     return response
   } catch (error) {
       toast.dismiss('fetch-api')
-      console.log('error', error)
     toast.error(error.response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
   } 
 }

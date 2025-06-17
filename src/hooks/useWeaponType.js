@@ -11,7 +11,6 @@ export const getWeaponTypes = (payload, refetch) => {
       try {
         const response = await api.get(`/weapon-types`)
          if (response?.data?.success) {
-          console.log('weapon-types', response?.data)
         setData(response?.data?.weapon_types)
            } else if (!response?.data?.message) {
           toast.error(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })

@@ -173,7 +173,6 @@ export const addCharacterApi = async (payload) => {
     return response
   } catch (error) {
       toast.dismiss('fetch-api')
-      console.log('error', error)
     toast.error(error.response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
   } 
 }

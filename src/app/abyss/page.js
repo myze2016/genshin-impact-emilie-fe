@@ -19,6 +19,8 @@ import { useUser } from "@/context/UserContext";
 import { getPerks } from "@/hooks/usePerk";
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import AutorenewIcon from '@mui/icons-material/Autorenew';
+import { refetchAbyss } from "../../hooks/useParty";
+import ReplyAllIcon from '@mui/icons-material/ReplyAll';
 
 export default function Dashboard() {
 
@@ -33,18 +35,16 @@ export default function Dashboard() {
   const [ refetchElements, setRefetchElements] = useState(false)
   const { data: elementsData, loading: elementsLoading } = getElements(elementsPayload, refetchElements)
 
-  const [variable, setVariable] = useState([]);
- 
-
-  const [refetchParties, setRefetchParties] = useState(false)
-  const [page, setPage] = useState(0)
-  const [search, setSearch] = useState('')
-  const [searchInput, setSearchInput] = useState('')
-  const [rowsPerPage, setRowsPerPage] = useState(10)
-  const [partiesPayload, setPartiesPayload] = useState('')
-  const { data: partiesData, loading: partiesLoading, total: partiesTotal } = getPartiesUser(partiesPayload, refetchParties, search, page+1, rowsPerPage)
-
-
+  const [variable, setVariable] = useState([ {
+    reaction: '',
+    element_id: '',
+    perks: [],
+    select: 'party',
+    data: [],
+    rowsPerPage: 10,
+    page: 0,
+    total: 0
+  }]);
 
   const [charactersPage, setCharactersPage] = useState(0)
   const [charactersPayload, setCharactersPayload] = useState('')
@@ -123,16 +123,6 @@ export default function Dashboard() {
   const closeAddImageDialog = () => {
     setAddImageDialog(false)
   }
-
-    const clickCharactersPage = (e, page) => {
-    setCharactersPage(page);
-  };
-
-  const selectCharactersRows = (e) => {
-    setCharactersRows(parseInt(e.target.value, 10));
-    setCharactersPage(0);
-  };
-
   
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -142,34 +132,19 @@ export default function Dashboard() {
     return () => clearTimeout(timeout)
   }, [searchCharactersInput])
 
-  const handleSearch = (search) => {
-    setSearchInput(search)
-  }
-
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setSearch(searchInput)
-    }, 300)
-
-    return () => clearTimeout(timeout)
-  }, [searchInput])
-
-
-  const handleChangeRowsPerPage = (e) => {
-    setRowsPerPage(parseInt(e.target.value, 10));
-    setPage(0);
-  };
-
-  
-  const handleChangePage = (e, page) => {
-    setPage(page);
-  };
 
   const handleAddVariation = () => {
     setVariable((prev) => [
       ...prev,
       {
-        title: 'variable'
+        reaction: '',
+        element_id: '',
+        perks: [],
+        select: 'party',
+        data: [],
+        rowsPerPage: 10,
+        page: 0,
+        total: 0
       },
     ])
   };
@@ -180,6 +155,63 @@ export default function Dashboard() {
   };
 
 
+  const handleRefetchAbyss = async (index) => {
+    setApiLoading(true)
+    const response = await refetchAbyss(variable[index], 0+1, 10)
+    if (response?.data?.success) {  
+      const newVariable = [...variable];
+      newVariable[index] = {
+        ...newVariable[index],
+        data: response?.data?.data?.data || [],
+        total: response?.data?.data?.total || 0,
+        page: 0,
+        rowsPerPage: 10,
+      };
+      setVariable(newVariable);
+    }
+    setApiLoading(false)
+  }
+
+  const handleRefetchAbyssPage = async (index, updated) => {
+    setApiLoading(true)
+    const response = await refetchAbyss(updated, 0+1, 10)
+    if (response?.data?.success) {  
+      const newVariable = [...updated];
+      newVariable[index] = {
+        ...newVariable[index],
+        data: response?.data?.data?.data || [],
+        total: response?.data?.data?.total || 0,
+      };
+      setVariable(newVariable);
+    }
+    setApiLoading(false)
+  }
+
+
+  const handleChangePage = (page, index) => {
+    const updated = [...variable];
+    updated[index] = {
+      ...updated[index],
+      page: page, 
+    };
+    setVariable(updated);
+    handleRefetchAbyssPage(index, updated);
+  };
+
+
+  const handleChangeRowsPerPage = (e, index) => {
+    console.log('e', e.target.value)
+    const updated = [...variable];
+    updated[index] = {
+      ...updated[index],
+      page: 0, 
+      rowsPerPage: parseInt(e.target.value, 10)
+    };
+    console.log('index', index)
+    console.log('updated', updated)
+    setVariable(updated);
+    handleRefetchAbyssPage(index, updated);
+  };
 
 
 
@@ -207,7 +239,11 @@ export default function Dashboard() {
                           <Grid item size={{xs: 12, md: 12, lg: 12}}>
                              <Grid container spacing={2}>
                               <Grid item size={{xs: 3, md: 3, lg: 3}}>
-                                 <TextField fullWidth name="reaction" label="Reaction" variant="outlined" />
+                                 <TextField fullWidth value={variable[index].reaction} name="reaction" label="Reaction" variant="outlined" onChange={(e) => {
+                                  const newVariable = [...variable];
+                                  newVariable[index].reaction = e.target.value;
+                                  setVariable(newVariable);
+                                }} />
                               </Grid>
                                <Grid item size={{xs: 3, md: 3, lg: 3}}>
                                 <FormControl fullWidth>
@@ -219,6 +255,12 @@ export default function Dashboard() {
                                         id="element-label"
                                         name="element_id"
                                         label="Element"
+                                        value={variable[index].element_id}
+                                        onChange={(e) => {
+                                          const newVariable = [...variable];
+                                          newVariable[index].element_id = e.target.value;
+                                          setVariable(newVariable);
+                                        }}
                                     >
                                         {elementsData.map((option, index) => (
                                             <MenuItem key={index} value={option.id}>
@@ -246,6 +288,12 @@ export default function Dashboard() {
                                       multiple
                                       options={perksData}
                                       getOptionLabel={(option) => option?.name}
+                                      value={variable[index].perks}
+                                      onChange={(event, newValue) => {
+                                        const newVariable = [...variable];
+                                        newVariable[index].perks = newValue;
+                                        setVariable(newVariable);
+                                      }}
                                       renderInput={(params) => (
                                         <TextField
                                           {...params}
@@ -264,6 +312,12 @@ export default function Dashboard() {
                                     labelId="select-label"
                                     label="Choose Option"
                                     defaultValue="party"
+                                    value={variable[index].select}
+                                    onChange={(event) => {
+                                      const newVariable = [...variable];
+                                      newVariable[index].select = event.target.value;
+                                      setVariable(newVariable);
+                                    }}
                                   >
                                     <MenuItem value="party"> All Party </MenuItem>
                                     <MenuItem value="my-party"> My Party</MenuItem>
@@ -274,7 +328,7 @@ export default function Dashboard() {
                                      
                                         <IconButton
                                             color="info"
-                                            onClick={(e) => handleDeleteVariation(index)}
+                                            onClick={(e) => handleRefetchAbyss(index)}
                                           >
                                             <AutorenewIcon sx={{ fontSize: '24px' }} />
                                         </IconButton>
@@ -292,17 +346,37 @@ export default function Dashboard() {
                           <Grid item size={{xs: 12, md: 12, lg: 12}}>
                             <Table>
                                 <TableBody>
-                                
-                                    <TableRow >
-                                      <TableCell>
-                                        <Typography>asdasd</Typography>
-                                      </TableCell>
-                                      <TableCell>
-                                        <Typography>asdasd</Typography>
-                                      </TableCell>
-                                    </TableRow>
+                                   
+                                    {
+                                      item.data?.length > 0 && item?.data?.map((row, rowIndex) => (
+                                        <TableRow key={rowIndex} >
+                                          <TableCell>
+                                            <Typography>{row.name}</Typography>
+                                          </TableCell>
+                                          <TableCell>
+                                            <Typography>{row?.element?.name}</Typography>
+                                          </TableCell>
+                                          <TableCell>
+                                            <Typography>{row.reaction}</Typography>
+                                          </TableCell>
+                                          <TableCell>
+                                            <Button color="info" startIcon={<ReplyAllIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} />} 
+                                          sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }}}  href={`/party/${row.id}`} variant="contained" size="small"> View Party</Button>
+                                          </TableCell>
+                                        </TableRow>
+                                      ))
+                                    }
                                 </TableBody>
-                              </Table>
+                            </Table>
+                            <TablePagination
+                                component="div"
+                                count={item.total}
+                                page={item.page}
+                                onPageChange={(event, newPage) => handleChangePage(newPage, index)}
+                                rowsPerPage={item.rowsPerPage}
+                                onRowsPerPageChange={(event) => handleChangeRowsPerPage(event, index)}
+                                rowsPerPageOptions={[5, 10, 25, 50]}
+                            />
                           </Grid>
                         </Grid>
                       </Paper>

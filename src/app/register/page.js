@@ -36,7 +36,6 @@ export default function Register() {
         localStorage.setItem('token', response?.data?.token)
         router.push('/dashboard')
       }
-      // TODO: redirect or toast
     } catch (err) {
       setError('Something went wrong.')
     } finally {

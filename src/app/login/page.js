@@ -22,14 +22,11 @@ export default function EmilieLogin() {
     const formData = new FormData(e.currentTarget)
     const email = formData.get('email')
     const password = formData.get('password')
-    console.log({ email, password })
     const response = await login(formData)
     if (response?.data?.token) {
       localStorage.setItem('token', response?.data?.token)
       router.push('/dashboard')
-    } else {
-      alert('invalid cred')
-    }
+    } 
     // TODO: Add actual auth logic
   }
 

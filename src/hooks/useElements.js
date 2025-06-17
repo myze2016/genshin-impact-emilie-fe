@@ -11,7 +11,6 @@ export const getElements = (payload, refetch) => {
       try {
         const response = await api.get(`/elements`)
          if (response?.data?.success) {
-          console.log('elements', response?.data)
         setData(response?.data?.elements)
            } else if (!response?.data?.message) {
           toast.error(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })

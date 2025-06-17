@@ -150,7 +150,6 @@ export default function Party() {
    const changeFormData = (e, formData, setFormData) => {
     const { name, value } = e.target
     const updatedForm = { ...formData, [name]: value }
-    console.log('updatedForm', updatedForm)
     setFormData(updatedForm)
   }
 

@@ -57,6 +57,12 @@ export default function Nav() {
         borderBottom: `1px solid ${theme.palette.primary.main}`,
         WebkitFontSmoothing: 'antialiased',
         MozOsxFontSmoothing: 'grayscale',
+        display: {
+          xs: 'none', // hidden on extra-small
+          sm: 'block', // hidden on small
+          md: 'block', // hidden on medium
+          lg: 'block', // visible on large and above
+        },
       }}
     >
        <Toolbar
@@ -93,6 +99,12 @@ export default function Nav() {
     borderBottomRightRadius: '24px',
     borderTopLeftRadius: 0,
     borderBottomLeftRadius: 0,
+    display: {
+      xs: 'none', // hidden on extra-small
+      sm: 'none', // hidden on small
+      md: 'block', // hidden on medium
+      lg: 'block', // visible on large and above
+    },
   }}
 >
   {/* Image */}
@@ -139,6 +151,12 @@ export default function Nav() {
       `,
       userSelect: 'none',
       fontStyle: 'normal',
+      display: {
+        xs: 'none', 
+        sm: 'none', 
+        md: 'block', 
+        lg: 'block', 
+      },
     }}
   >
     Emilie

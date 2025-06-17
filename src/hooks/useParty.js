@@ -88,7 +88,6 @@ export const addParty = async (payload) => {
     }
     return response
   } catch (error) {
-    console.log('error', error)
     toast.error(error.response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
   } 
 }
@@ -104,7 +103,6 @@ export const addMyParty = async (payload) => {
     }
     return response
   } catch (error) {
-    console.log('error', error)
     toast.error(error.response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
   } 
 }
@@ -120,7 +118,6 @@ export const editParty = async (payload) => {
     }
     return response
   } catch (error) {
-    console.log('error', error)
     toast.error(error.response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
   } 
 }
@@ -296,4 +293,20 @@ export const removePartyWeapon = async (payload) => {
   } 
 }
 
+export const refetchAbyss = async (payload, page, rowsPerPage) => {
+  try {
+
+    const response = await api.post(`/party/abyss`, payload)
+         if (response?.data?.success) {
+             
+              toast.success(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+              return response
+ } else {
+      toast.error(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+    }
+    return response
+  } catch (error) {
+    toast.error(error.response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+  } 
+}
 

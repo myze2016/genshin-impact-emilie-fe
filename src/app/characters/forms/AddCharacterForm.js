@@ -1,6 +1,5 @@
 import { FormControl, InputLabel, Input, FormHelperText, Grid, Box, TextField, Select, MenuItem} from "@mui/material";
 const AddCharacterForm = ({ characterFormData, setCharacterFormData, changeFormData, options, typeOptions }) => {
-    console.log('options', options)
     return (
         <Box width="100%">
             <Grid container spacing={2}>

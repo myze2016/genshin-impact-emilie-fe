@@ -1,6 +1,5 @@
 import { FormControl, InputLabel, Input, FormHelperText, Grid, TextareaAutosize, TextField, Box, Select, MenuItem } from "@mui/material";
 const AddParty = ({ partyFormData, setPartyFormData, changeFormData, options }) => {
-    console.log('partyFormData', partyFormData);
     return (
         <Box sx={{ width: '100%' }}>
             <Grid container spacing={2} >

@@ -7,6 +7,5 @@ export const addPartyPositionCharacter = async (payload) => {
   try {
     const response = await api.post(`/party-position-character`, payload)
   } catch (error) {
-    console.log(error)
   } 
 }
