@@ -119,6 +119,21 @@ export const editParty = async (payload) => {
     return response
   } catch (error) {
     toast.error(error.response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+  }
+}
+
+export const editPartyPosition = async (payload, positionId) => {
+  try {
+
+    const response = await api.put(`/party-position/${positionId}`, payload)
+         if (response?.data?.success) {
+              toast.success(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+ } else {
+      toast.error(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+    }
+    return response
+  } catch (error) {
+    toast.error(error.response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
   } 
 }
 

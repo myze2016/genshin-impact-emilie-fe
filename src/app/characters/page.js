@@ -136,6 +136,7 @@ export default function Characters() {
 
    const handleOpenWeaponDialog = (character) => {
     setCharacterId(character?.id)
+    console.log('character', character)
     setWeaponsPayload(prev => ({
       ...prev,
       weapon_type_id: character?.weapon_type_id, 

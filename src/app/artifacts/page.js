@@ -237,7 +237,7 @@ useEffect(() => {
         content={<AddPerkForm perkFormData={perkFormData} 
                           setPerkFormData={setPerkFormData}
                           changeFormData={changeFormData}
-                          commons={commons} />} />
+                          commonsData={commons} />} />
       <CustomConfirmDialog size="xs" open={apiDialog}
               handleClose={(e) => setApiDialog(false)} 
               handleConfirm={(e) => handleAddArtifactApi()}  

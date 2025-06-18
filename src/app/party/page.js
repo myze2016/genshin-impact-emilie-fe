@@ -2,7 +2,7 @@
 
 import { Grid, Typography, Button, Box, Chip, Stack, Paper, Table, TableRow, TableCell, TableBody, IconButton, Collapse } from "@mui/material"
 import { Fragment, useState, useEffect } from "react";
-import { getParty, addPartyPosition, addPartyPositionCharacter, removePartyPositionCharacter, editParty, moveVerticalCharacter, removePosition, addMyParty, deleteParty, addPartyArtifact, addPartyWeapon, removePartyWeapon, removePartyArtifact } from "../../hooks/useParty";
+import { editPartyPosition, getParty, addPartyPosition, addPartyPositionCharacter, removePartyPositionCharacter, editParty, moveVerticalCharacter, removePosition, addMyParty, deleteParty, addPartyArtifact, addPartyWeapon, removePartyWeapon, removePartyArtifact } from "../../hooks/useParty";
 import AddPartyPosition from "./form/AddPartyPosition";
 import AddPartyPositionCharacter from "./form/AddPartyPositionCharacter";
 import CustomDialog from "@/components/dialog";
@@ -30,6 +30,7 @@ import { getWeaponByParty } from "@/hooks/useWeapon";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import { useUser } from "@/context/UserContext";
+import EditPositionForm from "./form/EditPositionForm";
 
 
 export default function Party() {
@@ -51,6 +52,7 @@ export default function Party() {
   
   const [ apiLoading, setApiLoading] = useState(false)
   const [ editPartyDialog, setEditPartyDialog] = useState(false)
+  const [ editPositionDialog, setEditPositionDialog] = useState(false)
 
   const [ elementsPayload, setElementsPayload] = useState('')
   const [ refetchElements, setRefetchElements] = useState(false)
@@ -206,6 +208,19 @@ export default function Party() {
       })
       setRefetchParty((prev) => !prev)
       setAddPositionDialog(false)
+    }
+  }
+
+  const handleConfirmEditPositionDialog = async (e) => {
+    let response = await editPartyPosition(positionFormData, positionId)
+    if (response?.data?.success) {
+      setPositionFormData({
+        name: '',
+        description: '',
+        party_id: '',
+      })
+      setRefetchParty((prev) => !prev)
+      setEditPositionDialog(false)
     }
   }
 
@@ -415,6 +430,18 @@ export default function Party() {
           setArtifactRefech((prev) => !prev)
         }
       }
+
+
+      const handleOpenEditPositionDialog = (position) => {
+        setPositionFormData({
+          name: position?.name,
+          description: position?.description,
+          party_id: position?.party_id,
+        })
+        setPositionId(position?.id)
+        setEditPositionDialog(true)
+      }
+    
     
 
       const toggleRow = (tableId, rowIndex) => {
@@ -464,6 +491,16 @@ export default function Party() {
                                  changeFormData={changeFormData}
                                   />}
             />
+        <CustomDialog open={editPositionDialog}
+              handleClose={(e) => setEditPositionDialog(false)} 
+              handleConfirm={handleConfirmEditPositionDialog}  
+              title="Edit Position" 
+              size="sm"
+              content={<EditPositionForm positionFormData={positionFormData} 
+                                 setPositionFormData={setPositionFormData}
+                                 changeFormData={changeFormData}
+                                  />}
+            />
        <CustomTableDialog open={addCharacterPositionDialog}
               size="md"
               handleClose={handleCancelAddCharacterPositionDialog} 
@@ -506,7 +543,7 @@ export default function Party() {
               size="md"
               handleClose={(e)=>setWeaponsDialog(false)} 
               handleConfirm={(e)=>setWeaponsDialog(false)}  
-              title="Add Artifacts" 
+              title="Add Weapons" 
               content={<AddArtifacts columns={weaponColumns}
                                   data={weapons}
                                   handleSearch={handleSearchWeapons}
@@ -537,10 +574,13 @@ export default function Party() {
                               <Box display="flex" justifyContent="space-between" alignItems="center">
                                   <Typography gutterBottom variant="h6" component="div">
                                   <Box component="span" color="secondary.main">
-                                    {party?.copied_from?.name}
+                                    {party?.copied_from?.name && party?.copied_from?.name }
                                   </Box>
+                                 
+
                                   <Box component="span" color="text.primary">
-                                    {' | ' + party?.name}
+                                  {party?.copied_from?.name &&  ' | ' }
+                                    {party?.name}
                                   </Box>
                                 </Typography>
                                 <Box>
@@ -613,6 +653,13 @@ export default function Party() {
                               <Box sx={{px: 2}} display="flex" justifyContent="space-between" alignItems="center">
                                 <Typography sx={{ fontWeight: 'bold' }}>{position?.name}</Typography>
                                 <Box  display="flex" justifyContent="flex-end" alignItems="center">
+                                  <IconButton
+                                    color="info"
+                                    onClick={() => handleOpenEditPositionDialog(position)}
+                                    aria-label="Edit Position"
+                                  >
+                                    <ModeEditOutlineOutlinedIcon />
+                                  </IconButton>
                                   <IconButton
                                     color="primary"
                                     onClick={() => handleOpenAddCharacterPositionDialog(position)}
