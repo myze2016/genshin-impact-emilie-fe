@@ -498,7 +498,7 @@ export default function Party() {
             circlet: '',
             substat: []
           })
-        setRefetchParty((prev) => !prev)
+        setArtifactRefech((prev) => !prev)
         setStatDialog(false)      
       }
 

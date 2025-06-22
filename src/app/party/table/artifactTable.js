@@ -1,4 +1,4 @@
-import { TableCell, Button, IconButton, Box, CircularProgress, Stack, Chip, Collapse } from "@mui/material"
+import { TableCell, Button, IconButton, Box, CircularProgress, Stack, Chip, Collapse, Table, TableBody, TableHead, TableRow } from "@mui/material"
 import { Fragment } from "react"
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import XCircleOutlineIcon from '@mui/icons-material/Cancel';
@@ -16,7 +16,7 @@ const artifactTable = ({handleAddArtifact, handleRemoveArtifact, handleOpenStat,
           : 'transparent'
   }} key={index} align="left">
                                             <IconButton onClick={() => toggleRowArtifact(rowIndex)}>
-                                                {openRowsArtifact[index] ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                                                {openRowsArtifact[rowIndex] ? <ExpandLessIcon /> : <ExpandMoreIcon />}
                                             </IconButton></TableCell>
       )
     } },
@@ -87,66 +87,46 @@ const artifactTable = ({handleAddArtifact, handleRemoveArtifact, handleOpenStat,
   ]
 
   const collapses = [
-{ name: '', value: 'collapse', cell: (item,index,rowIndex) => {
+  {
+    name: '',
+    value: 'collapse',
+    cell: (item, index, rowIndex) => {
+
       return (
-        <TableCell key={index} sx={{padding: 0}}>
-                                                  <Collapse in={openRowsArtifact[rowIndex]}>
-                                                <Box sx={{padding: 2}}>
-                                                    
-                                                </Box>
-                                                </Collapse>
-                                            </TableCell>
-      )
-    } },
-    { name: 'Sands', value: 'sands', cell: (item,index,rowIndex) => {
-      return (
-          <TableCell key={index} sx={{padding: 0}}>
-                                                  <Collapse in={openRowsArtifact[rowIndex]}>
-                                              <Box sx={{padding: 2}}>
-                                                    Sands
-                                                </Box>
-                                                </Collapse>
-                                            </TableCell>
-      )
-    } },
-    { name: 'Goblet', value: 'goblet',  cell: (item,index,rowIndex) => {
-        return (
-            <TableCell key={index} sx={{padding: 0}}>
-                                                  <Collapse in={openRowsArtifact[rowIndex]}>
-                                               <Box sx={{padding: 2}}>
-                                                    Goblet
-                                                </Box>
-                                                </Collapse>
-                                            </TableCell>
-        )
-      }
-    },
-     { name: 'Circlet', value: 'circlet',  cell: (item,index,rowIndex) => {
-        return (
-            <TableCell key={index} sx={{padding: 0}}>
-                                                  <Collapse in={openRowsArtifact[rowIndex]}>
-                                               <Box sx={{padding: 2}}>
-                                                    Circlet
-                                                </Box>
-                                                </Collapse>
-                                            </TableCell>
-        )
-      }
-    },
-      { name: 'Substat', value: 'substat',  cell: (item,index,rowIndex) => {
-        return (
-            <TableCell key={index} sx={{padding: 0}}>
-                                                  <Collapse in={openRowsArtifact[rowIndex]}>
-                                               <Box sx={{padding: 2}}>
-                                                    Substat
-                                                </Box>
-                                                </Collapse>
-                                            </TableCell>
-        )
-      }
-    },
-    
-  ]
+        <Fragment key={index}>
+        <TableCell  sx={{ padding: 0 }} colSpan={4}>
+          <Collapse in={openRowsArtifact[rowIndex]} timeout="auto" unmountOnExit>
+            <Table size="small">
+               <TableHead>
+                <TableRow>
+                  <TableCell></TableCell>
+                  <TableCell>Sands</TableCell>
+                  <TableCell>Goblet</TableCell>
+                  <TableCell>Circlet</TableCell>
+                  <TableCell>Substats</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {item?.party_artifact[0]?.stat_line?.map((line, statlineIndex) => (
+                  <TableRow key={statlineIndex}>
+                    <TableCell></TableCell>
+                    <TableCell>{line.sands_stat?.name}</TableCell>
+                    <TableCell>{line.goblet_stat?.name}</TableCell>
+                    <TableCell>{line.circlet_stat?.name}</TableCell>
+                    <TableCell>
+                      {line.sub_stat?.map(s => s.stat?.name).join(', ')}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </Collapse>
+        </TableCell>
+        </Fragment>
+      );
+    }
+  }
+];
 
   return {
     columns,
