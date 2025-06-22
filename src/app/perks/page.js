@@ -40,6 +40,7 @@ export default function Page() {
 
   const [ perkFormData, setPerkFormData] = useState({
     name: '',
+    type: 'Perk',
     description: '',
   })
 
@@ -85,6 +86,7 @@ export default function Page() {
     if (response?.data?.success) {
       setPerkFormData({
         name: '',
+        type: 'Perk',
         description: '',
       })
       setRefetchPerks((prev) => !prev)

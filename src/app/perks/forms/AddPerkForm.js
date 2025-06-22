@@ -1,4 +1,4 @@
-import { Grid, Box, TextField, Stack, Chip, InputAdornment, IconButton } from "@mui/material";
+import { Grid, Box, TextField, Stack, Chip, InputAdornment, IconButton, FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 const AddPerkForm = ({ perkFormData, setPerkFormData, changeFormData, commonsData }) => {
 
@@ -34,7 +34,7 @@ const AddPerkForm = ({ perkFormData, setPerkFormData, changeFormData, commonsDat
                         }
                     </Stack>
                 </Grid>
-                <Grid item size={{xs: 12, md: 5, lg: 5}}>
+                <Grid item size={{xs: 12, md: 4, lg: 4}}>
                     <TextField fullWidth 
                                 label="Name" 
                                 name="name" 
@@ -58,7 +58,34 @@ const AddPerkForm = ({ perkFormData, setPerkFormData, changeFormData, commonsDat
                                     },
                                 }}/>
                 </Grid>
-                <Grid item size={{xs: 12, md: 7, lg: 7}}>
+                  <Grid item size={{xs: 12, md: 3, lg: 3}}>
+                    <FormControl fullWidth>
+                                <InputLabel id="type-label" >
+                                    Type
+                                </InputLabel>
+                                <Select
+                                        id="type-label"
+                                        name="type"
+                                        value={perkFormData?.type}
+                                        label="Type"
+                                        onChange={(e) => changeFormData(e, perkFormData, setPerkFormData)}
+                                    >
+                                        <MenuItem  value='Perk'>
+                                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                                <Box/>
+                                                Perk
+                                            </Box>
+                                        </MenuItem>
+                                            <MenuItem  value='Stat'>
+                                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                                <Box/>
+                                                 Stat
+                                            </Box>
+                                        </MenuItem>
+                                    </Select>
+                            </FormControl>
+                </Grid>
+                <Grid item size={{xs: 12, md: 5, lg: 5}}>
                     <TextField fullWidth 
                                 label="Description" 
                                 name="description" 

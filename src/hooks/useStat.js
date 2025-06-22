@@ -3,7 +3,7 @@ import { api } from "../utils/axios"
 import { useState, useEffect } from "react"
 import { toast, Slide } from "react-toastify"
 
-export const getPerks = (payload, refetch, search, page=0, rowsPerPage=100) => {
+export const getStats = (payload, refetch, search, page=0, rowsPerPage=100) => {
   const [data, setData] = useState([])
   const [total, setTotal] = useState([])
   const [loading, setLoading] = useState(true)
@@ -11,10 +11,10 @@ export const getPerks = (payload, refetch, search, page=0, rowsPerPage=100) => {
     const fetchData = async () => {
       setLoading(true)
       try {
-        const response = await api.get(`/perk?search=${search}&page=${page}&rows_per_page=${rowsPerPage}`);
+        const response = await api.get(`/stat?search=${search}&page=${page}&rows_per_page=${rowsPerPage}`);
         if (response?.data?.success) {
-          setData(response?.data?.perks?.data)
-          setTotal(response?.data?.perks?.total)
+          setData(response?.data?.stats?.data)
+          setTotal(response?.data?.stats?.total)
         } else if (!response?.data?.message) {
           toast.error(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
         } 
@@ -57,9 +57,9 @@ export const getPerkStat = (payload, refetch, search, page=0, rowsPerPage=100) =
   return { data, loading, total }
 }
 
-export const addPerk = async (payload) => {
+export const addStatLine = async (payload) => {
   try {
-    const response = await api.post('/perk', payload)
+    const response = await api.post('/stat-line', payload)
     if (response?.data?.success) {
       toast.success(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
     } else {

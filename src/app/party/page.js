@@ -31,7 +31,8 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import { useUser } from "@/context/UserContext";
 import EditPositionForm from "./form/EditPositionForm";
-
+import AddStatForm from "./form/AddStatForm";
+import { getStats, addStatLine } from "@/hooks/useStat";
 
 export default function Party() {
   const { user, partyContextId, setPartyContextId } = useUser()
@@ -46,6 +47,13 @@ export default function Party() {
   const [partyPayload, setPartyPayload] = useState({
     id: party_id,
   })
+
+   const [ perksPayload, setPerksPayload ] = useState('')
+    const [ refetchPerks, setRefetchPerks ] = useState(false)
+    const [ searchPerks, setSearchPerks ] = useState('')
+    const [ perksRows, setPerksRows ] = useState(1000)
+    const [ perksPage, setPerksPage ] = useState(0)
+    const { data: perks, loading: perksLoading, total: perksTotal } = getStats(perksPayload, refetchPerks, searchPerks, perksPage+1, perksRows)
 
   const [confirmDeletePartyDialog,setConfirmDeletePartyDialog] = useState(false)
   const { data: partyData, loading: partyLoading } = getParty(partyPayload, refetchParty)
@@ -95,6 +103,7 @@ export default function Party() {
 
   const [weaponTypeId, setWeaponTypeId] = useState('');
   const [partyCharacterId, setPartyCharacterId] = useState('');
+    const [partyArtifactId, setPartyArtifactId] = useState('');
   const [partyId, setPartyId] = useState('')
   const [positionId, setPositionId] = useState('')
   const [partyFormData, setPartyFormData] = useState({
@@ -102,6 +111,28 @@ export default function Party() {
     element_id: '',
     reaction: '',
   })
+
+  const [statDialog, setStatDialog] = useState(false)
+  const [statFormData, setStatFormData] = useState([{
+      name: 'Sands',
+      perk_id: null,
+      disabled: true,
+    },
+    {
+      name: 'Goblet',
+      perk_id: null,
+      disabled: true,
+    },
+  {
+      name: 'Circlet',
+      perk_id: null,
+      disabled: true,
+    },  {
+        name: 'SubStat',
+        perk_id: [],
+        disabled: true,
+        multiple: true
+      }])
 
   const [positionFormData, setPositionFormData] = useState({
     name: '',
@@ -450,10 +481,50 @@ export default function Party() {
     [tableId]: prev[tableId] === rowIndex ? null : rowIndex,
   }));
 };
-    
 
+    const handleOpenStat = async (party_artifact) => {
+      console.log('party_artifact', party_artifact.party_artifact[0].id)
+      setPartyArtifactId(party_artifact.party_artifact[0].id)
+      setStatDialog(true)
+    }
+
+    const handleConfirmStatDialog = async () => {
+           
+
+      const updatedForm = {
+        ...statFormData,
+        party_artifact_id: partyArtifactId,
+      };
+      let response = await addStatLine(updatedForm)
+      if (response?.data?.success) {
+          setStatFormData([{
+          name: 'Sands',
+          perk_id: null,
+          disabled: true,
+        },
+        {
+          name: 'Goblet',
+          perk_id: null,
+          disabled: true,
+        },
+      {
+          name: 'Circlet',
+          perk_id: null,
+          disabled: true,
+        }, {
+          name: 'SubStat',
+          perk_id: [],
+          disabled: true,
+          multiple: true
+        }])
+        setRefetchParty((prev) => !prev)
+        setStatDialog(false)      
+      }
+
+    }
+    
   const { columns } = characterTable({handleClickAddCharacterPosition})
-  const { columns: artifactColumns } = artifactTable({handleAddArtifact, handleRemoveArtifact})
+  const { columns: artifactColumns } = artifactTable({handleAddArtifact, handleRemoveArtifact, handleOpenStat})
   const { columns: weaponColumns } = weaponTable({handleAddWeapon, handleRemoveWeapon})
 
   return (
@@ -480,7 +551,15 @@ export default function Party() {
                                  setPartyFormData={setPartyFormData}
                                  changeFormData={changeFormData}
                                  options={elementsData} />} />
-
+        <CustomDialog open={statDialog}
+              size="sm"
+              handleClose={() => setStatDialog(false)} 
+              handleConfirm={handleConfirmStatDialog}  
+              title="Add Stat" 
+              content={<AddStatForm formData={statFormData} 
+                                 setFormData={setStatFormData}
+                                 changeFormData={changeFormData}
+                                 options={perks} />} />
        <CustomDialog open={addPositionDialog}
               handleClose={handleCancelAddPosition} 
               handleConfirm={handleConfirmAddPositionDialog}  
@@ -704,7 +783,7 @@ export default function Party() {
                                       <TableCell>
                                             <Box display="flex" justifyContent="flex-end" alignItems="center" flexWrap="wrap" gap={1}>
                                               <IconButton
-                                                color="primary"
+                                                color="warning"
                                                 onClick={(e) => {
                                                   setPartyCharacterId(character?.id)
                                                   setWeaponsPayload({

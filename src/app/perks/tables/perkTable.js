@@ -14,6 +14,12 @@ const perkTable = ({handleRemovePerk}) => {
         )
       }
     },
+    { name: 'Type', value: 'type',  cell: (item,index) => {
+        return (
+          <TableCell key={index} align="left">{item?.type}</TableCell>
+        )
+      }
+    },
     { name: 'Actions', value: 'actions', width: '480px',  cell: (item,index) => {
         return (
           <TableCell key={index} align="left">    

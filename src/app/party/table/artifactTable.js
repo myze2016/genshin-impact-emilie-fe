@@ -3,7 +3,7 @@ import { Fragment } from "react"
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import XCircleOutlineIcon from '@mui/icons-material/Cancel';
 
-const artifactTable = ({handleAddArtifact, handleRemoveArtifact}) => {
+const artifactTable = ({handleAddArtifact, handleRemoveArtifact, handleOpenStat}) => {
   const columns = [
     { name: 'Name', value: 'name', cell: (item,index) => {
       return (
@@ -60,6 +60,10 @@ const artifactTable = ({handleAddArtifact, handleRemoveArtifact}) => {
               >
                 { <XCircleOutlineIcon /> }
               </IconButton>
+                            {
+                              item?.party_artifact?.length > 0 && <Button  startIcon={<AddCircleOutlineIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} />} 
+                                      sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }}} onClick={(e) => handleOpenStat(item)} size="small" variant="contained">Add Stat</Button>
+                            } 
               </Box>
             </TableCell>
           )
