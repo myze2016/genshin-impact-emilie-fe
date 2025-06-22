@@ -112,27 +112,22 @@ export default function Party() {
     reaction: '',
   })
 
+    const [openRowsArtifact, setOpenRowsArtifact] = useState({});
+   const toggleRowArtifact = (rowIndex) => {
+        setOpenRowsArtifact((prev) => ({
+            ...prev,
+            [rowIndex]: !prev[rowIndex], // toggle true/false
+        }));
+        };
+
+
   const [statDialog, setStatDialog] = useState(false)
-  const [statFormData, setStatFormData] = useState([{
-      name: 'Sands',
-      perk_id: null,
-      disabled: true,
-    },
-    {
-      name: 'Goblet',
-      perk_id: null,
-      disabled: true,
-    },
-  {
-      name: 'Circlet',
-      perk_id: null,
-      disabled: true,
-    },  {
-        name: 'SubStat',
-        perk_id: [],
-        disabled: true,
-        multiple: true
-      }])
+  const [statFormData, setStatFormData] = useState({
+            sands: '',
+            goblet: '',
+            circlet: '',
+            substat: []
+          })
 
   const [positionFormData, setPositionFormData] = useState({
     name: '',
@@ -497,34 +492,21 @@ export default function Party() {
       };
       let response = await addStatLine(updatedForm)
       if (response?.data?.success) {
-          setStatFormData([{
-          name: 'Sands',
-          perk_id: null,
-          disabled: true,
-        },
-        {
-          name: 'Goblet',
-          perk_id: null,
-          disabled: true,
-        },
-      {
-          name: 'Circlet',
-          perk_id: null,
-          disabled: true,
-        }, {
-          name: 'SubStat',
-          perk_id: [],
-          disabled: true,
-          multiple: true
-        }])
+          setStatFormData({
+            sands: '',
+            goblet: '',
+            circlet: '',
+            substat: []
+          })
         setRefetchParty((prev) => !prev)
         setStatDialog(false)      
       }
 
     }
     
+     
   const { columns } = characterTable({handleClickAddCharacterPosition})
-  const { columns: artifactColumns } = artifactTable({handleAddArtifact, handleRemoveArtifact, handleOpenStat})
+  const { columns: artifactColumns, collapses } = artifactTable({handleAddArtifact, handleRemoveArtifact, handleOpenStat, openRowsArtifact, toggleRowArtifact})
   const { columns: weaponColumns } = weaponTable({handleAddWeapon, handleRemoveWeapon})
 
   return (
@@ -604,7 +586,7 @@ export default function Party() {
               handleClose={(e)=>setArtifactsDialog(false)} 
               handleConfirm={(e)=>setArtifactsDialog(false)}  
               title="Add Artifacts" 
-              content={<AddArtifacts columns={artifactColumns}
+              content={<AddArtifacts collapses={collapses} columns={artifactColumns}
                                   data={artifacts}
                                   handleSearch={handleSearchArtifacts}
                                   searchInput={artifactSearchInput}
