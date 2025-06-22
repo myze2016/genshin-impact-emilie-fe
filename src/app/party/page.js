@@ -25,7 +25,7 @@ import CompostOutlinedIcon from '@mui/icons-material/CompostOutlined';
 import AddArtifacts from "./form/AddArtifacts";
 import weaponTable from "./table/weaponTable";
 import artifactTable from "./table/artifactTable";
-import { getArtifactByParty } from "@/hooks/useArtifact";
+import { getArtifactByParty, addPiece } from "@/hooks/useArtifact";
 import { getWeaponByParty } from "@/hooks/useWeapon";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
@@ -33,6 +33,7 @@ import { useUser } from "@/context/UserContext";
 import EditPositionForm from "./form/EditPositionForm";
 import AddStatForm from "./form/AddStatForm";
 import { getStats, addStatLine } from "@/hooks/useStat";
+import AddArtifactPieceForm from "./form/AddArtifactPieceForm";
 
 export default function Party() {
   const { user, partyContextId, setPartyContextId } = useUser()
@@ -122,12 +123,20 @@ export default function Party() {
 
 
   const [statDialog, setStatDialog] = useState(false)
+    const [pieceDialog, setPieceDialog] = useState(false)
+
   const [statFormData, setStatFormData] = useState({
             sands: '',
             goblet: '',
             circlet: '',
             substat: []
           })
+
+  const [pieceFormData, setPieceFormData] = useState({
+        type: 'sands',
+        stat_id: '',
+      })
+
 
   const [positionFormData, setPositionFormData] = useState({
     name: '',
@@ -503,10 +512,33 @@ export default function Party() {
       }
 
     }
+
+    const handleConfirmPieceDialog = async () => {
+      const updatedForm = {
+        ...pieceFormData,
+        party_artifact_id: partyArtifactId,
+      };
+      let response = await addPiece(updatedForm)
+      if (response?.data?.success) {
+        setStatFormData({
+          type: 'sands',
+          stat_id: '',
+        })
+        setArtifactRefech((prev) => !prev)
+        setPieceDialog(false)      
+      }
+
+    }
     
+    const handleOpenPiece = async (party_artifact) => {
+      console.log('party_artifact', party_artifact.party_artifact[0].id)
+      setPartyArtifactId(party_artifact.party_artifact[0].id)
+      setPieceDialog(true)
+    }
+
      
   const { columns } = characterTable({handleClickAddCharacterPosition})
-  const { columns: artifactColumns, collapses } = artifactTable({handleAddArtifact, handleRemoveArtifact, handleOpenStat, openRowsArtifact, toggleRowArtifact})
+  const { columns: artifactColumns, collapses } = artifactTable({handleAddArtifact, handleRemoveArtifact, handleOpenStat, openRowsArtifact, toggleRowArtifact, handleOpenPiece})
   const { columns: weaponColumns } = weaponTable({handleAddWeapon, handleRemoveWeapon})
 
   return (
@@ -540,6 +572,15 @@ export default function Party() {
               title="Add Stat" 
               content={<AddStatForm formData={statFormData} 
                                  setFormData={setStatFormData}
+                                 changeFormData={changeFormData}
+                                 options={perks} />} />
+        <CustomDialog open={pieceDialog}
+              size="sm"
+              handleClose={() => setPieceDialog(false)} 
+              handleConfirm={handleConfirmPieceDialog}  
+              title="Add Artifact Piece" 
+              content={<AddArtifactPieceForm formData={pieceFormData} 
+                                 setFormData={setPieceFormData}
                                  changeFormData={changeFormData}
                                  options={perks} />} />
        <CustomDialog open={addPositionDialog}

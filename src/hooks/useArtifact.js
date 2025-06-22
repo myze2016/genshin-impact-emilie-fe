@@ -147,6 +147,20 @@ export const getArtifactByParty = (payload, refetch, search, page, rowsPerPage) 
   return { data, loading, total }
 }
 
+export const addPiece = async (payload) => {
+  try {
+    const response = await api.post('/artifact-piece', payload)
+    if (response?.data?.success) {
+      toast.success(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+    } else {
+      toast.error(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+    }
+    return response
+  } catch (error) {
+    toast.error(error.response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+  }
+}
+
 
 export const addArtifact = async (payload) => {
   try {
