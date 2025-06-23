@@ -16,6 +16,7 @@ import { getElements } from "@/hooks/useElements";
 import CustomSearch from "@/components/Search";
 import { useUser } from "@/context/UserContext";
 import { useRouter } from "next/navigation";
+import { useElementContext } from "@/context/ElementContext";
 
 export default function Dashboard() {
   const { user, partyContextId, setPartyContextId } = useUser()
@@ -30,7 +31,8 @@ export default function Dashboard() {
 
   const [ elementsPayload, setElementsPayload] = useState('')
   const [ refetchElements, setRefetchElements] = useState(false)
-  const { data: elementsData, loading: elementsLoading } = getElements(elementsPayload, refetchElements)
+  // const { data: elementsData, loading: elementsLoading } = getElements(elementsPayload, refetchElements)
+       const { data: elementsData, loading: elementsLoading } = useElementContext()
 
   const [charactersPage, setCharactersPage] = useState(0)
   const [charactersPayload, setCharactersPayload] = useState('')

@@ -21,6 +21,8 @@ import CustomConfirmDialog from "@/components/dialog/confirm";
 import AddPerkForm from "./forms/AddPerkForm";
 import { addPerk } from "@/hooks/usePerk";
 import CustomSearch from "@/components/Search";
+import { useCommonContext } from "@/context/CommonContext";
+import { useWeaponTypeContext } from "@/context/WeaponTypeContext";
 
 export default function Weapons() {
 
@@ -34,7 +36,10 @@ export default function Weapons() {
 
   const [ weaponTypesPayload, setWeaponTypesPayload] = useState('')
   const [ refetchWeaponTypes, setRefetchWeaponTypes] = useState(false)
-  const { data: weaponTypes, loading: weaponTypesLoading } = getWeaponTypes(weaponTypesPayload, refetchWeaponTypes)
+  // const { data: weaponTypes, loading: weaponTypesLoading } = getWeaponTypes(weaponTypesPayload, refetchWeaponTypes)
+           const { data: weaponTypes, loading: weaponTypesLoading } = useWeaponTypeContext()
+  
+  
 
   const [perksPayload, setPerksPayload] = useState('')
   const [refetchPerks, setRefetchPerks] = useState(false)
@@ -47,7 +52,8 @@ export default function Weapons() {
   const [commonsPayload, setCommonsPayload] = useState('')
   const [refetchCommons, setRefetchCommons] = useState(false)
   const [searchCommons, setSearchCommons] = useState('')
-  const { data: commons, loading: commonsLoading } = getCommons(commonsPayload, refetchCommons, searchCommons)
+  // const { data: commons, loading: commonsLoading } = getCommons(commonsPayload, refetchCommons, searchCommons)
+   const { data: commonsData, loading: commonsLoading } = useCommonContext()
 
   const [ apiDialog, setApiDialog] = useState(false)
   const [weaponId, setWeaponId] = useState('')

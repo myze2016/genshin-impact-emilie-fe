@@ -30,6 +30,9 @@ import { getWeaponTypes } from "@/hooks/useWeaponType";
 import { addCharacterWeapon, removeCharacterWeapon } from "@/hooks/useCharacterWeapon";
 import { getArtifactSearch } from "@/hooks/useArtifact";
 import { addCharacterArtifact, removeCharacterArtifact } from "@/hooks/useCharacterArtifact";
+import { useElementContext } from "@/context/ElementContext";
+import { useCommonContext } from "@/context/CommonContext";
+import { useWeaponTypeContext } from "@/context/WeaponTypeContext";
 
 export default function Characters() {
 
@@ -43,11 +46,16 @@ export default function Characters() {
   
   const [ elementsPayload, setElementsPayload] = useState('')
   const [ refetchElements, setRefetchElements] = useState(false)
-  const { data: elementsData, loading: elementsLoading } = getElements(elementsPayload, refetchElements)
+  // const { data: elementsData, loading: elementsLoading } = getElements(elementsPayload, refetchElements)
+     const { data: elementsData, loading: elementsLoading } = useElementContext()
+  
+  
 
     const [ weaponTypesPayload, setWeaponTypesPayload] = useState('')
     const [ refetchWeaponTypes, setRefetchWeaponTypes] = useState(false)
-    const { data: typeData, loading: typeLoading } = getWeaponTypes(weaponTypesPayload, refetchWeaponTypes)
+    // const { data: typeData, loading: typeLoading } = getWeaponTypes(weaponTypesPayload, refetchWeaponTypes)
+         const { data: typeData, loading: typeLoading } = useWeaponTypeContext()
+
 
   const [characterPerksPayload, setCharacterPerksPayload] = useState('')
   const [refetchCharacterPerks, setRefetchCharacterPerks] = useState(false)
@@ -76,7 +84,8 @@ export default function Characters() {
   const [commonsPayload, setCommonsPayload] = useState('')
   const [refetchCommons, setRefetchCommons] = useState(false)
   const [searchCommons, setSearchCommons] = useState('')
-  const { data: commonsData, loading: commonsLoading } = getCommons(commonsPayload, refetchCommons, searchCommons)
+  // const { data: commonsData, loading: commonsLoading } = getCommons(commonsPayload, refetchCommons, searchCommons)
+   const { data: commonsData, loading: commonsLoading } = useCommonContext()
 
   const [ apiDialog, setApiDialog] = useState(false)
   const [ addPerkDialog, setAddPerkDialog] = useState(false)

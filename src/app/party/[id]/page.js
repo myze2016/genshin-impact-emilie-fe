@@ -29,7 +29,8 @@ import { getArtifactByParty } from "@/hooks/useArtifact";
 import { getWeaponByParty } from "@/hooks/useWeapon";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-
+import { useElementContext } from "@/context/ElementContext";
+import { useCommonContext } from "@/context/CommonContext";
 
 export default function Party() {
   const router = useRouter()
@@ -52,7 +53,8 @@ export default function Party() {
 
   const [ elementsPayload, setElementsPayload] = useState('')
   const [ refetchElements, setRefetchElements] = useState(false)
-  const { data: elementsData, loading: elementsLoading } = getElements(elementsPayload, refetchElements)
+  // const { data: elementsData, loading: elementsLoading } = getElements(elementsPayload, refetchElements)
+       const { data: elementsData, loading: elementsLoading } = useElementContext()
    
   const [charactersPage, setCharactersPage] = useState(0)
   const [charactersPayload, setCharactersPayload] = useState('')
@@ -66,7 +68,8 @@ export default function Party() {
   const [commonsPayload, setCommonsPayload] = useState('')
   const [refetchCommons, setRefetchCommons] = useState(false)
   const [searchCommons, setSearchCommons] = useState('')
-  const { data: commonsData, loading: commonsLoading } = getCommons(commonsPayload, refetchCommons, searchCommons)
+  // const { data: commonsData, loading: commonsLoading } = getCommons(commonsPayload, refetchCommons, searchCommons)
+   const { data: commonsData, loading: commonsLoading } = useCommonContext()
 
   const [artifactsDialog, setArtifactsDialog] = useState(false)
   const [artifactPage, setArtifactPage] = useState(0)

@@ -23,6 +23,7 @@ import { useUser } from "@/context/UserContext";
 import { getCharacters } from "@/hooks/useCharacter";
 import AddPartyPositionCharacter from "./forms/AddPartyPositionCharacter";
 import { getCharactersArtifact } from "@/hooks/useCharacter";
+import { useCommonContext } from "@/context/CommonContext";
 
 export default function Artifacts() {
     const { user } = useUser()
@@ -59,8 +60,8 @@ export default function Artifacts() {
   const [commonsPayload, setCommonsPayload] = useState('')
   const [refetchCommons, setRefetchCommons] = useState(false)
   const [searchCommons, setSearchCommons] = useState('')
-  const { data: commons, loading: commonsLoading } = getCommons(commonsPayload, refetchCommons, searchCommons)
-
+  // const { data: commons, loading: commonsLoading } = getCommons(commonsPayload, refetchCommons, searchCommons)
+  const { data: commons, loading: commonsLoading } = useCommonContext()
 
 
   const [ apiDialog, setApiDialog] = useState(false)

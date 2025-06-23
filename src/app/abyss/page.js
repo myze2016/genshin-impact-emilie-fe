@@ -22,6 +22,7 @@ import { refetchAbyss } from "../../hooks/useParty";
 import ReplyAllIcon from '@mui/icons-material/ReplyAll';
 import { useUser } from "@/context/UserContext";
 import { useRouter } from "next/navigation";
+import { useElementContext } from "@/context/ElementContext";
 
 export default function Dashboard() {
   const { user, partyContextId, setPartyContextId } = useUser()
@@ -35,7 +36,8 @@ export default function Dashboard() {
 
   const [ elementsPayload, setElementsPayload] = useState('')
   const [ refetchElements, setRefetchElements] = useState(false)
-  const { data: elementsData, loading: elementsLoading } = getElements(elementsPayload, refetchElements)
+  // const { data: elementsData, loading: elementsLoading } = getElements(elementsPayload, refetchElements)
+   const { data: elementsData, loading: elementsLoading } = useElementContext()
 
   const [variable, setVariable] = useState([ {
     reaction: '',

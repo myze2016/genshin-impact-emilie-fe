@@ -13,6 +13,7 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import Spinner from "@/components/Spinner";
 import CustomSearch from "@/components/Search";
 import { matchCommon } from "@/hooks/usePerk";
+import { useCommonContext } from "@/context/CommonContext";
 
 export default function Page() {
   const [ perksPayload, setPerksPayload ] = useState('')
@@ -26,7 +27,8 @@ export default function Page() {
   const [ commonsPayload, setCommonsPayload ] = useState('')
   const [ refetchCommons, setRefetchCommons ] = useState(false)
   const [ searchCommons, setSearchCommons ] = useState('')
-  const { data: commonsData, loading: loadingCommons } = getCommons(commonsPayload, refetchCommons, searchCommons)
+  // const { data: commonsData, loading: loadingCommons } = getCommons(commonsPayload, refetchCommons, searchCommons)
+   const { data: commonsData, loading: loadingCommons, refetch } = useCommonContext()
 
   const [ apiLoading, setApiLoading ] = useState(false)
 
@@ -105,7 +107,8 @@ export default function Page() {
   const handleRefetch = (query) => {
      switch (query) {
       case 'commons':
-        setRefetchCommons((prev) => !prev)
+        refetch()
+        // setRefetchCommons((prev) => !prev)
         break;
       default:
         break;

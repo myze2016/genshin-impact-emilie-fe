@@ -17,6 +17,7 @@ import { UserProvider } from "@/context/UserContext";
 import { CommonProvider } from "@/context/CommonContext";
 import { StatProvider } from "@/context/StatContext";
 import { ElementProvider } from "@/context/ElementContext";
+import { WeaponTypeProvider } from "@/context/WeaponTypeContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -63,6 +64,7 @@ export default function RootLayout({ children }) {
                  <CommonProvider>
                    <StatProvider>
                      <ElementProvider>
+                      <WeaponTypeProvider>
             <ToastContainer newestOnTop />
             <CssBaseline />
 
@@ -81,6 +83,7 @@ export default function RootLayout({ children }) {
                 {children}
               </Container>
             </Box>
+            </WeaponTypeProvider>
                      </ElementProvider>
                        </StatProvider>
                      </CommonProvider>

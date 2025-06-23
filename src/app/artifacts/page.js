@@ -18,6 +18,7 @@ import CustomConfirmDialog from "@/components/dialog/confirm";
 import AddPerkForm from "./forms/AddPerkForm";
 import { addPerk } from "@/hooks/usePerk";
 import CustomSearch from "@/components/Search";
+import { useCommonContext } from "@/context/CommonContext";
 
 export default function Artifacts() {
 
@@ -40,7 +41,8 @@ export default function Artifacts() {
   const [commonsPayload, setCommonsPayload] = useState('')
   const [refetchCommons, setRefetchCommons] = useState(false)
   const [searchCommons, setSearchCommons] = useState('')
-  const { data: commons, loading: commonsLoading } = getCommons(commonsPayload, refetchCommons, searchCommons)
+  // const { data: commons, loading: commonsLoading } = getCommons(commonsPayload, refetchCommons, searchCommons)
+   const { data: commons, loading: commonsLoading } = useCommonContext()
 
   const [ apiDialog, setApiDialog] = useState(false)
   const [artifactId, setArtifactId] = useState('')
