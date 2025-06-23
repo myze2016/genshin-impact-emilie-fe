@@ -12,7 +12,7 @@ import MenuBookIcon from '@mui/icons-material/MenuBook';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import Spinner from "@/components/Spinner";
 import CustomSearch from "@/components/Search";
-
+import { matchCommon } from "@/hooks/usePerk";
 
 export default function Page() {
   const [ perksPayload, setPerksPayload ] = useState('')
@@ -57,7 +57,7 @@ export default function Page() {
   const resetPerkFormData = () => {
     setPerkFormData({
       name: '',
-         type: 'Perk',
+      type: 'Perk',
       description: '',
     })
   }
@@ -138,9 +138,18 @@ export default function Page() {
     setApiLoading(false)
   }
 
+   const handleMatchCommon = async (perk) => {
+    setApiLoading(true)
+    const payload = {
+      id: perk?.id,
+    };
+    let response = await matchCommon(payload)
+    if (response?.data?.success) {
+      setRefetchPerks((prev) => !prev)
+    }
+    setApiLoading(false)
+  }
 
-
-  
   const clickPerksPage = (e, page) => {
     setPerksPage(page);
   };
@@ -164,7 +173,7 @@ export default function Page() {
       setSearchPerksInput(search)
     }
   
-  const { columns } = perkTable({handleRemovePerk})
+  const { columns } = perkTable({handleRemovePerk, handleMatchCommon})
   
   return (
     <>

@@ -11,10 +11,9 @@ export const getStats = (payload, refetch, search, page=0, rowsPerPage=100) => {
     const fetchData = async () => {
       setLoading(true)
       try {
-        const response = await api.get(`/stat?search=${search}&page=${page}&rows_per_page=${rowsPerPage}`);
+        const response = await api.get(`/stat`);
         if (response?.data?.success) {
-          setData(response?.data?.stats?.data)
-          setTotal(response?.data?.stats?.total)
+          setData(response?.data?.stats)
         } else if (!response?.data?.message) {
           toast.error(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
         } 

@@ -14,6 +14,9 @@ import { getUser } from "@/hooks/useAuth";
 import { useRouter } from 'next/navigation'
 import { useEffect } from "react";
 import { UserProvider } from "@/context/UserContext";
+import { CommonProvider } from "@/context/CommonContext";
+import { StatProvider } from "@/context/StatContext";
+import { ElementProvider } from "@/context/ElementContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -57,6 +60,9 @@ export default function RootLayout({ children }) {
         <ClientOnly>
             <ThemeProvider theme={theme}>
                <UserProvider>
+                 <CommonProvider>
+                   <StatProvider>
+                     <ElementProvider>
             <ToastContainer newestOnTop />
             <CssBaseline />
 
@@ -75,6 +81,9 @@ export default function RootLayout({ children }) {
                 {children}
               </Container>
             </Box>
+                     </ElementProvider>
+                       </StatProvider>
+                     </CommonProvider>
             </UserProvider>
           </ThemeProvider> 
         </ClientOnly>

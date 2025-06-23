@@ -35,6 +35,9 @@ import AddStatForm from "./form/AddStatForm";
 import { getStats, addStatLine } from "@/hooks/useStat";
 import AddArtifactPieceForm from "./form/AddArtifactPieceForm";
 import AddWeapons from "./form/AddWeapons";
+import { useElementContext } from "@/context/ElementContext";
+import { useCommonContext } from "@/context/CommonContext";
+import { useStatContext } from "@/context/StatContext";
 
 export default function Party() {
   const { user, partyContextId, setPartyContextId } = useUser()
@@ -55,7 +58,8 @@ export default function Party() {
     const [ searchPerks, setSearchPerks ] = useState('')
     const [ perksRows, setPerksRows ] = useState(1000)
     const [ perksPage, setPerksPage ] = useState(0)
-    const { data: perks, loading: perksLoading, total: perksTotal } = getStats(perksPayload, refetchPerks, searchPerks, perksPage+1, perksRows)
+    // const { data: perks, loading: perksLoading, total: perksTotal } = getStats(perksPayload, refetchPerks, searchPerks, perksPage+1, perksRows)
+      const { data: perks, loading: perksLoading } = useStatContext()
 
   const [confirmDeletePartyDialog,setConfirmDeletePartyDialog] = useState(false)
   const { data: partyData, loading: partyLoading } = getParty(partyPayload, refetchParty)
@@ -66,7 +70,8 @@ export default function Party() {
 
   const [ elementsPayload, setElementsPayload] = useState('')
   const [ refetchElements, setRefetchElements] = useState(false)
-  const { data: elementsData, loading: elementsLoading } = getElements(elementsPayload, refetchElements)
+  // const { data: elementsData, loading: elementsLoading } = getElements(elementsPayload, refetchElements)
+    const { data: elementsData, loading: elementsLoading } = useElementContext()
    
   const [charactersPage, setCharactersPage] = useState(0)
   const [charactersPayload, setCharactersPayload] = useState('')
@@ -80,7 +85,8 @@ export default function Party() {
   const [commonsPayload, setCommonsPayload] = useState('')
   const [refetchCommons, setRefetchCommons] = useState(false)
   const [searchCommons, setSearchCommons] = useState('')
-  const { data: commonsData, loading: commonsLoading } = getCommons(commonsPayload, refetchCommons, searchCommons)
+  // const { data: commonsData, loading: commonsLoading } = getCommons(commonsPayload, refetchCommons, searchCommons)
+  const { data: commonsData, loading: commonsLoading } = useCommonContext()
 
   const [artifactsDialog, setArtifactsDialog] = useState(false)
   const [artifactPage, setArtifactPage] = useState(0)
@@ -470,8 +476,8 @@ export default function Party() {
 
       const handleOpenEditPositionDialog = (position) => {
         setPositionFormData({
-          name: position?.name,
-          description: position?.description,
+          name: position?.name ?? '',
+          description: position?.description ?? '',
           party_id: position?.party_id,
         })
         setPositionId(position?.id)
@@ -756,10 +762,12 @@ export default function Party() {
                       <Grid key={index} item size={{xs: 12, md: 6, lg: 6}}>
                         <Paper  >
                           <Grid container spacing={0}>
-                            <Grid item size={12} >
-                              <Box sx={{px: 2}} display="flex" justifyContent="space-between" alignItems="center">
-                                <Typography sx={{ fontWeight: 'bold' }}>{position?.name}</Typography>
-                                <Box  display="flex" justifyContent="flex-end" alignItems="center">
+                            <Grid item size={{xs: 12, md: 12, lg: 12}} >
+                              <Grid container spacing={2} sx={{px: 2, py: 1}}>
+                                <Grid item size={{xs: 12, md: 6, lg: 6}} sx={{display: 'flex', justifyContent: 'flex-start', alignItems: 'center'}}>
+                                    <Typography sx={{ fontWeight: 'bold' }}>{position?.name}</Typography>&nbsp;&nbsp;•&nbsp;&nbsp;<Typography sx={{ fontWeight: 'bold' }}>{position?.description}</Typography>
+                                </Grid>
+                                <Grid item size={{xs: 12, md: 6, lg: 6}} sx={{display: 'flex', justifyContent: 'flex-end', alignItems: 'center'}}>
                                   <IconButton
                                     color="info"
                                     onClick={() => handleOpenEditPositionDialog(position)}
@@ -774,17 +782,19 @@ export default function Party() {
                                   >
                                     <AddCircleOutlineIcon />
                                   </IconButton>
-                                   <IconButton
-                                                color="error"
-                                                onClick={(e) => {
-                                                  handleRemovePosition(position);
-                                                }}
-                                              >
-                                                <DeleteOutlineIcon sx={{ fontSize: '24px' }} />
-                                            </IconButton>
-                                            </Box>
-                              </Box>
+                                  <IconButton
+                                      color="error"
+                                      onClick={(e) => {
+                                        handleRemovePosition(position);
+                                      }}
+                                    >
+                                  <DeleteOutlineIcon sx={{ fontSize: '24px' }} />
+                                </IconButton>
                             </Grid>
+                              </Grid>
+                            
+                            </Grid>
+                            
                             <hr style={{ width: '100%' }} />
                              <Grid key={index} item size={12}>
                                 <Table>
@@ -881,9 +891,10 @@ export default function Party() {
                                          {character?.party_weapon?.map((weapon, index) => (
                                         weapon.weapon?.perks?.map((perk, index) => (
                                           <Chip
+                                          icon={<ConstructionOutlinedIcon/>}
                                           key={index}
                                           label={perk?.perk?.name}
-                                          color="secondary"
+                                          color="warning"
                                           variant={ "contained" }
                                             sx={{mr: 1, mb: 1, fontSize: '16px'}}
                                           />
@@ -893,6 +904,7 @@ export default function Party() {
                                          {character?.party_artifact?.map((artifact, index) => (
                                         artifact.artifact?.perks?.map((perk, index) => (
                                           <Chip
+                                           icon={<CompostOutlinedIcon/>}
                                           key={index}
                                           label={perk?.perk?.name}
                                           color="info"
@@ -907,7 +919,7 @@ export default function Party() {
                                             <Chip
                                               key={index}
                                               label={perk.perk.name}
-                                              color="primary"
+                                              color={perk?.perk?.common?.color ?? 'primary'}
                                               variant="contained"
                                               sx={{mr: 1, mb: 1, fontSize: '16px'}}
                                             />
