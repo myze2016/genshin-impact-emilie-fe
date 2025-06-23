@@ -1,16 +1,19 @@
-import { FormControl, InputLabel, Input, FormHelperText, Grid, Paper, Typography, Box } from "@mui/material";
+import { Grid, Box } from "@mui/material";
 import CustomTableRowSearchV2 from "@/components/table/tableRowSearchV2";
-import { Widgets } from "@mui/icons-material";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Fragment } from "react";
 import { getCharacterPerks } from "@/hooks/useCharacter";
-const AddCharacterPerksForm = ({ tableColumns, chipData, payload }) => {
+import perkTable from "../tables/perkTable";
+import { addCharacterPerk, deleteCharacterPerk } from "@/hooks/useCharacter";
+import CustomTableDialog from "@/components/dialog/table";
+const AddCharacterPerksForm = ({ chipData, characterId, dialog, setDialog }) => {
     
-    const [refetch, setRefetch] = useState(false)
+    const [payload, setPayload] = useState('')
+    const [refetch, setRefetch] = useState('')
     const [search, setSearch] = useState('')
     const [searchInput, setSearchInput] = useState('')
     const [ page, setPage] = useState(0)
     const [ rowsPerPage, setRowsPerPage] = useState(10)
-    const { data, loading, total } = getCharacterPerks(payload, refetch, search, page+1, rowsPerPage)
+    const { data, loading, total } = getCharacterPerks(characterId, refetch, search, page+1, rowsPerPage)
     
     const handleClickChip = (value) => {
         if (!searchInput.includes(value)) {
@@ -41,26 +44,67 @@ const AddCharacterPerksForm = ({ tableColumns, chipData, payload }) => {
         setPage(0);
     };
 
+    const handleAddCharacterPerk = async (perk) => {
+        const payload = {
+            perk_id: perk?.id,
+            character_id: characterId
+        };
+        let response = await addCharacterPerk(payload)
+        if (response?.data?.success) {
+            setRefetch((prev) => !prev)
+        }
+    }
+
+    const handleRemoveCharacterPerk = async (perk) => {
+        const payload = {
+            perk_id: perk?.id,
+            character_id: characterId
+        };
+        let response = await deleteCharacterPerk(payload)
+        if (response?.data?.success) {
+            setRefetch((prev) => !prev)
+        }
+    }
+
+    const handleCloseDialog = (e) => {
+        setRefetch((prev) => !prev)
+        setSearchInput('')
+        setDialog(false)
+    }
+    
+    const { columns } = perkTable({handleAddCharacterPerk, handleRemoveCharacterPerk})
+
     return (
-        <Box sx={{Width: '100%'}}>
-            <Grid container spacing={2}>
-                    <Grid item size={{xs: 12, md: 12, lg: 12}}>
-                        <CustomTableRowSearchV2 minWidth="650" 
-                            headers={tableColumns} 
-                            data={data} 
-                            chipData={chipData}  
-                            handleSearch={handleSearch} 
-                            search={searchInput} 
-                            handleSearchChip={handleClickChip} 
-                            loading={loading} 
-                            page={page} 
-                            handleChangePage={handleChangePage} 
-                            rowsPerPage={rowsPerPage} 
-                            handleChangeRowsPerPage={handleChangeRowsPerPage} 
-                            total={total}/>
-                    </Grid>
-            </Grid>
-        </Box>
+        <Fragment>
+            <CustomTableDialog size="md" open={dialog}
+                handleClose={handleCloseDialog} 
+                handleConfirm={handleCloseDialog}  
+                title="Add Character Perks"
+                content={
+                    <Box sx={{Width: '100%'}}>
+                        <Grid container spacing={2}>
+                            <Grid item size={{xs: 12, md: 12, lg: 12}}>
+                                <CustomTableRowSearchV2 minWidth="650" 
+                                    headers={columns} 
+                                    data={data} 
+                                    chipData={chipData}  
+                                    handleSearch={handleSearch} 
+                                    search={searchInput} 
+                                    handleSearchChip={handleClickChip} 
+                                    loading={loading} 
+                                    page={page} 
+                                    handleChangePage={handleChangePage} 
+                                    rowsPerPage={rowsPerPage} 
+                                    handleChangeRowsPerPage={handleChangeRowsPerPage} 
+                                    total={total}/>
+                            </Grid>
+                        </Grid>
+                    </Box> 
+                }
+            />
+            
+        </Fragment>
+        
     );
 }
 export default AddCharacterPerksForm

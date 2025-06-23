@@ -1,16 +1,109 @@
 import { FormControl, InputLabel, Input, FormHelperText, Grid, Paper, Typography, Box } from "@mui/material";
 import CustomTableRowSearchV2 from "@/components/table/tableRowSearchV2";
 import { Widgets } from "@mui/icons-material";
-const AddWeaponsForm = ({ tableColumns, data, handleSearch, searchInput, handleChip, commonsData, loading, apiLoading=false, page, handleChangePage, rowsPerPage, handleChangeRowsPerPage, total }) => {
+import { addWeaponPerk, removeWeaponPerk } from "@/hooks/useWeapon";
+import { getWeaponSearch } from "@/hooks/useWeapon";
+import { useEffect, useState, Fragment } from "react";
+import weaponTable from "../tables/weaponTable";
+import CustomTableDialog from "@/components/dialog/table";
+const AddWeaponsForm = ({ chipData, characterId, dialog, setDialog }) => {
+    const [payload, setPayload] = useState('')
+    const [refetch, setRefetch] = useState('')
+    const [search, setSearch] = useState('')
+    const [searchInput, setSearchInput] = useState('')
+    const [ page, setPage] = useState(0)
+    const [ rowsPerPage, setRowsPerPage] = useState(10)
+    const { data, loading, total } = getWeaponSearch(characterId, refetch, search, page+1, rowsPerPage)
+    
+    const handleClickChip = (value) => {
+        if (!searchInput.includes(value)) {
+            setSearchInput((prev) => prev + (value + ' '))
+        } else {
+            setSearchInput((prev) => prev.replace(value + ' ', ''))
+        }
+    }
+
+    const handleSearch = (search) => {
+        setSearchInput(search)
+    }
+
+    useEffect(() => {
+      const timeout = setTimeout(() => {
+        setSearch(searchInput)
+      }, 300)
+  
+      return () => clearTimeout(timeout)
+    }, [searchInput])
+
+    const handleChangePage = (e, page) => {
+        setPage(page);
+    };
+
+    const handleChangeRowsPerPage = (e) => {
+        setRowsPerPage(parseInt(e.target.value, 10));
+        setPage(0);
+    };
+
+    const handleAddWeapon = async (perk) => {
+        const payload = {
+            perk_id: perk?.id,
+            character_id: characterId
+        };
+        let response = await addWeaponPerk(payload)
+        if (response?.data?.success) {
+            setRefetch((prev) => !prev)
+        }
+    }
+
+    const handleRemoveWeapon = async (perk) => {
+        const payload = {
+            perk_id: perk?.id,
+            character_id: characterId
+        };
+        let response = await removeWeaponPerk(payload)
+        if (response?.data?.success) {
+            setRefetch((prev) => !prev)
+        }
+    }
+
+    const handleCloseDialog = (e) => {
+        setRefetch((prev) => !prev)
+        setSearchInput('')
+        setDialog(false)
+    }
+    
+    const { columns } = weaponTable({handleAddWeapon, handleRemoveWeapon })
+
     return (
-        <Box sx={{Width: '100%'}}>
-            <Grid container spacing={2}>
-                    <Grid item size={{xs: 12, md: 12, lg: 12}}>
-                        <CustomTableRowSearchV2 minWidth="650" headers={tableColumns} data={data} chipData={commonsData}  handleSearch={handleSearch} search={searchInput} handleSearchChip={handleChip} dataChips={commonsData} loading={loading} apiLoading={apiLoading} page={page} handleChangePage={handleChangePage} rowsPerPage={rowsPerPage} handleChangeRowsPerPage={handleChangeRowsPerPage} total={total}/>
+        <Fragment>
+            <CustomTableDialog size="md" open={dialog}
+                handleClose={handleCloseDialog} 
+                handleConfirm={handleCloseDialog}  
+                title="Add Character Perks"
+                content={
+                    <Box sx={{Width: '100%'}}>
+                        <Grid container spacing={2}>
+                            <Grid item size={{xs: 12, md: 12, lg: 12}}>
+                                <CustomTableRowSearchV2 minWidth="650" 
+                                    headers={columns} 
+                                    data={data} 
+                                    chipData={chipData}  
+                                    handleSearch={handleSearch} 
+                                    search={searchInput} 
+                                    handleSearchChip={handleClickChip} 
+                                    loading={loading} 
+                                    page={page} 
+                                    handleChangePage={handleChangePage} 
+                                    rowsPerPage={rowsPerPage} 
+                                    handleChangeRowsPerPage={handleChangeRowsPerPage} 
+                                    total={total}/>
+                            </Grid>
+                        </Grid>
+                    </Box> 
+                }
+            />
             
-                    </Grid>
-            </Grid>
-        </Box>
+        </Fragment>
     );
 }
 export default AddWeaponsForm

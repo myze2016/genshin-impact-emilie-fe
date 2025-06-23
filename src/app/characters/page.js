@@ -36,6 +36,13 @@ import { useWeaponTypeContext } from "@/context/WeaponTypeContext";
 
 export default function Characters() {
 
+  
+  const { data: elementsData, loading: elementsLoading } = useElementContext()
+  const { data: typeData, loading: typeLoading } = useWeaponTypeContext()
+  const { data: commonsData, loading: commonsLoading } = useCommonContext()
+  const [ apiDialog, setApiDialog] = useState(false)
+  const [ apiLoading, setApiLoading] = useState(false)
+
   const [charactersPage, setCharactersPage] = useState(0)
   const [charactersPayload, setCharactersPayload] = useState('')
   const [refetchCharacters, setRefetchCharacters] = useState(false)
@@ -43,74 +50,27 @@ export default function Characters() {
   const [searchCharactersInput, setSearchCharactersInput] = useState('')
   const [charactersRows, setCharacterRows] = useState(10)
   const { data: charactersData, loading: charactersLoading, total: charactersTotal } = getCharactersName(charactersPayload, refetchCharacters, searchCharacters, charactersPage+1, charactersRows)
-  
-  const [ elementsPayload, setElementsPayload] = useState('')
-  const [ refetchElements, setRefetchElements] = useState(false)
-  // const { data: elementsData, loading: elementsLoading } = getElements(elementsPayload, refetchElements)
-     const { data: elementsData, loading: elementsLoading } = useElementContext()
-  
-  
 
-    const [ weaponTypesPayload, setWeaponTypesPayload] = useState('')
-    const [ refetchWeaponTypes, setRefetchWeaponTypes] = useState(false)
-    // const { data: typeData, loading: typeLoading } = getWeaponTypes(weaponTypesPayload, refetchWeaponTypes)
-         const { data: typeData, loading: typeLoading } = useWeaponTypeContext()
-
-
-  // const [characterPerksPayload, setCharacterPerksPayload] = useState('')
-  // const [refetchCharacterPerks, setRefetchCharacterPerks] = useState(false)
-  // const [searchPerks, setSearchPerks] = useState('')
-  // const [searchPerksInput, setSearchPerksInput] = useState('')
-  // const [ perksPage, setPerksPage] = useState(0)
-  // const [ perksRows, setPerksRows] = useState(10)
-  // const { data: perksData, loading: perksLoading, total: perksTotal } = getCharacterPerks(characterPerksPayload, refetchCharacterPerks, searchPerks, perksPage+1, perksRows)
-
-  const [weaponsPayload, setWeaponsPayload] = useState('')
-  const [refetchWeapons, setRefetchWeapons] = useState(false)
-  const [searchWeapons, setSearchWeapons] = useState('')
-  const [searchWeaponsInput, setSearchWeaponsInput] = useState('')
-  const [ weaponsPage, setWeaponsPage] = useState(0)
-  const [ weaponsRowsPerPage, setWeaponsRowsPerPage] = useState(10)
-  const { data: weapons, loading: weaponsLoading, total: weaponsTotal } = getWeaponSearch(weaponsPayload, refetchWeapons, searchWeapons, weaponsPage+1, weaponsRowsPerPage)
-
-    const [artifactsPayload, setArtifactsPayload] = useState('')
-  const [retechArtifacts, setRefetchArtifacts] = useState(false)
-  const [searchArtifacts, setSearchArtifacts] = useState('')
-  const [searchArtifactsInput, setSearchArtifactsInput] = useState('')
-  const [ artifactsPage, setArtifactsPage] = useState(0)
-  const [ artifactsRowsPerPage, setArtifactRowsPerpage] = useState(10)
-  const { data: artifacts, loading: artifactsLoading, total: artifactsTotal } = getArtifactSearch(artifactsPayload, retechArtifacts, searchArtifacts, artifactsPage+1, artifactsRowsPerPage)
-
-  const [commonsPayload, setCommonsPayload] = useState('')
-  const [refetchCommons, setRefetchCommons] = useState(false)
-  const [searchCommons, setSearchCommons] = useState('')
-  // const { data: commonsData, loading: commonsLoading } = getCommons(commonsPayload, refetchCommons, searchCommons)
-   const { data: commonsData, loading: commonsLoading } = useCommonContext()
-
-  const [ apiDialog, setApiDialog] = useState(false)
-  const [ addPerkDialog, setAddPerkDialog] = useState(false)
-  const [ perkFormData, setPerkFormData] = useState({
-    name: '',
-    description: '',
-  })
-
-  const [characterId, setCharacterId] = useState(0)
-
-  const [ apiLoading, setApiLoading ] = useState(false)
-  const [addCharacterPerksDialog, setAddCharacterPerksDialog] = useState(false)
-  const [weaponDialog, setWeaponDialog] = useState(false)
-  const [artifactDialog, setArtifactDialog] = useState(false)
   const [ characterDialog, setCharacterDialog] = useState(false);
-  
-  const [characterPerkFormData, setCharacterPerkFormData] = useState({
-    character_id: '',
-    perk_id: ''
-  })
-
   const [characterFormData, setCharacterFormData] = useState({
     name: '',
     element_id: '',
     weapon_type_id: '',
+  })
+  const handleCloseCharacterDialog = (e) => {
+    setRefetchCharacters((prev) => !prev)
+    setCharacterFormData({
+      name: '',
+      element_id: '',
+      weapon_type_id: '',
+    })
+    setCharacterDialog(false)
+  }
+
+  const [ addPerkDialog, setAddPerkDialog] = useState(false)
+  const [ perkFormData, setPerkFormData] = useState({
+    name: '',
+    description: '',
   })
 
   const changeFormData = (e, formData, setFormData) => {
@@ -119,82 +79,39 @@ export default function Characters() {
     setFormData(updatedForm)
   }
 
-  const [characterPerksPayload, setCharacterPerksPayload] = useState('')
+  const [characterId, setCharacterId] = useState('')
+  const [perksDialog, setPerksDialog] = useState(false)
+  const openAddCharacterPerksDialog = (character) => {
+    setCharacterId(character?.id)
+    setPerksDialog(true)
+  }
+
+  const [artifactsDialog, setArtifactsDialog] = useState(false)
+  const handlOpenArtifactDialog = (character) => {
+    setCharacterId(character?.id)
+    setArtifactsDialog(true)
+  }
+
+  const [weaponsDialog, setWeaponsDialog] = useState(false)
+  const handleOpenWeaponDialog = (character) => {
+    setCharacterId(character?.id)
+    setWeaponsDialog(true)
+  }
 
   const handleAddCharacter = async (e) => {
     setApiLoading(true)
     let response = await addCharacter(characterFormData)
      if (response?.data?.success) {
-      resetCharacterFormData()
+       setCharacterFormData({
+        name: '',
+        element_id: '',
+        weapon_type_id: '',
+      })
       setRefetchCharacters((prev) => !prev)
       setCharacterDialog(false)
     }
     setApiLoading(false)
   }
-  
-
-
-
-  const openAddCharacterPerksDialog = (character) => {
-    setCharacterId(character?.id)
-    setCharacterPerksPayload(prev => ({
-      ...prev,
-      character_id: character?.id, 
-    }));
-    setAddCharacterPerksDialog(true)
-  }
-
-   const handleOpenWeaponDialog = (character) => {
-    setCharacterId(character?.id)
-    console.log('character', character)
-    setWeaponsPayload(prev => ({
-      ...prev,
-      weapon_type_id: character?.weapon_type_id, 
-      character_id: character?.id
-    }));
-    setWeaponDialog(true)
-  }
-
-   const handlOpenArtifactDialog = (character) => {
-    setCharacterId(character?.id)
-    setArtifactsPayload(prev => ({
-      ...prev,
-      character_id: character?.id, 
-    }));
-    setArtifactDialog(true)
-  }
-
-  const handleClosePerkDialog = (e) => {
-    setRefetchCharacters((prev) => !prev)
-    // resetSearchPerksInput()
-    setAddCharacterPerksDialog(false)
-  }
-
-   const handleCloseWeaponDialog = (e) => {
-    setRefetchCharacters((prev) => !prev)
-    setSearchWeaponsInput('')
-    setWeaponDialog(false)
-  }
-
-
-   const handleCloseArtifactDialog = (e) => {
-    setRefetchCharacters((prev) => !prev)
-    // resetSearchPerksInput()
-    setArtifactDialog(false)
-  }
-
-
-  const handleCloseCharacterDialog = (e) => {
-    setRefetchCharacters((prev) => !prev)
-    resetCharacterFormData()
-    setCharacterDialog(false)
-  }
-
-  
-  const openAddCharacterDialog = (e) => {
-    setCharacterDialog(true)
-  }
-
   
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -209,161 +126,12 @@ export default function Characters() {
     setSearchCharactersInput(search)
   }
 
-
-   
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setSearchArtifacts(searchArtifactsInput)
-    }, 300)
-
-    return () => clearTimeout(timeout)
-  }, [searchArtifactsInput])
-
-  
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setSearchWeapons(searchWeaponsInput)
-    }, 300)
-
-    return () => clearTimeout(timeout)
-  }, [searchWeaponsInput])
-
-
-
-  const handleFillCommonArtifact = (value) => {
-    if (!searchPerksInput.includes(value)) {
-      setSearchArtifactsInput((prev) => prev + (value + ' '))
-    } else {
-      setSearchArtifactsInput((prev) => prev.replace(value + ' ', ''))
-    }
-  }
-
-
-  const handleFillCommonWeapon = (value) => {
-    if (!searchArtifactsInput.includes(value)) {
-      setSearchWeaponsInput((prev) => prev + (value + ' '))
-    } else {
-      setSearchWeaponsInput((prev) => prev.replace(value + ' ', ''))
-    }
-  }
-
-  // const handleFillCommonPerk = (value) => {
-  //   if (!searchWeaponsInput.includes(value)) {
-  //     setSearchPerksInput((prev) => prev + (value + ' '))
-  //   } else {
-  //     setSearchPerksInput((prev) => prev.replace(value + ' ', ''))
-  //   }
-  // }
-
-
-
-  // const changeSearchPerksInput = (search) => {
-  //   setSearchPerksInput(search)
-  // }
-
-    const handleSearchWeapon = (search) => {
-    setSearchWeaponsInput(search)
-  }
-
-      const handleSearchArtifact = (search) => {
-    setSearchArtifactsInput(search)
-  }
-
-  // useEffect(() => {
-  //   const timeout = setTimeout(() => {
-  //     setSearchPerks(searchPerksInput)
-  //   }, 300)
-
-  //   return () => clearTimeout(timeout)
-  // }, [searchPerksInput])
-
-  const clickAddCharacterPerk = async (perk) => {
-    const payload = {
-      perk_id: perk?.id,
-      character_id: characterId
-    };
-    let response = await addCharacterPerk(payload)
-    if (response?.data?.success) {
-      setRefetchCharacterPerks((prev) => !prev)
-    }
-  }
-
-   const handleAddWeapon = async (weapon) => {
-    const payload = {
-      weapon_id: weapon?.id,
-      character_id: characterId
-    };
-    let response = await addCharacterWeapon(payload)
-    if (response?.data?.success) {
-      setRefetchWeapons((prev) => !prev)
-    }
-  }
-
-
-  const handleRemoveWeapon = async (weapon) => {
-    const payload = {
-      weapon_id: weapon?.id,
-      character_id: characterId
-    };
-    let response = await removeCharacterWeapon(payload)
-    if (response?.data?.success) {
-      setRefetchWeapons((prev) => !prev)
-    }
-  }
-
-   const handleAddArtifact = async (artifact) => {
-    const payload = {
-      artifact_id: artifact?.id,
-      character_id: characterId
-    };
-    let response = await addCharacterArtifact(payload)
-    if (response?.data?.success) {
-      setRefetchArtifacts((prev) => !prev)
-      
-    }
-  }
-
-
-  const handleRemoveArtifact = async (artifact) => {
-    const payload = {
-      artifact_id: artifact?.id,
-      character_id: characterId
-    };
-    let response = await removeCharacterArtifact(payload)
-    if (response?.data?.success) {
-      setRefetchArtifacts((prev) => !prev)
-    }
-  }
-
-  const clickRemoveCharacterPerk = async (perk) => {
-    const payload = {
-      perk_id: perk?.id,
-      character_id: characterId
-    };
-    let response = await deleteCharacterPerk(payload)
-    if (response?.data?.success) {
-      setRefetchCharacterPerks((prev) => !prev)
-    }
-  }
-
-
   const handleAddCharacterApi = async (item) => {
     setApiDialog(false)
     let response = await addCharacterApi()
     setRefetchCharacters((prev) => !prev)
     
   }
-
-  
-  const resetCharacterFormData = () => {
-      setCharacterFormData({
-        name: '',
-        element_id: '',
-        weapon_type_id: '',
-      })
-  }
-
-
 
   const clickCharactersPage = (e, page) => {
     setCharactersPage(page);
@@ -374,46 +142,15 @@ export default function Characters() {
     setCharactersPage(0);
   };
 
-  const handlePerksChangePage = (e, page) => {
-    setPerksPage(page);
-  };
-
-  const handlePerksRowsPerPage = (e) => {
-    setPerksRows(parseInt(e.target.value, 10));
-    setPerksPage(0);
-  };
-
-
-   const handleWeaponsChangePage = (e, page) => {
-    setWeaponsPage(page);
-  };
-
-  const handleWeaponsChangeRowsPerPage = (e) => {
-    setWeaponsRowsPerPage(parseInt(e.target.value, 10));
-    setWeaponsPage(0);
-  };
-
-     const handleArtifactsChangePage = (e, page) => {
-    setArtifactsPage(page);
-  };
-
-  const handleArtifactsChangeRowsPerPage = (e) => {
-    setArtifactRowsPerpage(parseInt(e.target.value, 10));
-    setArtifactsPage(0);
-  };
-
 
   const handleCloseAddPerkDialog = (e) => {
     setAddPerkDialog(false)
-    resetPerkFormData()
-  }
-
-   const resetPerkFormData = () => {
     setPerkFormData({
       name: '',
       description: '',
     })
   }
+
 
   const confirmAddPerkDialog = async (e) => {
     setApiLoading(true)
@@ -423,23 +160,20 @@ export default function Characters() {
         name: '',
         description: '',
       })
-      setRefetchCharacterPerks((prev) => !prev)
+      setPerksRefetch((prev) => !prev)
       setAddPerkDialog(false)
     }
     setApiLoading(false)
   }
   
-
-
-  
   const { columns: characterColumns  } = characterTable({openAddCharacterPerksDialog, handleOpenWeaponDialog, handlOpenArtifactDialog})
-  const { columns: perkTableColumns } = perkTable({clickAddCharacterPerk, clickRemoveCharacterPerk})
-  const { columns: weaponTableColumns } = weaponTable({handleAddWeapon, handleRemoveWeapon })
-  const { columns: artifactTableColumns } = artifactTable({handleAddArtifact, handleRemoveArtifact})
 
   return (
     <>
       { apiLoading && <Spinner /> }
+      <AddCharacterPerksForm  chipData={commonsData} characterId={characterId} dialog={perksDialog} setDialog={setPerksDialog} />
+        <AddArtifactsForm  chipData={commonsData} characterId={characterId} dialog={artifactsDialog} setDialog={setArtifactsDialog} />
+          <AddWeaponsForm  chipData={commonsData} characterId={characterId} dialog={weaponsDialog} setDialog={setWeaponsDialog} />
       <CustomDialog open={addPerkDialog}
         handleClose={handleCloseAddPerkDialog} 
         handleConfirm={confirmAddPerkDialog}  
@@ -465,48 +199,8 @@ export default function Characters() {
                                  options={elementsData}
                                  typeOptions={typeData} />}
             />
-     <CustomTableDialog size="md" open={addCharacterPerksDialog}
-            handleClose={handleClosePerkDialog} 
-            handleConfirm={handleClosePerkDialog}  
-            title="Add Character Perks"
-            content={<AddCharacterPerksForm tableColumns={perkTableColumns} chipData={commonsData} payload={characterPerksPayload}/>}
-          />
-        <CustomTableDialog size="md" open={weaponDialog}
-            handleClose={handleCloseWeaponDialog} 
-            handleConfirm={handleCloseWeaponDialog}  
-            title="Add Weapons" 
-            content={<AddWeaponsForm tableColumns={weaponTableColumns}
-                               data={weapons}
-                               handleSearch={handleSearchWeapon}
-                               searchInput={searchWeaponsInput}
-                               handleChip={handleFillCommonWeapon}
-                               commonsData={commonsData}
-                               loading={commonsLoading}
-                               page={weaponsPage} 
-                               handleChangePage={handleWeaponsChangePage} 
-                               rowsPerPage={weaponsRowsPerPage}
-                                handleChangeRowsPerPage={handleWeaponsChangeRowsPerPage} 
-                                total={weaponsTotal}
-                                />}
-          />
-          <CustomTableDialog size="md" open={artifactDialog}
-            handleClose={handleCloseArtifactDialog} 
-            handleConfirm={handleCloseArtifactDialog}  
-            title="Add Artifacts" 
-            content={<AddArtifactsForm tableColumns={artifactTableColumns}
-                               data={artifacts}
-                               handleSearch={handleSearchArtifact}
-                               searchInput={searchArtifactsInput}
-                               handleChip={handleFillCommonArtifact}
-                               commonsData={commonsData}
-                               loading={commonsLoading}
-                               page={artifactsPage} 
-                               handleChangePage={handleArtifactsChangePage} 
-                               rowsPerPage={artifactsRowsPerPage}
-                                handleChangeRowsPerPage={handleArtifactsChangeRowsPerPage} 
-                                total={artifactsTotal}
-                                />}
-          />
+ 
+       
         
       <Grid container spacing={2}>
         <Grid item size={12}>
