@@ -20,7 +20,7 @@ const perkTable = ({handleRemovePerk}) => {
         )
       }
     },
-    { name: 'Actions', value: 'actions', width: '480px',  cell: (item,index) => {
+    { name: 'Actions', value: 'actions',  cell: (item,index) => {
         return (
           <TableCell key={index} align="left">    
           <Button startIcon={<DeleteOutlineIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} />} 

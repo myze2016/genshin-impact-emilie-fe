@@ -244,111 +244,112 @@ export default function Dashboard() {
                       >
                         <Grid container spacing={2}>
                           <Grid item size={{xs: 12, md: 12, lg: 12}}>
-                             <Grid container spacing={2}>
-                              <Grid item size={{xs: 3, md: 3, lg: 3}}>
-                                 <TextField fullWidth value={variable[index].reaction} name="reaction" label="Reaction" variant="outlined" onChange={(e) => {
-                                  const newVariable = [...variable];
-                                  newVariable[index].reaction = e.target.value;
-                                  setVariable(newVariable);
-                                }} />
-                              </Grid>
-                               <Grid item size={{xs: 3, md: 3, lg: 3}}>
-                                <FormControl fullWidth>
-                                  <InputLabel id="element-label" >
-                                      Element
-                                  </InputLabel>
-                                 <Select
-                                     
-                                        id="element-label"
-                                        name="element_id"
-                                        label="Element"
-                                        value={variable[index].element_id}
-                                        onChange={(e) => {
+                            <Grid container spacing={2}>
+                              <Grid item size={{xs: 10, md: 10, lg: 10}}>
+                                <Grid container spacing={2}>
+                                  <Grid item size={{xs: 3, md: 3, lg: 3}}>
+                                    <TextField fullWidth value={variable[index].reaction} name="reaction" label="Reaction" variant="outlined" onChange={(e) => {
+                                      const newVariable = [...variable];
+                                      newVariable[index].reaction = e.target.value;
+                                      setVariable(newVariable);
+                                    }} />
+                                  </Grid>
+                                  <Grid item size={{xs: 3, md: 3, lg: 3}}>
+                                    <FormControl fullWidth>
+                                      <InputLabel id="element-label" >
+                                          Element
+                                      </InputLabel>
+                                    <Select
+                                        
+                                            id="element-label"
+                                            name="element_id"
+                                            label="Element"
+                                            value={variable[index].element_id}
+                                            onChange={(e) => {
+                                              const newVariable = [...variable];
+                                              newVariable[index].element_id = e.target.value;
+                                              setVariable(newVariable);
+                                            }}
+                                        >
+                                            {elementsData.map((option, index) => (
+                                                <MenuItem key={index} value={option.id}>
+                                                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                                        <Box
+                                                            sx={{
+                                                                width: 16,
+                                                                height: 16,
+                                                                backgroundColor: option.color,
+                                                                borderRadius: '4px',
+                                                                marginRight: 1,
+                                                                display: 'inline-block',
+                                                            }}
+                                                        />
+                                                        {option.name}
+                                                    </Box>
+                                                </MenuItem>
+                                            ))}
+                                        </Select>
+                                      </FormControl>
+                                  </Grid>
+                                  <Grid item size={{xs: 2, md: 2, lg: 2}}>
+                                    <FormControl fullWidth>
+                                      <InputLabel id="select-label">Choose Option</InputLabel>
+                                      <Select
+                                        labelId="select-label"
+                                        label="Choose Option"
+                                        defaultValue="party"
+                                        value={variable[index].select}
+                                        onChange={(event) => {
                                           const newVariable = [...variable];
-                                          newVariable[index].element_id = e.target.value;
+                                          newVariable[index].select = event.target.value;
                                           setVariable(newVariable);
                                         }}
-                                    >
-                                        {elementsData.map((option, index) => (
-                                            <MenuItem key={index} value={option.id}>
-                                                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                                    <Box
-                                                        sx={{
-                                                            width: 16,
-                                                            height: 16,
-                                                            backgroundColor: option.color,
-                                                            borderRadius: '4px',
-                                                            marginRight: 1,
-                                                            display: 'inline-block',
-                                                        }}
-                                                    />
-                                                    {option.name}
-                                                </Box>
-                                            </MenuItem>
-                                        ))}
-                                    </Select>
-                                  </FormControl>
-                              </Grid>
-                                  <Grid item size={{xs: 2, md: 2, lg: 2}}>
-                                <Stack spacing={3} >
-                                    <Autocomplete
-                                      multiple
-                                      options={perksData}
-                                      getOptionLabel={(option) => option?.name}
-                                      value={variable[index].perks}
-                                      onChange={(event, newValue) => {
-                                        const newVariable = [...variable];
-                                        newVariable[index].perks = newValue;
-                                        setVariable(newVariable);
-                                      }}
-                                      renderInput={(params) => (
-                                        <TextField
-                                          {...params}
-                                          variant="outlined"
-                                          label="Perks"
-                                          placeholder="Perks"
+                                      >
+                                        <MenuItem value="party"> All Party </MenuItem>
+                                        <MenuItem value="my-party"> My Party</MenuItem>
+                                      </Select>
+                                    </FormControl>
+                                  </Grid>
+                                   <Grid item size={{xs: 6, md: 6, lg: 6}}>
+                                    <Stack spacing={3} >
+                                        <Autocomplete
+                                          multiple
+                                          options={perksData}
+                                          getOptionLabel={(option) => option?.name}
+                                          value={variable[index].perks}
+                                          onChange={(event, newValue) => {
+                                            const newVariable = [...variable];
+                                            newVariable[index].perks = newValue;
+                                            setVariable(newVariable);
+                                          }}
+                                          renderInput={(params) => (
+                                            <TextField
+                                              {...params}
+                                              variant="outlined"
+                                              label="Perks"
+                                              placeholder="Perks"
+                                            />
+                                          )}
                                         />
-                                      )}
-                                    />
-                                </Stack>
-                                </Grid>
-                               <Grid item size={{xs: 2, md: 2, lg: 2}}>
-                                <FormControl fullWidth>
-                                  <InputLabel id="select-label">Choose Option</InputLabel>
-                                  <Select
-                                    labelId="select-label"
-                                    label="Choose Option"
-                                    defaultValue="party"
-                                    value={variable[index].select}
-                                    onChange={(event) => {
-                                      const newVariable = [...variable];
-                                      newVariable[index].select = event.target.value;
-                                      setVariable(newVariable);
-                                    }}
-                                  >
-                                    <MenuItem value="party"> All Party </MenuItem>
-                                    <MenuItem value="my-party"> My Party</MenuItem>
-                                  </Select>
-                                </FormControl>
-                                </Grid>
-                                   <Grid item sx={{display: 'flex', justifyContent: 'flex-end', alignItems: 'center'}} size={{xs: 2, md: 2, lg: 2}}>
-                                     
-                                        <IconButton
-                                            color="info"
-                                            onClick={(e) => handleRefetchAbyss(index)}
-                                          >
-                                            <AutorenewIcon sx={{ fontSize: '24px' }} />
-                                        </IconButton>
-                                        <IconButton
-                                            color="error"
-                                            onClick={(e) => handleDeleteVariation(index)}
-                                          >
-                                            <DeleteOutlineIcon sx={{ fontSize: '24px' }} />
-                                        </IconButton>
-                                     
-                                  
+                                    </Stack>
                                   </Grid>
                                 </Grid>
+                              </Grid>
+                              <Grid item size={{xs: 2, md: 2, lg: 2}} sx={{display: 'flex', alignItems: 'flex-start', justifyContent: 'flex-end'}}>
+                                <IconButton
+                                    color="info"
+                                    onClick={(e) => handleRefetchAbyss(index)}
+                                  >
+                                    <AutorenewIcon sx={{ fontSize: '24px' }} />
+                                </IconButton>
+                                <IconButton
+                                    color="error"
+                                    onClick={(e) => handleDeleteVariation(index)}
+                                  >
+                                    <DeleteOutlineIcon sx={{ fontSize: '24px' }} />
+                                </IconButton>
+                              </Grid>
+                            </Grid>
                           </Grid>
                           <Grid item size={{xs: 12, md: 12, lg: 12}}>
                             <Table>
@@ -387,9 +388,8 @@ export default function Dashboard() {
                           </Grid>
                         </Grid>
                       </Paper>
-                       
                     </Grid>
-                        </Fragment>
+                  </Fragment>
                  ))}
               </Grid>
          

@@ -57,6 +57,7 @@ export default function Page() {
   const resetPerkFormData = () => {
     setPerkFormData({
       name: '',
+         type: 'Perk',
       description: '',
     })
   }

@@ -34,6 +34,7 @@ import EditPositionForm from "./form/EditPositionForm";
 import AddStatForm from "./form/AddStatForm";
 import { getStats, addStatLine } from "@/hooks/useStat";
 import AddArtifactPieceForm from "./form/AddArtifactPieceForm";
+import AddWeapons from "./form/AddWeapons";
 
 export default function Party() {
   const { user, partyContextId, setPartyContextId } = useUser()
@@ -646,7 +647,7 @@ export default function Party() {
               handleClose={(e)=>setWeaponsDialog(false)} 
               handleConfirm={(e)=>setWeaponsDialog(false)}  
               title="Add Weapons" 
-              content={<AddArtifacts columns={weaponColumns}
+              content={<AddWeapons columns={weaponColumns}
                                   data={weapons}
                                   handleSearch={handleSearchWeapons}
                                   searchInput={weaponsSearchInput}
@@ -666,89 +667,93 @@ export default function Party() {
             <Fragment key={index}>
               <Grid item size={12}>
                 <Grid container spacing={2}>
-                      <Grid item size={8}>
-                           <Paper sx={{ padding: 2, height: '100%', backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.4), rgba(0,0,0,0.8)), url(${party?.character?.namecard_background_url})`,
-                          backgroundSize: 'cover', // or 'contain' depending on your layout
-                          backgroundRepeat: 'no-repeat',
-                          backgroundPosition: 'right' }}>
-                          <Grid container>
-                            <Grid item size={12} sx={{mb: 1}}>
-                              <Box display="flex" justifyContent="space-between" alignItems="center">
-                                  <Typography gutterBottom variant="h6" component="div">
-                                  <Box component="span" color="secondary.main">
-                                    {party?.copied_from?.name && party?.copied_from?.name }
-                                  </Box>
-                                 
+                  <Grid item size={{xs: 12, md: 8, lg: 8}}>
+                    <Paper sx={{ padding: 2, height: '100%', backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.4), rgba(0,0,0,0.8)), url(${party?.character?.namecard_background_url})`,
+                      backgroundSize: 'cover', // or 'contain' depending on your layout
+                      backgroundRepeat: 'no-repeat',
+                      backgroundPosition: 'right' }}>
+                      <Grid container>
+                        <Grid item size={12} sx={{mb: 1}}>
+                           <Grid container spacing={2}>
+                                <Grid item size={{xs: 12, md: 6, lg: 6}}>
+                                    <Typography gutterBottom variant="h6" component="div">
+                                      <Box component="span" color="secondary.main">
+                                        {party?.copied_from?.name && party?.copied_from?.name }
+                                      </Box>
+                                      <Box component="span" color="text.primary">
+                                      {party?.copied_from?.name &&  ' | ' }
+                                        {party?.name}
+                                      </Box>
+                                    </Typography>
+                                </Grid>
+                                <Grid item size={{xs: 12, md: 6, lg: 6}} sx={{display: 'flex', justifyContent:  {
+                                      xs: 'flex-start', // applies when xs (mobile)
+                                      md: 'flex-end'    // applies from md and up
+                                    }}}>
+                                  <Box>
+                                    <Button
+                                      variant="contained"
+                                      color="error"
+                                      size="small"
+                                      onClick={() => setConfirmDeletePartyDialog(true)}
+                                      sx={{ mr: 1, mb: 1, minWidth: '36px', padding: '6px' }} // Make button compact
+                                    >
+                                      <DeleteOutlineIcon fontSize="small" />
+                                    </Button>
 
-                                  <Box component="span" color="text.primary">
-                                  {party?.copied_from?.name &&  ' | ' }
-                                    {party?.name}
-                                  </Box>
-                                </Typography>
-                                <Box>
-                              <Button
-                                variant="contained"
-                                color="error"
-                                size="small"
-                                onClick={() => setConfirmDeletePartyDialog(true)}
-                                sx={{ mr: 1, minWidth: '36px', padding: '6px' }} // Make button compact
-                              >
-                                <DeleteOutlineIcon fontSize="small" />
-                              </Button>
-
-                              <Button
-                                variant="contained"
-                                color="info"
-                                size="small"
-                                onClick={() => setEditPartyDialog(true)}
-                                sx={{ mr: 1, minWidth: '36px', padding: '6px' }}
-                              >
-                                <ModeEditOutlineOutlinedIcon fontSize="small" />
-                              </Button>
-                                  <Button startIcon={<AddCircleOutlineIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} />} 
-                                      sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }, mr: 1}} onClick={(e) => handleOpenAddPositionDialog(party)} color="primary" variant="contained" size="small"> Add Position</Button>
-                                         <Button hidden={party?.copied_from} startIcon={<FileUploadOutlinedIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} />} 
-                                      sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }, mr: 1}} onClick={(e) => setApiDialog(true)} color="primary" variant="contained" size="small">Add My Party</Button>    
-                                </Box>
-                              </Box>
-                            </Grid>
-                            <hr style={{ width: '100%' }} />
-                            <Grid item size={12} >
-                              <Typography variant="subtitle1">{party?.element?.name}&nbsp;&nbsp;•&nbsp;&nbsp;{party?.reaction}</Typography>
-                            </Grid>
-                            <Grid item size={12} sx={{mt: 1}}>
-                              <Typography>{party?.description}</Typography>
-                            </Grid>
-                          </Grid>
-                        </Paper>
+                                    <Button
+                                      variant="contained"
+                                      color="info"
+                                      size="small"
+                                      onClick={() => setEditPartyDialog(true)}
+                                      sx={{ mr: 1, mb: 1, minWidth: '36px', padding: '6px' }}
+                                    >
+                                      <ModeEditOutlineOutlinedIcon fontSize="small" />
+                                    </Button>
+                                    <Button startIcon={<AddCircleOutlineIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} />} 
+                                        sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }, mr: 1, mb: 1}} onClick={(e) => handleOpenAddPositionDialog(party)} color="primary" variant="contained" size="small"> Add Position</Button>
+                                          <Button hidden={party?.copied_from} startIcon={<FileUploadOutlinedIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} />} 
+                                        sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }, mr: 1, mb: 1}} onClick={(e) => setApiDialog(true)} color="primary" variant="contained" size="small">Add My Party</Button>    
+                                    </Box>
+                                </Grid>
+                           </Grid>
+                        </Grid>
+                        <hr style={{ width: '100%' }} />
+                        <Grid item size={12} >
+                          <Typography variant="subtitle1">{party?.element?.name}&nbsp;&nbsp;•&nbsp;&nbsp;{party?.reaction}</Typography>
+                        </Grid>
+                        <Grid item size={12} sx={{mt: 1}}>
+                          <Typography>{party?.description}</Typography>
+                        </Grid>
                       </Grid>
-                      <Grid item size={4}>
-                        <Paper >
-                          <Table>
-                            <TableBody>
-                              {party?.positions?.map((position, index) => (
-                                <TableRow key={index}>
-                                  <TableCell>
-                                    <Typography>{position?.name}</Typography>
-                                  </TableCell>
-                                  <TableCell>
-                                    <Typography>{position?.description}</Typography>
-                                  </TableCell>
-                                </TableRow>
-                              ))}
-                            </TableBody>
-                          </Table>
-                        </Paper>
-                      </Grid>
-
+                    </Paper>
+                  </Grid>
+                  <Grid item size={{xs: 12, md: 4, lg: 4}}>
+                    <Paper >
+                      <Table>
+                        <TableBody>
+                          {party?.positions?.map((position, index) => (
+                            <TableRow key={index}>
+                              <TableCell>
+                                <Typography>{position?.name}</Typography>
+                              </TableCell>
+                              <TableCell>
+                                <Typography>{position?.description}</Typography>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </Paper>
+                  </Grid>
                 </Grid> 
               </Grid>
               
-               <Grid item size={12}>
+              <Grid item size={12}>
                 <Grid container spacing={2}>
                   {
                     party && party?.positions?.map((position, index) => (
-                      <Grid key={index} item size={6}>
+                      <Grid key={index} item size={{xs: 12, md: 6, lg: 6}}>
                         <Paper  >
                           <Grid container spacing={0}>
                             <Grid item size={12} >
