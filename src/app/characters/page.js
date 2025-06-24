@@ -80,6 +80,7 @@ export default function Characters() {
   }
 
   const [characterId, setCharacterId] = useState('')
+   const [weaponTypeId, setWeaponTypeId] = useState('')
   const [perksDialog, setPerksDialog] = useState(false)
   const openAddCharacterPerksDialog = (character) => {
     setCharacterId(character?.id)
@@ -94,6 +95,7 @@ export default function Characters() {
 
   const [weaponsDialog, setWeaponsDialog] = useState(false)
   const handleOpenWeaponDialog = (character) => {
+    setWeaponTypeId(character?.weapon_type_id)
     setCharacterId(character?.id)
     setWeaponsDialog(true)
   }
@@ -173,7 +175,7 @@ export default function Characters() {
       { apiLoading && <Spinner /> }
       <AddCharacterPerksForm  chipData={commonsData} characterId={characterId} dialog={perksDialog} setDialog={setPerksDialog} />
         <AddArtifactsForm  chipData={commonsData} characterId={characterId} dialog={artifactsDialog} setDialog={setArtifactsDialog} />
-          <AddWeaponsForm  chipData={commonsData} characterId={characterId} dialog={weaponsDialog} setDialog={setWeaponsDialog} />
+          <AddWeaponsForm  chipData={commonsData} characterId={characterId} weaponTypeId={weaponTypeId} dialog={weaponsDialog} setDialog={setWeaponsDialog} />
       <CustomDialog open={addPerkDialog}
         handleClose={handleCloseAddPerkDialog} 
         handleConfirm={confirmAddPerkDialog}  

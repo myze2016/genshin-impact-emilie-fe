@@ -61,17 +61,19 @@ export const getWeaponPerks = (payload, refetch, search, page, rowsPerPage) => {
   return { data, loading, total }
 }
 
-export const getWeaponSearch = (payload, refetch, search, page, rowsPerPage) => {
+export const getWeaponSearch = (characterId, weaponTypeId, refetch, search, page, rowsPerPage) => {
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(true)
   const [total, setTotal] = useState(true)
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true)
+      if (!weaponTypeId && !characterId) {
+          setLoading(false)
+          return
+      }
       try {
-       const weapon_type_id = payload?.weapon_type_id || ''
-       const character_id = payload?.character_id || ''
-       const response = await api.get(`/weapon-search?weapon_type_id=${weapon_type_id}&character_id=${character_id}&search=${search}&page=${page}&rows_per_page=${rowsPerPage}`);
+       const response = await api.get(`/weapon-search?weapon_type_id=${weaponTypeId}&character_id=${characterId}&search=${search}&page=${page}&rows_per_page=${rowsPerPage}`);
        
         if (response?.data?.success) {
           setData(response?.data?.weapons?.data)
@@ -86,7 +88,7 @@ export const getWeaponSearch = (payload, refetch, search, page, rowsPerPage) => 
     }
 
     fetchData()
-  }, [payload, refetch, search, page, rowsPerPage])
+  }, [characterId, weaponTypeId, refetch, search, page, rowsPerPage])
 
   return { data, loading, total }
 }

@@ -1,19 +1,19 @@
 import { FormControl, InputLabel, Input, FormHelperText, Grid, Paper, Typography, Box } from "@mui/material";
 import CustomTableRowSearchV2 from "@/components/table/tableRowSearchV2";
 import { Widgets } from "@mui/icons-material";
-import { addWeaponPerk, removeWeaponPerk } from "@/hooks/useWeapon";
 import { getWeaponSearch } from "@/hooks/useWeapon";
 import { useEffect, useState, Fragment } from "react";
 import weaponTable from "../tables/weaponTable";
 import CustomTableDialog from "@/components/dialog/table";
-const AddWeaponsForm = ({ chipData, characterId, dialog, setDialog }) => {
+import { addCharacterWeapon, removeCharacterWeapon } from "@/hooks/useCharacterWeapon";
+const AddWeaponsForm = ({ chipData, characterId,weaponTypeId, dialog, setDialog }) => {
     const [payload, setPayload] = useState('')
     const [refetch, setRefetch] = useState('')
     const [search, setSearch] = useState('')
     const [searchInput, setSearchInput] = useState('')
     const [ page, setPage] = useState(0)
     const [ rowsPerPage, setRowsPerPage] = useState(10)
-    const { data, loading, total } = getWeaponSearch(characterId, refetch, search, page+1, rowsPerPage)
+    const { data, loading, total } = getWeaponSearch(characterId, weaponTypeId, refetch, search, page+1, rowsPerPage)
     
     const handleClickChip = (value) => {
         if (!searchInput.includes(value)) {
@@ -44,23 +44,23 @@ const AddWeaponsForm = ({ chipData, characterId, dialog, setDialog }) => {
         setPage(0);
     };
 
-    const handleAddWeapon = async (perk) => {
+    const handleAddWeapon = async (weapon) => {
         const payload = {
-            perk_id: perk?.id,
+            weapon_id: weapon?.id,
             character_id: characterId
         };
-        let response = await addWeaponPerk(payload)
+        let response = await addCharacterWeapon(payload)
         if (response?.data?.success) {
             setRefetch((prev) => !prev)
         }
     }
 
-    const handleRemoveWeapon = async (perk) => {
+    const handleRemoveWeapon = async (weapon) => {
         const payload = {
-            perk_id: perk?.id,
+            weapon_id: weapon?.id,
             character_id: characterId
         };
-        let response = await removeWeaponPerk(payload)
+        let response = await removeCharacterWeapon(payload)
         if (response?.data?.success) {
             setRefetch((prev) => !prev)
         }

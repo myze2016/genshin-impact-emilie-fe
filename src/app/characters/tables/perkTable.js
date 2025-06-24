@@ -3,7 +3,7 @@ import { Fragment } from "react"
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import XCircleOutlineIcon from '@mui/icons-material/Cancel';
 
-const perkTable = ({clickAddCharacterPerk, clickRemoveCharacterPerk}) => {
+const perkTable = ({handleAddCharacterPerk, handleRemoveCharacterPerk}) => {
   const columns = [
     { name: 'Name', value: 'name', cell: (item,index) => {
       return (
@@ -36,7 +36,7 @@ const perkTable = ({clickAddCharacterPerk, clickRemoveCharacterPerk}) => {
            <IconButton
                 hidden={ item?.character_perks?.length > 0 }
                 color="primary"
-                onClick={() => clickAddCharacterPerk(item)}
+                onClick={() => handleAddCharacterPerk(item)}
                 aria-label="add character to position"
               >
                 
@@ -45,7 +45,7 @@ const perkTable = ({clickAddCharacterPerk, clickRemoveCharacterPerk}) => {
           <IconButton
                 hidden={ item?.character_perks?.length === 0 }
                 color="error"
-                onClick={() => clickRemoveCharacterPerk(item)}
+                onClick={() => handleRemoveCharacterPerk(item)}
                 aria-label="add character to position"
               >
                 { <XCircleOutlineIcon /> }

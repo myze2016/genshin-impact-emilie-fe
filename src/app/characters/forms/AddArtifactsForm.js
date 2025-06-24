@@ -4,6 +4,7 @@ import { useState, useEffect, Fragment } from "react";
 import { getArtifactSearch } from "@/hooks/useArtifact";
 import artifactTable from "../tables/artifactTable";
 import CustomTableDialog from "@/components/dialog/table";
+import { addCharacterArtifact, removeCharacterArtifact } from "@/hooks/useCharacterArtifact";
 const AddArtifactsForm = ({ chipData, characterId, dialog, setDialog }) => {
     const [payload, setPayload] = useState('')
     const [refetch, setRefetch] = useState('')
@@ -42,9 +43,9 @@ const AddArtifactsForm = ({ chipData, characterId, dialog, setDialog }) => {
         setPage(0);
     };
 
-    const handleAddArtifact = async (perk) => {
+    const handleAddArtifact = async (artifact) => {
         const payload = {
-            perk_id: perk?.id,
+            artifact_id: artifact?.id,
             character_id: characterId
         };
         let response = await addCharacterArtifact(payload)
@@ -53,9 +54,9 @@ const AddArtifactsForm = ({ chipData, characterId, dialog, setDialog }) => {
         }
     }
 
-    const handleRemoveArtifact = async (perk) => {
+    const handleRemoveArtifact = async (artifact) => {
         const payload = {
-            perk_id: perk?.id,
+            artifact_id: artifact?.id,
             character_id: characterId
         };
         let response = await removeCharacterArtifact(payload)
