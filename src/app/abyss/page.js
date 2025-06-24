@@ -14,7 +14,8 @@ import { Add } from "@mui/icons-material";
 import CustomTableDialog from "@/components/dialog/table";
 import { getElements } from "@/hooks/useElements";
 import CustomSearch from "@/components/Search";
-   
+   import ReplyOutlinedIcon from '@mui/icons-material/ReplyOutlined';
+
 import { getPerks } from "@/hooks/usePerk";
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import AutorenewIcon from '@mui/icons-material/Autorenew';
@@ -230,6 +231,8 @@ export default function Dashboard() {
      
       <Grid container spacing={2}>
                 <Grid item size={{xs: 12, md: 12, lg: 12}}>
+                  <Button  color='secondary' startIcon={<ReplyOutlinedIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} />} 
+                                      sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }, mr: 1, mb: 1}} onClick={(e) => router.back()} variant="contained">Back</Button>
           <Button  startIcon={<AddCircleOutlineIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} />} 
                                       sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }, mr: 1, mb: 1}} onClick={(e) => handleAddVariation()} variant="contained">Add Variable</Button>
               </Grid>

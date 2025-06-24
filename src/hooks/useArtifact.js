@@ -67,6 +67,10 @@ export const getArtifactPerks = (payload, refetch, search, page, rowsPerPage) =>
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true)
+      if (!payload) {
+        setLoading(false)
+        return;
+      }
       try {
        const artifact_id = payload?.id || ''
    
@@ -128,6 +132,10 @@ export const getArtifactByParty = (payload, refetch, search, page, rowsPerPage) 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true)
+      if (!payload) {
+        setLoading(false)
+        return;
+      }
       try {
        const party_character_id = payload?.party_character_id || ''
    

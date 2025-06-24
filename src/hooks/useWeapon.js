@@ -39,6 +39,10 @@ export const getWeaponPerks = (payload, refetch, search, page, rowsPerPage) => {
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true)
+      if (!payload) {
+        setLoading(false)
+        return
+      }
       try {
        const weapon_id = payload?.id || ''
        const response = await api.get(`/weapon-perk?weapon_id=${weapon_id}&search=${search}&page=${page}&rows_per_page=${rowsPerPage}`);
@@ -100,6 +104,10 @@ export const getWeaponByParty = (payload, refetch, search, page, rowsPerPage) =>
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true)
+      if (!payload) {
+        setLoading(false)
+        return;
+      }
       try {
        const weapon_type_id = payload?.weapon_type_id || ''
        const party_character_id = payload?.party_character_id || ''

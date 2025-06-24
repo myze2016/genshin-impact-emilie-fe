@@ -8,6 +8,7 @@ export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
   const [partyContextId, setPartyContextId] = useState(null)
+  const [characterSearchContext, setCharacterSearchContext] = useState('')
 
   useEffect(() => {
     const token = localStorage.getItem('token')
@@ -23,7 +24,7 @@ export const UserProvider = ({ children }) => {
   }, [])
 
   return (
-    <UserContext.Provider value={{ user, setUser, loading, partyContextId, setPartyContextId }}>
+    <UserContext.Provider value={{ user, setUser, loading, partyContextId, setPartyContextId, characterSearchContext, setCharacterSearchContext }}>
       {children}
     </UserContext.Provider>
   )

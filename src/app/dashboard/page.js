@@ -17,6 +17,7 @@ import CustomSearch from "@/components/Search";
 import { useUser } from "@/context/UserContext";
 import { useRouter } from "next/navigation";
 import { useElementContext } from "@/context/ElementContext";
+import ReplyOutlinedIcon from '@mui/icons-material/ReplyOutlined';
 
 export default function Dashboard() {
   const { user, partyContextId, setPartyContextId } = useUser()
@@ -192,6 +193,8 @@ export default function Dashboard() {
        
       <Grid container spacing={2}>
         <Grid item size={8}>
+           <Button  color='secondary' startIcon={<ReplyOutlinedIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} />} 
+                                      sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }, mr: 1}} onClick={(e) => router.back()} variant="contained">Back</Button>
           <Button startIcon={<AddCircleOutlineIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} />} 
           sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }}} 
           onClick={(e) => setAddPartyDialog(true)} variant="contained">Add Party</Button>

@@ -6,7 +6,7 @@ import { useEffect, useState, Fragment } from "react";
 import weaponTable from "../tables/weaponTable";
 import CustomTableDialog from "@/components/dialog/table";
 import { addCharacterWeapon, removeCharacterWeapon } from "@/hooks/useCharacterWeapon";
-const AddWeaponsForm = ({ chipData, characterId,weaponTypeId, dialog, setDialog }) => {
+const AddWeaponsForm = ({ chipData, characterId, weaponTypeId, dialog, setRefetchCharacters, setDialog }) => {
     const [payload, setPayload] = useState('')
     const [refetch, setRefetch] = useState('')
     const [search, setSearch] = useState('')
@@ -52,6 +52,7 @@ const AddWeaponsForm = ({ chipData, characterId,weaponTypeId, dialog, setDialog 
         let response = await addCharacterWeapon(payload)
         if (response?.data?.success) {
             setRefetch((prev) => !prev)
+            setRefetchCharacters((prev) => !prev)
         }
     }
 
@@ -63,6 +64,7 @@ const AddWeaponsForm = ({ chipData, characterId,weaponTypeId, dialog, setDialog 
         let response = await removeCharacterWeapon(payload)
         if (response?.data?.success) {
             setRefetch((prev) => !prev)
+             setRefetchCharacters((prev) => !prev)
         }
     }
 

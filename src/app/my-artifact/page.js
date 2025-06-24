@@ -24,6 +24,7 @@ import { getCharacters } from "@/hooks/useCharacter";
 import AddPartyPositionCharacter from "./forms/AddPartyPositionCharacter";
 import { getCharactersArtifact } from "@/hooks/useCharacter";
 import { useCommonContext } from "@/context/CommonContext";
+import ReplyOutlinedIcon from '@mui/icons-material/ReplyOutlined';
 
 export default function Artifacts() {
     const { user } = useUser()
@@ -357,7 +358,8 @@ useEffect(() => {
         <Grid item size={12}>
           <Grid container spacing={2} >
             <Grid item size={8}>
-          
+          <Button  color='secondary' startIcon={<ReplyOutlinedIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} />} 
+                                      sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }, mr: 1}} onClick={(e) => router.back()} variant="contained">Back</Button>
             </Grid>
              <Grid item size={4} >
                <Grid container  justifyContent="flex-end" spacing={2} >

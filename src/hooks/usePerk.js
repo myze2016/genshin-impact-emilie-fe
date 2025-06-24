@@ -10,6 +10,7 @@ export const getPerks = (payload, refetch, search, page=0, rowsPerPage=100) => {
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true)
+      
       try {
         const response = await api.get(`/perk?search=${search}&page=${page}&rows_per_page=${rowsPerPage}`);
         if (response?.data?.success) {

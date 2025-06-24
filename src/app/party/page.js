@@ -38,9 +38,12 @@ import AddWeapons from "./form/AddWeapons";
 import { useElementContext } from "@/context/ElementContext";
 import { useCommonContext } from "@/context/CommonContext";
 import { useStatContext } from "@/context/StatContext";
+import ReplyAllOutlinedIcon from '@mui/icons-material/ReplyAllOutlined';
+import ReplyOutlinedIcon from '@mui/icons-material/ReplyOutlined';
+
 
 export default function Party() {
-  const { user, partyContextId, setPartyContextId } = useUser()
+  const { user, partyContextId, setPartyContextId, characterSearchContext, setCharacterSearchContext } = useUser()
   const router = useRouter()
   const params = useParams();
   const party_id = partyContextId;
@@ -457,7 +460,7 @@ export default function Party() {
         let response = await addPartyArtifact(payload)
         if (response?.data?.success) {
           setArtifactRefech((prev) => !prev)
-          
+          setRefetchParty((prev) => !prev)
         }
       }
     
@@ -470,6 +473,7 @@ export default function Party() {
         let response = await removePartyArtifact(payload)
         if (response?.data?.success) {
           setArtifactRefech((prev) => !prev)
+           setRefetchParty((prev) => !prev)
         }
       }
 
@@ -541,6 +545,11 @@ export default function Party() {
       console.log('party_artifact', party_artifact.party_artifact[0].id)
       setPartyArtifactId(party_artifact.party_artifact[0].id)
       setPieceDialog(true)
+    }
+
+    const handleRedirectCharacters = (characterName) => {
+      setCharacterSearchContext(characterName)
+      router.push(`/characters`)
     }
 
      
@@ -672,6 +681,10 @@ export default function Party() {
           partyData && partyData?.map((party, index) => (
             <Fragment key={index}>
               <Grid item size={12}>
+                 <Button  color='secondary' startIcon={<ReplyOutlinedIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} />} 
+                                      sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }}} onClick={(e) => router.back()} variant="contained">Back</Button>
+              </Grid>
+              <Grid item size={12}>
                 <Grid container spacing={2}>
                   <Grid item size={{xs: 12, md: 8, lg: 8}}>
                     <Paper sx={{ padding: 2, height: '100%', backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.4), rgba(0,0,0,0.8)), url(${party?.character?.namecard_background_url})`,
@@ -760,12 +773,12 @@ export default function Party() {
                   {
                     party && party?.positions?.map((position, index) => (
                       <Grid key={index} item size={{xs: 12, md: 6, lg: 6}}>
-                        <Paper  >
+                        <Paper elevation={3} >
                           <Grid container spacing={0}>
                             <Grid item size={{xs: 12, md: 12, lg: 12}} >
                               <Grid container spacing={2} sx={{px: 2, py: 1}}>
-                                <Grid item size={{xs: 12, md: 6, lg: 6}} sx={{display: 'flex', justifyContent: 'flex-start', alignItems: 'center'}}>
-                                    <Typography sx={{ fontWeight: 'bold' }}>{position?.name}</Typography>&nbsp;&nbsp;•&nbsp;&nbsp;<Typography sx={{ fontWeight: 'bold' }}>{position?.description}</Typography>
+                                <Grid item size={{xs: 12, md: 6, lg: 6}} sx={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center'}}>
+                                    <Typography sx={{fontWeight: 100 }}>{position?.name}</Typography>&nbsp;&nbsp;•&nbsp;&nbsp;<Typography sx={{ fontWeight: 100 }}>{position?.description}</Typography>
                                 </Grid>
                                 <Grid item size={{xs: 12, md: 6, lg: 6}} sx={{display: 'flex', justifyContent: 'flex-end', alignItems: 'center'}}>
                                   <IconButton
@@ -802,13 +815,19 @@ export default function Party() {
                                   { position && position?.characters_value?.map((character, index) => (
                                     <Fragment key={index}>
                                     <TableRow>
-                                       <TableCell>
+                                       <TableCell sx={{pr: 0, width: '40px'}}>
                                         <IconButton onClick={() => toggleRow(position?.id, index)}>
                                           {openRows[position?.id] === index ? <ExpandLessIcon /> : <ExpandMoreIcon />}
                                         </IconButton>
                                     </TableCell>
-                                      <TableCell>
+                                      <TableCell sx={{pl: 0}}>
+                                        <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'flex-start'}}>
+                                        
+                                        <IconButton color='info' sx={{ml: 1}} onClick={() => handleRedirectCharacters(character?.character?.name)}>
+                                          <ReplyAllOutlinedIcon sx={{ fontSize: '16px'}}/>
+                                        </IconButton>
                                         <Typography>{character?.character?.name}</Typography>
+                                        </Box>
                                       </TableCell>
                                      
                                       

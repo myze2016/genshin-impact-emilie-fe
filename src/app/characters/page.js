@@ -33,10 +33,13 @@ import { addCharacterArtifact, removeCharacterArtifact } from "@/hooks/useCharac
 import { useElementContext } from "@/context/ElementContext";
 import { useCommonContext } from "@/context/CommonContext";
 import { useWeaponTypeContext } from "@/context/WeaponTypeContext";
+import { useUser } from "@/context/UserContext";
+import { useRouter } from "next/navigation";
+import ReplyOutlinedIcon from '@mui/icons-material/ReplyOutlined';
 
 export default function Characters() {
-
-  
+  const router = useRouter()
+  const { characterSearchContext, setCharacterSearchContext } = useUser()
   const { data: elementsData, loading: elementsLoading } = useElementContext()
   const { data: typeData, loading: typeLoading } = useWeaponTypeContext()
   const { data: commonsData, loading: commonsLoading } = useCommonContext()
@@ -123,6 +126,12 @@ export default function Characters() {
     return () => clearTimeout(timeout)
   }, [searchCharactersInput])
 
+  useEffect(() => {
+    if (characterSearchContext) {
+      setSearchCharactersInput(characterSearchContext)
+    }
+  }, [])
+
 
    const changeSearchCharactersInput = (search) => {
     setSearchCharactersInput(search)
@@ -162,7 +171,7 @@ export default function Characters() {
         name: '',
         description: '',
       })
-      setPerksRefetch((prev) => !prev)
+     
       setAddPerkDialog(false)
     }
     setApiLoading(false)
@@ -173,9 +182,9 @@ export default function Characters() {
   return (
     <>
       { apiLoading && <Spinner /> }
-      <AddCharacterPerksForm  chipData={commonsData} characterId={characterId} dialog={perksDialog} setDialog={setPerksDialog} />
-        <AddArtifactsForm  chipData={commonsData} characterId={characterId} dialog={artifactsDialog} setDialog={setArtifactsDialog} />
-          <AddWeaponsForm  chipData={commonsData} characterId={characterId} weaponTypeId={weaponTypeId} dialog={weaponsDialog} setDialog={setWeaponsDialog} />
+      <AddCharacterPerksForm  chipData={commonsData} setRefetchCharacters={setRefetchCharacters} characterId={characterId} dialog={perksDialog} setDialog={setPerksDialog} />
+        <AddArtifactsForm  chipData={commonsData} setRefetchCharacters={setRefetchCharacters} characterId={characterId} dialog={artifactsDialog} setDialog={setArtifactsDialog} />
+          <AddWeaponsForm  chipData={commonsData} setRefetchCharacters={setRefetchCharacters} characterId={characterId} weaponTypeId={weaponTypeId} dialog={weaponsDialog} setDialog={setWeaponsDialog} />
       <CustomDialog open={addPerkDialog}
         handleClose={handleCloseAddPerkDialog} 
         handleConfirm={confirmAddPerkDialog}  
@@ -202,12 +211,14 @@ export default function Characters() {
                                  typeOptions={typeData} />}
             />
  
-       
+      
         
       <Grid container spacing={2}>
         <Grid item size={12}>
           <Grid container spacing={2} >
             <Grid item size={8}>
+               <Button  color='secondary' startIcon={<ReplyOutlinedIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} />} 
+                                      sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }, mr: 1, mb: 1}} onClick={(e) => router.back()} variant="contained">Back</Button>
               <Button  startIcon={<AddCircleOutlineIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} />} 
                                       sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }, mr: 1, mb: 1}} onClick={(e) => setCharacterDialog(true)} variant="contained">Add Character</Button>
                <Button  startIcon={<AddCircleOutlineIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} />} 

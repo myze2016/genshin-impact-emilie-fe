@@ -53,7 +53,7 @@ export default function Weapons() {
   const [refetchCommons, setRefetchCommons] = useState(false)
   const [searchCommons, setSearchCommons] = useState('')
   // const { data: commons, loading: commonsLoading } = getCommons(commonsPayload, refetchCommons, searchCommons)
-   const { data: commonsData, loading: commonsLoading } = useCommonContext()
+   const { data: commons, loading: commonsLoading } = useCommonContext()
 
   const [ apiDialog, setApiDialog] = useState(false)
   const [weaponId, setWeaponId] = useState('')

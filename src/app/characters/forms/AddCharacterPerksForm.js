@@ -5,7 +5,7 @@ import { getCharacterPerks } from "@/hooks/useCharacter";
 import perkTable from "../tables/perkTable";
 import { addCharacterPerk, deleteCharacterPerk } from "@/hooks/useCharacter";
 import CustomTableDialog from "@/components/dialog/table";
-const AddCharacterPerksForm = ({ chipData, characterId, dialog, setDialog }) => {
+const AddCharacterPerksForm = ({ chipData, characterId, setRefetchCharacters, dialog, setDialog }) => {
     
     const [payload, setPayload] = useState('')
     const [refetch, setRefetch] = useState('')
@@ -52,6 +52,7 @@ const AddCharacterPerksForm = ({ chipData, characterId, dialog, setDialog }) => 
         let response = await addCharacterPerk(payload)
         if (response?.data?.success) {
             setRefetch((prev) => !prev)
+             setRefetchCharacters((prev) => !prev)
         }
     }
 
@@ -63,6 +64,7 @@ const AddCharacterPerksForm = ({ chipData, characterId, dialog, setDialog }) => 
         let response = await deleteCharacterPerk(payload)
         if (response?.data?.success) {
             setRefetch((prev) => !prev)
+             setRefetchCharacters((prev) => !prev)
         }
     }
 

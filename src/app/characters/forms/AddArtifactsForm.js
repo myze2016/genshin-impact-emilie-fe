@@ -5,7 +5,7 @@ import { getArtifactSearch } from "@/hooks/useArtifact";
 import artifactTable from "../tables/artifactTable";
 import CustomTableDialog from "@/components/dialog/table";
 import { addCharacterArtifact, removeCharacterArtifact } from "@/hooks/useCharacterArtifact";
-const AddArtifactsForm = ({ chipData, characterId, dialog, setDialog }) => {
+const AddArtifactsForm = ({ chipData, characterId, setRefetchCharacters, dialog, setDialog }) => {
     const [payload, setPayload] = useState('')
     const [refetch, setRefetch] = useState('')
     const [search, setSearch] = useState('')
@@ -51,6 +51,7 @@ const AddArtifactsForm = ({ chipData, characterId, dialog, setDialog }) => {
         let response = await addCharacterArtifact(payload)
         if (response?.data?.success) {
             setRefetch((prev) => !prev)
+             setRefetchCharacters((prev) => !prev)
         }
     }
 
@@ -62,6 +63,7 @@ const AddArtifactsForm = ({ chipData, characterId, dialog, setDialog }) => {
         let response = await removeCharacterArtifact(payload)
         if (response?.data?.success) {
             setRefetch((prev) => !prev)
+             setRefetchCharacters((prev) => !prev)
         }
     }
 
