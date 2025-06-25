@@ -54,15 +54,16 @@ export default function Nav() {
     let curStealth = localStorage.getItem('stealth')
     if (curStealth==='true') {
       localStorage.setItem('stealth', false)
-      setStealth(false)
+      window.location.reload();
     } else {
       localStorage.setItem('stealth', true)
-      setStealth(true)
+      window.location.reload();
     }
   }
 
   useEffect(() => {
     const isStealth = localStorage.getItem('stealth') === 'true';
+    console.log('isStealth', isStealth);
     setStealth(isStealth);
   }, []);
  
@@ -160,6 +161,7 @@ export default function Nav() {
   {/* Title */}
   <Typography
     variant="h5"
+    hidden={stealth}
     sx={{
       fontWeight: 700,
       color: theme.palette.primary.main,

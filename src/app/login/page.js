@@ -13,9 +13,11 @@ import LoginIcon from '@mui/icons-material/Login'
 import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt'
 import { useRouter } from 'next/navigation'
 import { login } from '@/hooks/useAuth'
+import { useUser } from '@/context/UserContext'
 
 export default function EmilieLogin() {
   const router = useRouter()
+  const { refetch } = useUser()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -25,6 +27,7 @@ export default function EmilieLogin() {
     const response = await login(formData)
     if (response?.data?.token) {
       localStorage.setItem('token', response?.data?.token)
+      refetch()
       router.push('/dashboard')
     } 
     // TODO: Add actual auth logic

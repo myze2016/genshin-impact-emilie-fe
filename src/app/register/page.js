@@ -15,9 +15,11 @@ import PersonAddIcon from '@mui/icons-material/PersonAdd'
 import LoginIcon from '@mui/icons-material/Login'
 import { register } from '@/hooks/useAuth'
 import { useRouter } from 'next/navigation'
+import { useUser } from '@/context/UserContext'
 
 export default function Register() {
   const router = useRouter()
+  const { refetch } = useUser()
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -34,6 +36,7 @@ export default function Register() {
       const response = await register(payload)
       if (response?.data?.success) {
         localStorage.setItem('token', response?.data?.token)
+        refetch()
         router.push('/dashboard')
       }
     } catch (err) {
