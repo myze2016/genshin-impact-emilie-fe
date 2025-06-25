@@ -70,7 +70,7 @@ export default function Party() {
   const [searchCommons, setSearchCommons] = useState('')
   // const { data: commonsData, loading: commonsLoading } = getCommons(commonsPayload, refetchCommons, searchCommons)
    const { data: commonsData, loading: commonsLoading } = useCommonContext()
-
+   const [stealth, setStealth] = useState('')
   const [artifactsDialog, setArtifactsDialog] = useState(false)
   const [artifactPage, setArtifactPage] = useState(0)
   const [artifactPayload, setArtifactPayload] = useState('')
@@ -313,7 +313,13 @@ export default function Party() {
       setApiLoading(false)
     }
 
-
+    useEffect(() => {
+      const isStealth = localStorage.getItem('stealth') === 'true';
+      if (isStealth) {
+        setStealth(isStealth);
+      }
+    }, []);
+  
     
   const handleRemovePosition = async (position) => {
       setApiLoading(true)
@@ -529,7 +535,7 @@ export default function Party() {
               <Grid item size={12}>
                 <Grid container spacing={2}>
                       <Grid item size={8}>
-                           <Paper sx={{ padding: 2, height: '100%', backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.4), rgba(0,0,0,0.8)), url(${party?.character?.namecard_background_url})`,
+                           <Paper sx={{ padding: 2, height: '100%', backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.4), rgba(0,0,0,0.8)), url(${stealth ? 'https://genshin.jmp.blue/characters/tighnari/gacha-splash.png' : party?.character?.namecard_background_url})`,
                           backgroundSize: 'cover', // or 'contain' depending on your layout
                           backgroundRepeat: 'no-repeat',
                           backgroundPosition: 'right' }}>

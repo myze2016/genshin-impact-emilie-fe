@@ -1,13 +1,20 @@
 import { TableCell, Button, IconButton, Box, Stack, Chip } from "@mui/material"
-import { Fragment } from "react"
+import { Fragment, useState, useEffect } from "react"
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
 const characterTable = ({handleClickAddCharacterPosition}) => {
+  const [stealth, setStealth] = useState('')
+  useEffect(() => {
+    const isStealth = localStorage.getItem('stealth') === 'true';
+    if (isStealth) {
+      setStealth(isStealth);
+    }
+  }, []);
 
   const columns = [
     { name: 'Element', value: 'element', width: '80px',  cell: (item,index) => {
         return (
-            <TableCell  sx={{textAlign: 'center'}} key={index}><Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'flex-start'}} ><img src={item?.element?.image_url} alt={item?.element?.name}  style={{ width: 40, height: 40 }}/> </Box></TableCell>
+            <TableCell  sx={{textAlign: 'center'}} key={index}><Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'flex-start'}} ><img src={stealth ? 'https://genshin.jmp.blue/characters/tighnari/gacha-splash.png' : item?.element?.image_url} alt={item?.element?.name}  style={{ width: 40, height: 40 }}/> </Box></TableCell>
         )
       }
     },

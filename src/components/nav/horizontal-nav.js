@@ -1,7 +1,7 @@
 'use client'
 
 import { AppBar, Toolbar, Typography, Button, Box, Container, useTheme, Tooltip, IconButton, Avatar, Menu, MenuItem } from '@mui/material'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import HomeIcon from '@mui/icons-material/Home';
 import PersonIcon from '@mui/icons-material/Person';
 import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp';
@@ -20,6 +20,7 @@ export default function Nav() {
     const { user, partyContextId, setPartyContextId } = useUser()
     const router = useRouter()
   const theme = useTheme()
+  const [stealth, setStealth] = useState(false)
 
   const [anchorEl, setAnchorEl] = useState(null)
   const open = Boolean(anchorEl)
@@ -48,6 +49,23 @@ export default function Nav() {
     
 
   }
+
+  const handleStealthMode = async (e) => {
+    let curStealth = localStorage.getItem('stealth')
+    if (curStealth==='true') {
+      localStorage.setItem('stealth', false)
+      setStealth(false)
+    } else {
+      localStorage.setItem('stealth', true)
+      setStealth(true)
+    }
+  }
+
+  useEffect(() => {
+    const isStealth = localStorage.getItem('stealth') === 'true';
+    setStealth(isStealth);
+  }, []);
+ 
 
   return (
     <AppBar
@@ -113,7 +131,7 @@ export default function Nav() {
  
    <Box
     component="img"
-    src="https://genshin.jmp.blue/characters/emilie/gacha-card.png"
+    src={stealth ? 'https://genshin.jmp.blue/characters/tighnari/gacha-splash.png' : "https://genshin.jmp.blue/characters/emilie/gacha-card.png"}
     alt="Emilie"
     sx={{
       width: '100%',
@@ -285,6 +303,7 @@ export default function Nav() {
   <MenuItem disabled sx={{ color: 'text.primary' }}>
     <Avatar sx={{ mr: 1 }} /> {user?.name}
   </MenuItem>
+  <MenuItem onClick={handleStealthMode}>Stealth Mode : {stealth ? 'ON' : 'OFF'} </MenuItem>
   <MenuItem onClick={handleLogout}>Logout</MenuItem>
 </Menu>
     </>

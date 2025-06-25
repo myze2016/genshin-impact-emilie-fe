@@ -1,6 +1,14 @@
 import { FormControl, InputLabel, Input, FormHelperText, Grid, TextareaAutosize, TextField, Box, Card, CardActionArea, TablePagination } from "@mui/material";
 import CustomSearch from "@/components/Search";
+import { useState, useEffect } from "react";
 const AddPartyImage = ({ charactersData, selectImage, charactersPage, charactersTotal, clickCharactersPage, charactersRows, selectCharactersRows, search, setSearch }) => {
+    const [stealth, setStealth] = useState('')
+     useEffect(() => {
+        const isStealth = localStorage.getItem('stealth') === 'true';
+        if (isStealth) {
+            setStealth(isStealth);
+          }
+      }, []);
     return (
         <Box sx={{ width: '100%' }}>
             <Grid container spacing={2} >
@@ -22,7 +30,7 @@ const AddPartyImage = ({ charactersData, selectImage, charactersPage, characters
                         }}
                     >
                     {charactersData.map((character, index) => (
-                          <Card key={index} sx={{ width: 345, height: 160, backgroundImage: `url(${character.gacha_splash_url})`, // assumes character.imageUrl contains the image URL
+                          <Card key={index} sx={{ width: 345, height: 160, backgroundImage: `url(${stealth ? 'https://genshin.jmp.blue/characters/tighnari/gacha-splash.png' : character.gacha_splash_url})`, // assumes character.imageUrl contains the image URL
                           backgroundSize: 'cover',
                           backgroundPosition: 'center', }}>
                             <CardActionArea  onClick={() => selectImage(character)} sx={{ height: '100%' }}>

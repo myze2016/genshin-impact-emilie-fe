@@ -490,12 +490,19 @@ export default function Party() {
     
     
 
-      const toggleRow = (tableId, rowIndex) => {
-  setOpenRows((prev) => ({
-    ...prev,
-    [tableId]: prev[tableId] === rowIndex ? null : rowIndex,
-  }));
-};
+      const toggleRow = (positionId, rowIndex) => {
+        setOpenRows((prev) => {
+          const current = prev[positionId] || [];
+          const isOpen = current.includes(rowIndex);
+      
+          return {
+            ...prev,
+            [positionId]: isOpen
+              ? current.filter((i) => i !== rowIndex) // close it
+              : [...current, rowIndex],              // open it
+          };
+        });
+      };
 
     const handleOpenStat = async (party_artifact) => {
       console.log('party_artifact', party_artifact.party_artifact[0].id)
@@ -816,9 +823,9 @@ export default function Party() {
                                     <Fragment key={index}>
                                     <TableRow>
                                        <TableCell sx={{pr: 0, width: '40px'}}>
-                                        <IconButton onClick={() => toggleRow(position?.id, index)}>
-                                          {openRows[position?.id] === index ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-                                        </IconButton>
+                                       <IconButton onClick={() => toggleRow(position?.id, index)}>
+  {openRows[position?.id]?.includes(index) ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+</IconButton>
                                     </TableCell>
                                       <TableCell sx={{pl: 0}}>
                                         <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'flex-start'}}>
@@ -885,7 +892,7 @@ export default function Party() {
                                     </TableRow>
                                     <TableRow>
                                         <TableCell sx={{padding: 0}}>
-                                                <Collapse in={openRows[position?.id] === index}>
+                                        <Collapse in={openRows[position?.id]?.includes(index)}>
                                                 <Box
                                               sx={{
                                                 p: 2,  
@@ -896,7 +903,7 @@ export default function Party() {
                                                 </Collapse>
                                         </TableCell>
                                         <TableCell colSpan={4} sx={{padding: 0}}>
-                                          <Collapse in={openRows[position?.id] === index}>
+                                        <Collapse in={openRows[position?.id]?.includes(index)}>
   <Box
     sx={{
       maxHeight: 87,              // Limit visible height (2 Chip rows)

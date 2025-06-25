@@ -71,10 +71,6 @@ export const getCharactersName = (payload, refetch, search, page=0, rowsPerPage=
   useEffect(() => {
     const fetchData = async () => {
        setLoading(true)
-       if(!payload) {
-        setLoading(false)
-        return
-       }
       try {
         const response = await api.get(`/character-get-by-name?search=${search}&page=${page}&rows_per_page=${rowsPerPage}`)
         if (response?.data?.success) {

@@ -41,7 +41,7 @@ export default function Dashboard() {
   const [searchCharactersInput, setSearchCharactersInput] = useState('')
   const [charactersRows, setCharactersRows] = useState(9)
   const { data: charactersData, loading: charactersLoading, total: charactersTotal } = getCharactersName(charactersPayload, refetchCharacters, searchCharacters, charactersPage+1, charactersRows)
-
+  const [stealth, setStealth] = useState('')
   const [ apiLoading, setApiLoading ] = useState(false)
   const [addImageDialog, setAddImageDialog] = useState(false)
   const [addPartyDialog, setAddPartyDialog] = useState(false)
@@ -86,6 +86,13 @@ export default function Dashboard() {
   const closeAddPartyDialog = (e) => {
     setAddPartyDialog(false)
   }
+
+  useEffect(() => {
+    const isStealth = localStorage.getItem('stealth') === 'true';
+    if (isStealth) {
+        setStealth(isStealth);
+      }
+  }, []);
 
   const confirmAddPartyDialog = async (e) => {
     setApiLoading(true)
@@ -213,7 +220,7 @@ export default function Dashboard() {
                     sx={{
                       width: 345,
                       height: 160,
-                      backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.4), rgba(0,0,0,0.8)), url(${party?.character?.gacha_splash_url})`,
+                      backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.4), rgba(0,0,0,0.8)), url(${stealth ? 'https://genshin.jmp.blue/characters/tighnari/gacha-splash.png' : party?.character?.gacha_splash_url})`,
                       backgroundSize: 'cover',
                       backgroundPosition: 'top',
                       overflowY: 'auto',

@@ -4,14 +4,19 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp';
 import ConstructionOutlinedIcon from '@mui/icons-material/ConstructionOutlined';
 import CompostOutlinedIcon from '@mui/icons-material/CompostOutlined';
-
+import { useState, useEffect } from "react";
 
 const characterTable = ({openAddCharacterPerksDialog, handleOpenWeaponDialog, handlOpenArtifactDialog}) => {
+  const [stealth, setStealth] = useState('')
+  useEffect(() => {
+    const isStealth = localStorage.getItem('stealth') === 'true';
+    setStealth(isStealth);
+  }, []);
 
   const columns = [
      { name: ' ', value: 'icon_side_url', width: '100px', cell: (item,index) => {
       return (
-        <TableCell  sx={{minWidth: '100px', textAlign: 'center'}} key={index}><Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'flex-end'}} ><img src={item?.icon_side_url} alt={item?.name} style={{ width: 50, height: 57 }}/> </Box></TableCell>
+        <TableCell  sx={{minWidth: '100px', textAlign: 'center'}} key={index}><Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'flex-end'}} ><img src={stealth ? 'https://genshin.jmp.blue/characters/tighnari/gacha-splash.png' : item?.icon_side_url} alt={item?.name} style={{ width: 50, height: 57 }}/> </Box></TableCell>
       )
     } },
     { name: 'Name', value: 'name', cell: (item,index) => {

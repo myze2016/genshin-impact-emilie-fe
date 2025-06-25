@@ -49,6 +49,7 @@ export default function Characters() {
   const [charactersPage, setCharactersPage] = useState(0)
   const [charactersPayload, setCharactersPayload] = useState('')
   const [refetchCharacters, setRefetchCharacters] = useState(false)
+  const [refetchPerks, setRefetchPerks] = useState(false)
   const [searchCharacters, setSearchCharacters] = useState('')
   const [searchCharactersInput, setSearchCharactersInput] = useState('')
   const [charactersRows, setCharacterRows] = useState(10)
@@ -171,7 +172,7 @@ export default function Characters() {
         name: '',
         description: '',
       })
-     
+      setRefetchPerks((prev) => !prev)
       setAddPerkDialog(false)
     }
     setApiLoading(false)
@@ -182,7 +183,7 @@ export default function Characters() {
   return (
     <>
       { apiLoading && <Spinner /> }
-      <AddCharacterPerksForm  chipData={commonsData} setRefetchCharacters={setRefetchCharacters} characterId={characterId} dialog={perksDialog} setDialog={setPerksDialog} />
+      <AddCharacterPerksForm  refetch={refetchPerks} setRefetch={setRefetchPerks} setAddPerkDialog={setAddPerkDialog} chipData={commonsData} setRefetchCharacters={setRefetchCharacters} characterId={characterId} dialog={perksDialog} setDialog={setPerksDialog} />
         <AddArtifactsForm  chipData={commonsData} setRefetchCharacters={setRefetchCharacters} characterId={characterId} dialog={artifactsDialog} setDialog={setArtifactsDialog} />
           <AddWeaponsForm  chipData={commonsData} setRefetchCharacters={setRefetchCharacters} characterId={characterId} weaponTypeId={weaponTypeId} dialog={weaponsDialog} setDialog={setWeaponsDialog} />
       <CustomDialog open={addPerkDialog}
@@ -221,8 +222,8 @@ export default function Characters() {
                                       sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }, mr: 1, mb: 1}} onClick={(e) => router.back()} variant="contained">Back</Button>
               <Button  startIcon={<AddCircleOutlineIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} />} 
                                       sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }, mr: 1, mb: 1}} onClick={(e) => setCharacterDialog(true)} variant="contained">Add Character</Button>
-               <Button  startIcon={<AddCircleOutlineIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} />} 
-                                      sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }, mr: 1, mb: 1}} onClick={(e) => setAddPerkDialog(true)} variant="contained">Create Perk</Button>
+               {/* <Button  startIcon={<AddCircleOutlineIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} />} 
+                                      sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }, mr: 1, mb: 1}} onClick={(e) => setAddPerkDialog(true)} variant="contained">Create Perk</Button> */}
               <Button startIcon={<FileUploadIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} />} 
                                       sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }, mr: 1, mb: 1}} onClick={(e) => setApiDialog(true)} variant="contained">Add Character Api</Button>
             </Grid>

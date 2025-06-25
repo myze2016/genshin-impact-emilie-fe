@@ -1,14 +1,14 @@
-import { Grid, Box } from "@mui/material";
+import { Grid, Box, Button } from "@mui/material";
 import CustomTableRowSearchV2 from "@/components/table/tableRowSearchV2";
 import { useState, useEffect, Fragment } from "react";
 import { getCharacterPerks } from "@/hooks/useCharacter";
 import perkTable from "../tables/perkTable";
 import { addCharacterPerk, deleteCharacterPerk } from "@/hooks/useCharacter";
 import CustomTableDialog from "@/components/dialog/table";
-const AddCharacterPerksForm = ({ chipData, characterId, setRefetchCharacters, dialog, setDialog }) => {
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+const AddCharacterPerksForm = ({ refetch, setRefetch, chipData, characterId, setRefetchCharacters, dialog, setDialog, setAddPerkDialog }) => {
     
     const [payload, setPayload] = useState('')
-    const [refetch, setRefetch] = useState('')
     const [search, setSearch] = useState('')
     const [searchInput, setSearchInput] = useState('')
     const [ page, setPage] = useState(0)
@@ -84,7 +84,11 @@ const AddCharacterPerksForm = ({ chipData, characterId, setRefetchCharacters, di
                 title="Add Character Perks"
                 content={
                     <Box sx={{Width: '100%'}}>
-                        <Grid container spacing={2}>
+                        <Grid container spacing={0}>
+                            <Grid item size={{xs: 12, md: 12, lg: 12}}>
+                            <Button  startIcon={<AddCircleOutlineIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} />} 
+                                      sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }, m: 1}} onClick={(e) => setAddPerkDialog(true)} variant="contained">Create Perk</Button>
+                            </Grid>
                             <Grid item size={{xs: 12, md: 12, lg: 12}}>
                                 <CustomTableRowSearchV2 minWidth="650" 
                                     headers={columns} 
