@@ -9,6 +9,8 @@ export const UserProvider = ({ children }) => {
   const [loading, setLoading] = useState(true)
   const [partyContextId, setPartyContextId] = useState(null)
   const [characterSearchContext, setCharacterSearchContext] = useState('')
+    const [artifactSearchContext, setArtifactSearchContext] = useState('')
+      const [weaponSearchContext, setWeaponSearchContext] = useState('')
   const [refreshKey, setRefreshKey] = useState(0)
   
 
@@ -27,7 +29,7 @@ export const UserProvider = ({ children }) => {
 
   const refetch = () => setRefreshKey(prev => prev + 1)
   return (
-    <UserContext.Provider value={{ refetch, user, setUser, loading, partyContextId, setPartyContextId, characterSearchContext, setCharacterSearchContext }}>
+    <UserContext.Provider value={{ refetch, user, setUser, loading, partyContextId, setPartyContextId, characterSearchContext, setCharacterSearchContext, artifactSearchContext, setArtifactSearchContext, weaponSearchContext, setWeaponSearchContext }}>
       {children}
     </UserContext.Provider>
   )

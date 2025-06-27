@@ -47,7 +47,7 @@ export default function Party() {
   const router = useRouter()
   const params = useParams();
   const party_id = partyContextId;
-
+  const [stealth, setStealth] = useState('')
   const [apiDialog, setApiDialog] = useState(false)
   const [openRows, setOpenRows] = useState({});
 
@@ -55,6 +55,11 @@ export default function Party() {
   const [partyPayload, setPartyPayload] = useState({
     id: party_id,
   })
+   useEffect(() => {
+      const isStealth = localStorage.getItem('stealth') === 'true';
+      setStealth(isStealth);
+      
+    }, []);
 
    const [ perksPayload, setPerksPayload ] = useState('')
     const [ refetchPerks, setRefetchPerks ] = useState(false)
@@ -436,6 +441,7 @@ export default function Party() {
         };
         let response = await addPartyWeapon(payload)
         if (response?.data?.success) {
+          setRefetchParty((prev) => !prev)
           setWeaponsRefetch((prev) => !prev)
         }
       }
@@ -448,6 +454,7 @@ export default function Party() {
         };
         let response = await removePartyWeapon(payload)
         if (response?.data?.success) {
+          setRefetchParty((prev) => !prev)
           setWeaponsRefetch((prev) => !prev)
         }
       }
@@ -694,7 +701,7 @@ export default function Party() {
               <Grid item size={12}>
                 <Grid container spacing={2}>
                   <Grid item size={{xs: 12, md: 8, lg: 8}}>
-                    <Paper sx={{ padding: 2, height: '100%', backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.4), rgba(0,0,0,0.8)), url(${party?.character?.namecard_background_url})`,
+                    <Paper sx={{ padding: 2, height: '100%', backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.4), rgba(0,0,0,0.8)), url(${ stealth ? 'https://genshin.jmp.blue/characters/tighnari/gacha-splash.png' : party?.character?.namecard_background_url})`,
                       backgroundSize: 'cover', // or 'contain' depending on your layout
                       backgroundRepeat: 'no-repeat',
                       backgroundPosition: 'right' }}>
@@ -830,7 +837,7 @@ export default function Party() {
                                       <TableCell sx={{pl: 0}}>
                                         <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'flex-start'}}>
                                         
-                                        <IconButton color='info' sx={{ml: 1}} onClick={() => handleRedirectCharacters(character?.character?.name)}>
+                                        <IconButton color='info' onClick={() => handleRedirectCharacters(character?.character?.name)}>
                                           <ReplyAllOutlinedIcon sx={{ fontSize: '16px'}}/>
                                         </IconButton>
                                         <Typography>{character?.character?.name}</Typography>

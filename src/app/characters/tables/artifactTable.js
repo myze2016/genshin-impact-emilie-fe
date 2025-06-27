@@ -2,8 +2,18 @@ import { TableCell, Button, IconButton, Box, CircularProgress, Stack, Chip } fro
 import { Fragment } from "react"
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import XCircleOutlineIcon from '@mui/icons-material/Cancel';
+import ReplyAllOutlinedIcon from '@mui/icons-material/ReplyAllOutlined';
+import { useUser } from "@/context/UserContext";
+import { useRouter } from "next/navigation";
 
 const artifactTable = ({handleAddArtifact, handleRemoveArtifact}) => {
+    const router = useRouter()
+  const { artifactSearchContext, setArtifactSearchContext } = useUser()
+  const handleRedirectArtifact = (artifactName) => {
+    setArtifactSearchContext(artifactName)
+    router.push(`/artifacts`)
+  }
+
   const columns = [
     { name: 'Name', value: 'name', cell: (item,index) => {
       return (
@@ -11,7 +21,9 @@ const artifactTable = ({handleAddArtifact, handleRemoveArtifact}) => {
           backgroundColor: item?.character_artifact?.length > 0 
           ? 'rgba(165, 214, 167, 0.15)' // soft success green
           : 'transparent'
-  }} key={index} align="left">{item?.name}</TableCell>
+  }} key={index} align="left"><IconButton color='info' onClick={() => handleRedirectArtifact(item?.name)}>
+                                          <ReplyAllOutlinedIcon sx={{ fontSize: '16px'}}/>
+                                        </IconButton> {item?.name}</TableCell>
       )
     } },
     { name: 'Perk', value: 'perk',  cell: (item,index) => {

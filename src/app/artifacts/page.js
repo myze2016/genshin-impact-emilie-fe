@@ -19,8 +19,13 @@ import AddPerkForm from "./forms/AddPerkForm";
 import { addPerk } from "@/hooks/usePerk";
 import CustomSearch from "@/components/Search";
 import { useCommonContext } from "@/context/CommonContext";
+import { useRouter } from "next/navigation";
+import { useUser } from "@/context/UserContext";
+import ReplyOutlinedIcon from '@mui/icons-material/ReplyOutlined';
 
 export default function Artifacts() {
+     const router = useRouter()
+      const { artifactSearchContext, setArtifactSearchContext } = useUser()
 
   const [page, setPage] = useState(0)
   const [payload, setPayload] = useState('')
@@ -78,6 +83,12 @@ export default function Artifacts() {
     }
     setApiLoading(false)
   }
+
+   useEffect(() => {
+    if (artifactSearchContext) {
+      setSearchInput(artifactSearchContext)
+    }
+  }, [])
 
   const handleCloseArtifactDialog = (e) => {
     setRefetch((prev) => !prev)
@@ -282,11 +293,13 @@ useEffect(() => {
         <Grid item size={12}>
           <Grid container spacing={2} >
             <Grid item size={8}>
+              <Button  color='secondary' startIcon={<ReplyOutlinedIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} />} 
+                                      sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }, mr: 1, mb: 1}} onClick={(e) => router.back()} variant="contained">Back</Button>
               <Button  startIcon={<AddCircleOutlineIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} />} 
                                       sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }, mr: 1, mb: 1}} onClick={(e) => setAddDialog(true)} variant="contained">Add Artifact</Button>
                <Button  startIcon={<AddCircleOutlineIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} />} 
                                       sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }, mr: 1, mb: 1}} onClick={(e) => setPerkDialog(true)} variant="contained">Create Perk</Button>
-              <Button startIcon={<FileUploadIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} />} 
+              <Button color='info' startIcon={<FileUploadIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} />} 
                                       sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }, mr: 1, mb: 1}} onClick={(e) => setApiDialog(true)} variant="contained">Add Artifact Api</Button>
             </Grid>
              <Grid item size={4} >

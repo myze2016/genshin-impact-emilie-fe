@@ -44,6 +44,7 @@ const characterTable = ({openAddCharacterPerksDialog, handleOpenWeaponDialog, ha
                                         weapon.weapon?.perks?.map((perk, index) => (
                                           <Chip
                                           key={index}
+                                          icon={<ConstructionOutlinedIcon/>}
                                           label={perk?.perk?.name}
                                           color="secondary"
                                           variant={ "contained" }
@@ -55,6 +56,7 @@ const characterTable = ({openAddCharacterPerksDialog, handleOpenWeaponDialog, ha
                                 {item?.artifacts?.map((artifact, index) => (
                                         artifact.artifact?.perks?.map((perk, index) => (
                                           <Chip
+                                           icon={<CompostOutlinedIcon/>}
                                           key={index}
                                           label={perk?.perk?.name}
                                           color="info"
