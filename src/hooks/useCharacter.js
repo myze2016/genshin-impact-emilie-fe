@@ -5,13 +5,17 @@ import { toast, Slide } from "react-toastify"
 import { CustomToast } from "../components/CustomToast"
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 
-export const getCharacters = (payload, refetch, search, page=1, rowsPerPage=99) => {
+export const getCharacters = (dialog, payload, refetch, search, page=1, rowsPerPage=99) => {
   const [data, setData] = useState([])
   const [total, setTotal] = useState([])
   const [loading, setLoading] = useState(true)
   useEffect(() => {
     const fetchData = async () => {
        setLoading(true)
+      if (!dialog) {
+        setLoading(false)
+        return;
+       }
       try {
         const response = await api.get(`/character?search=${search}&page=${page}&rows_per_page=${rowsPerPage}`)
          if (response?.data?.success) {
@@ -27,7 +31,7 @@ export const getCharacters = (payload, refetch, search, page=1, rowsPerPage=99) 
     }
 
     fetchData()
-  }, [payload, refetch, search, page, rowsPerPage])
+  }, [payload, refetch, search, page, rowsPerPage, dialog])
 
   return { data, loading, total }
 }
@@ -64,13 +68,17 @@ export const getCharactersArtifact = (payload, refetch, search, page=1, rowsPerP
   return { data, loading, total }
 }
 
-export const getCharactersName = (payload, refetch, search, page=0, rowsPerPage=100) => {
+export const getCharactersName = (dialog, payload, refetch, search, page=0, rowsPerPage=100) => {
   const [data, setData] = useState([])
   const [total, setTotal] = useState([])
   const [loading, setLoading] = useState(true)
   useEffect(() => {
     const fetchData = async () => {
        setLoading(true)
+       if (!dialog) {
+        setLoading(false)
+        return;
+       }
       try {
         const response = await api.get(`/character-get-by-name?search=${search}&page=${page}&rows_per_page=${rowsPerPage}`)
         if (response?.data?.success) {
@@ -86,7 +94,7 @@ export const getCharactersName = (payload, refetch, search, page=0, rowsPerPage=
     }
 
     fetchData()
-  }, [payload, refetch, search, page, rowsPerPage])
+  }, [payload, refetch, search, page, rowsPerPage, dialog])
 
   return { data, loading, total }
 }

@@ -3,7 +3,7 @@
 import { Grid, Typography, Button, Box, Paper, TextField, InputAdornment } from "@mui/material"
 import { Fragment, useState, useEffect } from "react";
 import CustomDialog from "@/components/dialog";
-import { addArtifact, addArtifactApi, addArtifactPerk, getArtifactPerks, getArtifacts, removeArtifactPerk } from "@/hooks/useArtifact";
+import { addArtifact, addArtifactApi, addArtifactPerk, getArtifactPerks, getArtifacts, removeArtifactPerk, addArtifactAI } from "@/hooks/useArtifact";
 import characterTable from "./tables/artifactTable";
 import perkTable from "./tables/perkTable";
 import AddArtifactForm from "./forms/AddArtifactForm";
@@ -22,6 +22,7 @@ import { useCommonContext } from "@/context/CommonContext";
 import { useRouter } from "next/navigation";
 import { useUser } from "@/context/UserContext";
 import ReplyOutlinedIcon from '@mui/icons-material/ReplyOutlined';
+import AddAiForm from "./forms/AddAiForm";
 
 export default function Artifacts() {
      const router = useRouter()
@@ -51,6 +52,11 @@ export default function Artifacts() {
 
   const [ apiDialog, setApiDialog] = useState(false)
   const [artifactId, setArtifactId] = useState('')
+
+    const [ matchedPerks, setMatchedPerks] = useState([])
+  const [ text, setText] = useState('')
+    const [ aiDialog, setAiDialog] = useState(false)
+        const [ airesponse, setairesponse] = useState(false)
 
   const [ addDialog, setAddDialog] = useState(false)
   const [ perkDialog, setPerkDialog] = useState(false)
@@ -234,9 +240,21 @@ useEffect(() => {
   }
   
 
-
+  const handleRunAi = async (item) => {
+    setApiDialog(false)
+    const payload = {
+      id: item.id,
+    }
+    let response = await addArtifactAI(payload)
+    if (response.data.success) {
+      setMatchedPerks(response.data.matchedPerks)
+      setText(response.data.text)
+      setairesponse(response.data.fullResponse)
+      setAiDialog(true)
+    }
+  }
   
-  const { columns: charactersColumns  } = characterTable({handleOpenPerksDialog})
+  const { columns: charactersColumns  } = characterTable({handleOpenPerksDialog, handleRunAi})
   const { columns: perksTableColumns } = perkTable({handleAddPerk, handleRemovePerk})
 
   return (
@@ -256,6 +274,15 @@ useEffect(() => {
               handleConfirm={(e) => handleAddArtifactApi()}  
               title="Add Character Api" 
               message="Are you sure you want to retrieve artifacts from Api?"
+            />
+      <CustomTableDialog size="lg" open={aiDialog}
+              handleClose={(e) => setAiDialog(false)} 
+              handleConfirm={(e) => setAiDialog(false)}  
+              title="Add Artifact" 
+              content={<AddAiForm text={text} 
+                                 matchedPerks={matchedPerks}
+                                 airesponse={airesponse}
+                                 changeFormData={changeFormData} />}
             />
       <CustomDialog size="sm" open={addDialog}
               handleClose={handleCloseArtifactDialog} 

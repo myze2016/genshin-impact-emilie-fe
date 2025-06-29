@@ -87,7 +87,8 @@ export default function Party() {
   const [searchCharacters, setSearchCharacters] = useState('')
   const [searchCharactersInput, setSearchCharactersInput] = useState('')
   const [charactersRows, setCharactersRows] = useState(5)
-  const { data: charactersData, loading: charactersLoading, total: charactersTotal } = getCharacters(charactersPayload, refetchCharacters, searchCharacters, charactersPage+1, charactersRows)
+    const [addPositionDialog, setAddPositionDialog] = useState(false)
+  const { data: charactersData, loading: charactersLoading, total: charactersTotal } = getCharacters(addPositionDialog, charactersPayload, refetchCharacters, searchCharacters, charactersPage+1, charactersRows)
 
 
   const [commonsPayload, setCommonsPayload] = useState('')
@@ -114,7 +115,7 @@ export default function Party() {
   const [weaponsRowsPerPage, setWeaponsRowsPerPage] = useState(10)
   const { data: weapons, loading: weaponsLoading, total: weaponsTotal } = getWeaponByParty(weaponsPayload, weaponsRefetch, weaponsSearch, weaponsPage+1, weaponsRowsPerPage)
 
-  const [addPositionDialog, setAddPositionDialog] = useState(false)
+
   const [addCharacterPositionDialog, setAddCharacterPositionDialog] = useState(false)
 
   const [weaponTypeId, setWeaponTypeId] = useState('');

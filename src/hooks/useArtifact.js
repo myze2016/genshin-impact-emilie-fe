@@ -234,6 +234,38 @@ export const addArtifactApi = async (payload) => {
   } 
 }
 
+export const addArtifactAI = async (payload) => {
+  toast.info(
+    <CustomToast title="Please Wait..." msg='Saving data from api..' icon={<AddCircleOutlineIcon size={15} />} color="#4da58d" />,
+    {
+      transition: Slide,
+      hideProgressBar: true,
+      autoClose: false, // Slight delay for user feedback
+      closeButton: true, // Optional: cleaner look
+      icon: false,
+      toastId: 'fetch-api' ,
+      style: {
+        background: 'transparent', // Use internal box styling
+        boxShadow: 'none',
+        padding: 0,
+      },
+    }
+  )
+  try {
+    const response = await api.post(`/artifact/create/ai`, payload)
+      toast.dismiss('fetch-api')
+     if (response?.data?.success) {
+      toast.success(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+    } else {
+      toast.error(response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+    }
+    return response
+  } catch (error) {
+      toast.dismiss('fetch-api')
+    toast.error(error.response?.data?.message, { transition: Slide, hideProgressBar: true, autoClose: 2000 })
+  } 
+}
+
 
 export const addArtifactPerk = async (payload) => {
   try {

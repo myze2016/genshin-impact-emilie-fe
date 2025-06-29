@@ -41,10 +41,11 @@ export default function Dashboard() {
   const [searchCharacters, setSearchCharacters] = useState('')
   const [searchCharactersInput, setSearchCharactersInput] = useState('')
   const [charactersRows, setCharactersRows] = useState(9)
-  const { data: charactersData, loading: charactersLoading, total: charactersTotal } = getCharactersName(charactersPayload, refetchCharacters, searchCharacters, charactersPage+1, charactersRows)
+  
+  const [addImageDialog, setAddImageDialog] = useState(false)
+  const { data: charactersData, loading: charactersLoading, total: charactersTotal } = getCharactersName(addImageDialog, charactersPayload, refetchCharacters, searchCharacters, charactersPage+1, charactersRows)
 
   const [ apiLoading, setApiLoading ] = useState(false)
-  const [addImageDialog, setAddImageDialog] = useState(false)
   const [addPartyDialog, setAddPartyDialog] = useState(false)
   const [partyId, setPartyId] = useState('')
   const [stealth, setStealth] = useState('')

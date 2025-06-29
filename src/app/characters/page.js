@@ -53,7 +53,7 @@ export default function Characters() {
   const [searchCharacters, setSearchCharacters] = useState('')
   const [searchCharactersInput, setSearchCharactersInput] = useState('')
   const [charactersRows, setCharacterRows] = useState(10)
-  const { data: charactersData, loading: charactersLoading, total: charactersTotal } = getCharactersName(charactersPayload, refetchCharacters, searchCharacters, charactersPage+1, charactersRows)
+  const { data: charactersData, loading: charactersLoading, total: charactersTotal } = getCharactersName(true, charactersPayload, refetchCharacters, searchCharacters, charactersPage+1, charactersRows)
 
   const [ characterDialog, setCharacterDialog] = useState(false);
   const [characterFormData, setCharacterFormData] = useState({
