@@ -12,10 +12,6 @@ export const getCharacters = (dialog, payload, refetch, search, page=1, rowsPerP
   useEffect(() => {
     const fetchData = async () => {
        setLoading(true)
-      if (!dialog) {
-        setLoading(false)
-        return;
-       }
       try {
         const response = await api.get(`/character?search=${search}&page=${page}&rows_per_page=${rowsPerPage}`)
          if (response?.data?.success) {

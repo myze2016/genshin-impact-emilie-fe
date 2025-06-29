@@ -25,8 +25,10 @@ import AddPartyPositionCharacter from "./forms/AddPartyPositionCharacter";
 import { getCharactersArtifact } from "@/hooks/useCharacter";
 import { useCommonContext } from "@/context/CommonContext";
 import ReplyOutlinedIcon from '@mui/icons-material/ReplyOutlined';
+import { useRouter } from "next/navigation";
 
 export default function Artifacts() {
+    const router = useRouter()
     const { user } = useUser()
 
   const [page, setPage] = useState(0)
