@@ -138,8 +138,8 @@ export const getArtifactByParty = (payload, refetch, search, page, rowsPerPage) 
       }
       try {
        const party_character_id = payload?.party_character_id || ''
-   
-       const response = await api.get(`/artifact-by-party?party_character_id=${party_character_id}&search=${search}&page=${page}&rows_per_page=${rowsPerPage}`);
+   const character_id = payload?.character_id || ''
+       const response = await api.get(`/artifact-by-party?party_character_id=${party_character_id}&character_id=${character_id}&search=${search}&page=${page}&rows_per_page=${rowsPerPage}`);
         if (response?.data?.success) {
           setData(response?.data?.artifacts?.data)
           setTotal(response?.data?.artifacts?.total)

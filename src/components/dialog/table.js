@@ -10,7 +10,7 @@ const CustomTableDialog = ({ size = "md", open, handleClose = ((e) => {}), handl
         onClose={handleClose}>
             <DialogTitle>{title}</DialogTitle>
             <hr></hr>
-            <DialogContent sx={{ p: 0 }}>
+            <DialogContent sx={{ p: 0, overflowY: 'hidden' }}>
                 {content}
             </DialogContent>
             <hr></hr>

@@ -859,6 +859,7 @@ export default function Party() {
                                                 onClick={(e) => {
                                                   setPartyCharacterId(character?.id)
                                                   setWeaponsPayload({
+                                                    character_id: character?.character?.id,
                                                     weapon_type_id: character?.character?.weapon_type_id,
                                                     party_character_id: character?.id
                                                   })
@@ -872,6 +873,7 @@ export default function Party() {
                                                 onClick={(e) => {
                                                   setPartyCharacterId(character?.id)
                                                   setArtifactPayload({
+                                                    character_id: character?.character?.id,
                                                     party_character_id: character?.id
                                                   })
                                                   setArtifactsDialog(true);

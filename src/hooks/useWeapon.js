@@ -111,7 +111,8 @@ export const getWeaponByParty = (payload, refetch, search, page, rowsPerPage) =>
       try {
        const weapon_type_id = payload?.weapon_type_id || ''
        const party_character_id = payload?.party_character_id || ''
-       const response = await api.get(`/weapon-by-party?weapon_type_id=${weapon_type_id}&party_character_id=${party_character_id}&search=${search}&page=${page}&rows_per_page=${rowsPerPage}`);
+        const character_id = payload?.character_id || ''
+       const response = await api.get(`/weapon-by-party?weapon_type_id=${weapon_type_id}&character_id=${character_id}&party_character_id=${party_character_id}&search=${search}&page=${page}&rows_per_page=${rowsPerPage}`);
        
         if (response?.data?.success) {
           setData(response?.data?.weapons?.data)
