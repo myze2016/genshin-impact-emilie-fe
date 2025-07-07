@@ -1,5 +1,5 @@
 'use client'
-import { Grid, Button } from "@mui/material"
+import { Grid, Button, Tabs, Tab, Box } from "@mui/material"
 import { useState, useEffect } from "react";
 import { addCommon, getCommons, removeCommon } from "@/hooks/useCommon";
 import { addPerk, getPerks, removePerk } from "@/hooks/usePerk";
@@ -18,11 +18,13 @@ import { useCommonContext } from "@/context/CommonContext";
 export default function Page() {
   const [ perksPayload, setPerksPayload ] = useState('')
   const [ refetchPerks, setRefetchPerks ] = useState(false)
+  const [tabValueInput, setTabValueInput] = useState('Perk')
+  const [tabValue, setTabValue] = useState('Perk')
   const [ searchPerks, setSearchPerks ] = useState('')
     const [ searchPerksInput, setSearchPerksInput ] = useState('')
   const [ perksRows, setPerksRows ] = useState(10)
   const [ perksPage, setPerksPage ] = useState(0)
-  const { data: perksData, loading: perksLoading, total: perksTotal } = getPerks(perksPayload, refetchPerks, searchPerks, perksPage+1, perksRows)
+  const { data: perksData, loading: perksLoading, total: perksTotal } = getPerks(tabValue, perksPayload, refetchPerks, searchPerks, perksPage+1, perksRows)
 
   const [ commonsPayload, setCommonsPayload ] = useState('')
   const [ refetchCommons, setRefetchCommons ] = useState(false)
@@ -43,6 +45,7 @@ export default function Page() {
   const [ perkFormData, setPerkFormData] = useState({
     name: '',
     type: 'Perk',
+    color: '#81c784',
     description: '',
   })
 
@@ -175,6 +178,14 @@ export default function Page() {
      const handleSearch = (search) => {
       setSearchPerksInput(search)
     }
+
+    useEffect(() => {
+      const timeout = setTimeout(() => {
+        setTabValue(tabValueInput)
+      }, 300)
+  
+      return () => clearTimeout(timeout)
+    }, [tabValueInput])
   
   const { columns } = perkTable({handleRemovePerk, handleMatchCommon})
   
@@ -208,9 +219,9 @@ export default function Page() {
       <Grid container spacing={2}>
         <Grid size={8}>
             <Button startIcon={<AddCircleOutlineIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} />} 
-                                                  sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }, mr: 1}} onClick={openAddPerkDialog} variant="contained">Add Perk</Button>
+                                                  sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }, mr: 1, mb: 1}} onClick={openAddPerkDialog} variant="contained">Add Perk</Button>
             <Button startIcon={<MenuBookIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} />} 
-                                                  sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }}} onClick={openAddCommonsDialog} variant="contained">Tag Common</Button>
+                                                  sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }, mr: 1, mb: 1}} onClick={openAddCommonsDialog} variant="contained">Tag Common</Button>
         </Grid>
          <Grid item size={4} >
                <Grid container  justifyContent="flex-end" spacing={2} >
@@ -220,6 +231,19 @@ export default function Page() {
                 </CustomSearch>
               </Grid>
             </Grid>
+        <Grid size={12}>
+          <Tabs
+            value={tabValueInput}
+            onChange={(e, newValue) => setTabValueInput(newValue)}
+            textColor="secondary"
+            indicatorColor="secondary"
+            aria-label="secondary tabs example"
+          >
+            <Tab value="Perk" label="Perk" />
+            <Tab value="Synergy" label="Synergy" />
+            <Tab value="Stat" label="Stat" />
+          </Tabs>
+        </Grid>
         <Grid size={12}>
           <CustomTableV2 minWidth="650" headers={columns} data={perksData} page={perksPage} handleChangePage={clickPerksPage} rowsPerPage={perksRows} handleChangeRowsPerPage={selectPerksRows} total={perksTotal} loading={perksLoading} />
         </Grid>

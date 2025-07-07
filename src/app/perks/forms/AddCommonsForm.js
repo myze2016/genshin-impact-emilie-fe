@@ -1,7 +1,8 @@
-import { Grid, Box, TextField, Stack, Chip, IconButton, CircularProgress, Select, MenuItem, InputLabel, FormControl } from "@mui/material";
+import { Typography, Autocomplete, Grid, Box, TextField, Stack, Chip, IconButton, CircularProgress, Select, MenuItem, InputLabel, FormControl } from "@mui/material";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { addCommon, removeCommon } from "@/hooks/useCommon";
 import { useCommonContext } from "@/context/CommonContext";
+
 
 const AddCommonsForm = ({ commonFormData, setCommonFormData, changeFormData, commonsData, loading=false, setApiLoading, handleRefetch, handleClear }) => {
 
@@ -24,20 +25,53 @@ const AddCommonsForm = ({ commonFormData, setCommonFormData, changeFormData, com
   }
 
     
-    const colorOptions = [
-        { label: 'Primary', color: '#81c784', value: 'primary' },
-        { label: 'Secondary', color: '#d1c4e9', value: 'secondary' },
-        { label: 'Error', color: '#b85c38', value: 'error' },
-        { label: 'Success', color: '#a5d6a7', value: 'success' },
-        { label: 'Info', color: '#7bb6c3', value: 'info' },
-        { label: 'Warning', color: '#d4a373', value: 'warning' },
-    ];
+  const colorOptions = [
+    { label: 'Red', color: '#ef5350' },
+    { label: 'Blue', color: '#42a5f5' },
+    { label: 'Green', color: '#66bb6a' },
+    { label: 'Purple', color: '#ba68c8' },
+    { label: 'Cyan', color: '#26c6da' },
+    { label: 'Orange', color: '#ffb74d' },
+    { label: 'Pink', color: '#f06292' },
+    { label: 'Sky Blue', color: '#81d4fa' },
+    { label: 'Brown', color: '#8d6e63' },
+    { label: 'Bright Purple', color: '#ab47bc' },
+    { label: 'Light Blue', color: '#a3d8e6' },
+    { label: 'Teal', color: '#9bd5c6' },
+    { label: 'Sand Gold', color: '#e0c28c' },
+    { label: 'Lavender', color: '#d1c4e9' },
+    { label: 'Tan', color: '#d4a373' },
+];
+
     return (
         <Box sx={{ width: '100%' }}>
             <Grid container spacing={2}>
                 <Grid item size={{xs: 12, md: 12, lg: 12}}>
-                    <Box sx={{display: 'flex', alignItems: 'center'}}>
+                    <Box sx={{display: 'flex', alignItems: 'center'}}>u
                     <TextField sx={{mr:1}} name="name" value={commonFormData?.name} onChange={(e) => changeFormData(e, commonFormData, setCommonFormData)} label="Name" variant="outlined" />
+                    <Autocomplete
+            options={colorOptions}
+            getOptionLabel={(option) => option.label}
+            value={commonFormData.color}
+            onChange={(event, newValue) => changeFormData(event, commonFormData, setCommonFormData)}
+            renderInput={(params) => <TextField {...params} label="Select Color" />}
+            renderOption={(props, option) => (
+                <Box component="li" {...props} display="flex" alignItems="center">
+                    <Box
+                        sx={{
+                            width: 20,
+                            height: 20,
+                            bgcolor: option.color,
+                            borderRadius: '50%',
+                            mr: 1,
+                            border: '1px solid #ccc',
+                        }}
+                    />
+                    <Typography variant="body2">{option.label}</Typography>
+                </Box>
+            )}
+            sx={{ width: 250 }}
+        />
                         <FormControl >
                             <InputLabel id="color-label" >
                                 Color

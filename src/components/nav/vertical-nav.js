@@ -88,7 +88,11 @@ export default function VerticalNav({ collapsed, setCollapsed }) {
   }, [pathname]);
 
   const toggleGroup = (label) => {
-    setCollapsed(!collapsed);
+    if (collapsed) {
+      setCollapsed(!collapsed);
+    }
+  
+    
     setOpenGroups((prev) => ({ ...prev, [label]: !prev[label] }));
   };
 

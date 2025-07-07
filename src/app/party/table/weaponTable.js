@@ -15,16 +15,19 @@ const weaponTable = ({handleAddWeapon, handleRemoveWeapon}) => {
       }
 
   const columns = [
-    { name: '', value: 'include', width: '5px', cell: (item,index) => {
+    { name: '', value: 'include', width: '30px', cell: (item,index) => {
       return (
         <TableCell sx={{
-          width: '5px',
+          width: '30px',
           pr: 0,
           backgroundColor: item?.party_weapon?.length > 0 
           ? 'rgba(165, 214, 167, 0.15)' // soft success green
           : 'transparent'
   }} key={index} align="left">
-  <FormControlLabel sx={{ mr: 0}} control={<Checkbox  sx={{ '& .MuiSvgIcon-root': { fontSize: 18 } }} onClick={e => e.preventDefault()} checked={item?.character_weapon_count > 0} color="info" />}  /></TableCell>
+    <Box sx={{ display: 'flex'}}> <FormControlLabel sx={{ mr: 0}} control={<Checkbox  sx={{ '& .MuiSvgIcon-root': { fontSize: 18 } }} readOnly checked={item?.character_weapon_count > 0} color="info" />}  />
+    { item?.party_weapon?.length > 0 && <FormControlLabel sx={{ mr: 0}} control={<Checkbox  sx={{ '& .MuiSvgIcon-root': { fontSize: 18 } }} checked={item?.party_weapon.include} color="info" />}  /> } </Box>
+ 
+  </TableCell>
       )
     } },
     { name: 'Name', value: 'name', cell: (item,index) => {

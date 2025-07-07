@@ -1,4 +1,4 @@
-import { TableCell, Button, IconButton, Chip } from "@mui/material"
+import { TableCell, Button, IconButton, Chip, Typography } from "@mui/material"
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import SearchIcon from '@mui/icons-material/Search';
 
@@ -31,7 +31,7 @@ const perkTable = ({handleRemovePerk, handleMatchCommon}) => {
     },
     { name: 'Type', value: 'type',  cell: (item,index) => {
         return (
-          <TableCell key={index} align="left">{item?.type}</TableCell>
+          <TableCell key={index} align="left"><Typography color="secondary">{item?.type}</Typography></TableCell>
         )
       }
     },
