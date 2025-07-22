@@ -35,8 +35,7 @@ const AddPerkForm = ({ perkFormData, setPerkFormData, changeFormData, commonsDat
                                 key={index}
                                 onClick={() => handleFillCommon(common?.name)}
                                 label={common?.name}
-                                color={common?.color}
-                                sx={{ fontSize: '16px', mr: 1 }}
+                                sx={{ fontSize: '16px', mr: 1, backgroundColor: common?.color }}
                                 variant="contained" />
                             ))
                         }
@@ -139,6 +138,30 @@ const AddPerkForm = ({ perkFormData, setPerkFormData, changeFormData, commonsDat
                             ))}
                             </Select>
                         </FormControl>
+                </Grid>
+                <Grid item size={{xs: 12, md: 5, lg: 5}}>
+                    <Autocomplete
+                        options={commonsData}
+                        getOptionLabel={(option) => option.label}
+                        value={commonFormData.color}
+                        onChange={(event, newValue) => changeFormData(event, commonFormData, setCommonFormData)}
+                        renderInput={(params) => <TextField {...params} label="Select Color" />}
+                        renderOption={(props, option) => (
+                            <Box component="li" {...props} display="flex" alignItems="center">
+                                <Box
+                                    sx={{
+                                        width: 20,
+                                        height: 20,
+                                        bgcolor: option.color,
+                                        borderRadius: '50%',
+                                        mr: 1,
+                                        border: '1px solid #ccc',
+                                    }}
+                                />
+                                <Typography variant="body2">{option.label}</Typography>
+                            </Box>
+                        )}
+                    />
                 </Grid>
             </Grid>
         </Box>

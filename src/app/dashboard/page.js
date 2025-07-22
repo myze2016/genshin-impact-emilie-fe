@@ -202,7 +202,7 @@ export default function Dashboard() {
            <Button  color='secondary' startIcon={<ReplyOutlinedIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} />} 
                                       sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }, mr: 1, mb: 1}} onClick={(e) => router.back()} variant="contained">Back</Button>
           <Button startIcon={<AddCircleOutlineIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} />} 
-          sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }}} 
+          sx={{ '& .MuiButton-startIcon': {  mr: 0.5}, mr: 1, mb: 1}} 
           onClick={(e) => setAddPartyDialog(true)} variant="contained">Add Party</Button>
         </Grid>
         <Grid item size={4} >

@@ -955,9 +955,8 @@ export default function Party() {
                                             <Chip
                                               key={index}
                                               label={perk.perk.name}
-                                              color={perk?.perk?.common?.color ?? 'primary'}
                                               variant="contained"
-                                              sx={{mr: 1, mb: 1, fontSize: '16px'}}
+                                              sx={{mr: 1, mb: 1, fontSize: '16px', backgroundColor: perk?.perk?.common?.color}}
                                             />
                                           ))
                                         }

@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, useEffect } from 'react'
 import { api } from '@/utils/axios'
-import { toast } from 'react-toastify'
+import { toast, Slide } from 'react-toastify'
 
 const WeaponTypeContext = createContext()
 

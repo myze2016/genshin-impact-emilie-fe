@@ -27,8 +27,7 @@ const AddPerkForm = ({ perkFormData, setPerkFormData, changeFormData, commonsDat
                                 key={index}
                                 onClick={() => handleFillCommon(common?.name)}
                                 label={common?.name}
-                                color={common?.color}
-                                sx={{ fontSize: '16px', mr: 1 }}
+                                sx={{ fontSize: '16px', mr: 1, backgroundColor: common?.color }}
                                 variant="contained" />
                             ))
                         }

@@ -63,6 +63,7 @@ export default function Page() {
     setPerkFormData({
       name: '',
       type: 'Perk',
+      color: '#81c784',
       description: '',
     })
   }
@@ -93,6 +94,7 @@ export default function Page() {
       setPerkFormData({
         name: '',
         type: 'Perk',
+        color: '#81c784',
         description: '',
       })
       setRefetchPerks((prev) => !prev)
@@ -182,6 +184,8 @@ export default function Page() {
     useEffect(() => {
       const timeout = setTimeout(() => {
         setTabValue(tabValueInput)
+        const updatedForm = { ...perkFormData, type: tabValueInput }
+        setPerkFormData(updatedForm)
       }, 300)
   
       return () => clearTimeout(timeout)
@@ -219,7 +223,7 @@ export default function Page() {
       <Grid container spacing={2}>
         <Grid size={8}>
             <Button startIcon={<AddCircleOutlineIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} />} 
-                                                  sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }, mr: 1, mb: 1}} onClick={openAddPerkDialog} variant="contained">Add Perk</Button>
+                                                  sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }, mr: 1, mb: 1}} onClick={openAddPerkDialog} variant="contained">Add {tabValue} </Button>
             <Button startIcon={<MenuBookIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} />} 
                                                   sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }, mr: 1, mb: 1}} onClick={openAddCommonsDialog} variant="contained">Tag Common</Button>
         </Grid>

@@ -22,8 +22,7 @@ const perkTable = ({handleRemovePerk, handleMatchCommon}) => {
               key={index}
               onClick={() => handleFillCommon(common?.name)}
               label={item?.common?.name}
-              color={item?.common?.color}
-              sx={{ fontSize: '16px', mr: 1 }}
+              sx={{ fontSize: '16px', mr: 1, backgroundColor: item?.common?.color }}
               variant="contained" /> }
           </TableCell>
         )
