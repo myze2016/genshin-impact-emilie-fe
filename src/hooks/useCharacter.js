@@ -95,7 +95,7 @@ export const getCharactersName = (dialog, payload, refetch, search, page=0, rows
   return { data, loading, total }
 }
 
-export const getCharacterPerks = (characterId, refetch, search, page, rowsPerPage) => {
+export const getCharacterPerks = (characterId, refetch, search, page, rowsPerPage, searchType) => {
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(true)
   const [total, setTotal] = useState(0)
@@ -108,7 +108,7 @@ export const getCharacterPerks = (characterId, refetch, search, page, rowsPerPag
         return
       }
       try {
-       const response = await api.get(`/character-perk?character_id=${characterId}&search=${search}&page=${page}&rows_per_page=${rowsPerPage}`);
+       const response = await api.get(`/character-perk?type=${searchType}&character_id=${characterId}&search=${search}&page=${page}&rows_per_page=${rowsPerPage}`);
        
         if (response?.data?.success) {
           setData(response?.data?.character_perks?.data)
@@ -123,7 +123,7 @@ export const getCharacterPerks = (characterId, refetch, search, page, rowsPerPag
     }
 
     fetchData()
-  }, [characterId, refetch, search, page, rowsPerPage])
+  }, [characterId, refetch, search, page, rowsPerPage, searchType])
 
   return { data, loading, total }
 }

@@ -26,11 +26,6 @@ const AddCommonsForm = ({ commonFormData, setCommonFormData, changeFormData, com
     
     const colorOptions = [
         { label: '', color: '', value: '' },
-        { label: 'Primary', color: 'primary', value: 'primary' },
-        { label: 'Secondary', color: 'seconday', value: 'seconday' },
-        { label: 'Error', color: 'error', value: 'error' },
-        { label: 'Info', color: 'info', value: 'info' },
-        { label: 'Warning', color: 'warning', value: 'warning' },
         { label: 'Red', color: '#ef5350', value: '#ef5350' },
         { label: 'Blue', color: '#42a5f5', value: '#42a5f5' },
         { label: 'Green', color: '#66bb6a', value: '#66bb6a' },
@@ -46,6 +41,18 @@ const AddCommonsForm = ({ commonFormData, setCommonFormData, changeFormData, com
         { label: 'Sand Gold', color: '#e0c28c', color: '#e0c28c' },
         { label: 'Lavender', color: '#d1c4e9', value: '#d1c4e9' },
         { label: 'Tan', color: '#d4a373', value: '#d4a373' },
+        { label: 'Yellow', color: '#fff176', value: '#fff176' },
+        { label: 'Deep Orange', color: '#ff7043', value: '#ff7043' },
+        { label: 'Light Green', color: '#aed581', value: '#aed581' },
+        { label: 'Deep Blue', color: '#1976d2', value: '#1976d2' },
+        { label: 'Mint', color: '#b2dfdb', value: '#b2dfdb' },
+        { label: 'Peach', color: '#ffccbc', value: '#ffccbc' },
+        { label: 'Charcoal', color: '#546e7a', value: '#546e7a' },
+        { label: 'Indigo', color: '#5c6bc0', value: '#5c6bc0' },
+        { label: 'Coral', color: '#ff8a65', value: '#ff8a65' },
+        { label: 'Rose', color: '#e91e63', value: '#e91e63' },
+        { label: 'Lime', color: '#d4e157', value: '#d4e157' },
+        { label: 'Slate', color: '#78909c', value: '#78909c' },
     ];
 
     return (
@@ -53,13 +60,13 @@ const AddCommonsForm = ({ commonFormData, setCommonFormData, changeFormData, com
             <Grid container spacing={2}>
                 <Grid item size={{xs: 12, md: 12, lg: 12}}>
                     <Box sx={{display: 'flex', alignItems: 'center'}}>
-                    <TextField sx={{mr:1}} name="name" value={commonFormData?.name} onChange={(e) => changeFormData(e, commonFormData, setCommonFormData)} label="Name" variant="outlined" />
+                    <TextField autoComplete="off" sx={{mr:1}} name="name" value={commonFormData?.name} onChange={(e) => changeFormData(e, commonFormData, setCommonFormData)} label="Name" variant="outlined" />
                     <Autocomplete
                         id="color"
                         sx={{ width: 300 }}
                         options={colorOptions}
                         autoHighlight
-                        value={colorOptions.find(opt => opt.color === commonFormData.color)}
+                        value={colorOptions.find(opt => opt.color === commonFormData.color) || null}
                         onChange={(event, newValue) => setCommonFormData(prev => ({
                             ...prev,
                             color: newValue?.color || '',
@@ -95,7 +102,7 @@ const AddCommonsForm = ({ commonFormData, setCommonFormData, changeFormData, com
                             slotProps={{
                                 htmlInput: {
                                 ...params.inputProps,
-                                autoComplete: 'new-password', // disable autocomplete and autofill
+                                autoComplete: 'off', // disable autocomplete and autofill
                                 },
                             }}
                             />

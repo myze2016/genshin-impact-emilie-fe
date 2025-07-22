@@ -1,6 +1,6 @@
 import CustomSearch from "../Search"
-import { TableContainer, Paper, Table, TableHead, TableRow, TableBody, TableCell, TextField, Chip, Stack, CircularProgress, TablePagination  } from "@mui/material"
-const CustomTableRowSearchV2 = ({ minWidth=650, headers=[], data=[], chipData=[], handleSearch=((e) => {}), handleSearchChip=((e) => {}), search="", loading=false, apiLoading=false, page=0, handleChangePage=(()=>{}), rowsPerPage=5, handleChangeRowsPerPage=(()=>{}), total=10, }) => {
+import { Box, Select, MenuItem, TableContainer, Paper, Table, TableHead, TableRow, TableBody, TableCell, TextField, Chip, Stack, CircularProgress, TablePagination  } from "@mui/material"
+const CustomTableRowSearchV2 = ({ minWidth=650, headers=[], data=[], chipData=[], handleSearch=((e) => {}), handleSearchChip=((e) => {}), handleSelect=((e) => {}), select, search="", loading=false, apiLoading=false, page=0, handleChangePage=(()=>{}), rowsPerPage=5, handleChangeRowsPerPage=(()=>{}), total=10, }) => {
     return (
         <>
         <TableContainer sx={{ height: '168px', width: '100%', overflow: 'hidden'}} component={Paper}>
@@ -9,7 +9,9 @@ const CustomTableRowSearchV2 = ({ minWidth=650, headers=[], data=[], chipData=[]
                        <TableRow>
                         <TableCell colSpan={headers.length}
                             sx={{
-                                p: 0,
+                                pl: 1,
+                                pr: 0,
+                                py: 0,
                                 position: 'sticky',
                                 top: 0,
                                 backgroundColor: 'background.paper', 
@@ -23,18 +25,47 @@ const CustomTableRowSearchV2 = ({ minWidth=650, headers=[], data=[], chipData=[]
                                             key={index}
                                             onClick={() => handleSearchChip(chip?.name)}
                                             label={chip?.name}
-                                            color={chip?.color}
-                                            sx={{ fontSize: '16px', mr: 1 }}
+                                            sx={{ fontSize: '16px', mr: 1, color: search.includes(chip?.name) ? '#fff' : chip?.color, borderColor: chip?.color, backgroundColor: search.includes(chip?.name) ? chip?.color : 'transparent'
+                                            }}
                                             variant={ search.includes(chip?.name) ? "contained" : "outlined"}
                                         />
                                     ))
                                 }
                             </Stack>
+                            {select ? (<Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <CustomSearch
                                 fullWidth={true}
                                 search={search}
                                 handleSearch={handleSearch}
                             />
+                            <Select
+                                sx={{width: "200px"}}
+                                id="type"
+                                name="type"
+                                value={select}
+                                label="Type"
+                                variant="outlined"
+                                size="small"
+                                onChange={handleSelect}
+                            >
+                                <MenuItem value="Perk">
+                                        Perk
+                                </MenuItem>
+                                <MenuItem value="Synergy">
+                                        Synergy
+                                </MenuItem>
+                                <MenuItem value="Stat">
+                                        Stat
+                                </MenuItem>
+                            </Select>
+                            </Box>) : (
+                                 <CustomSearch
+                                 fullWidth={true}
+                                 search={search}
+                                 handleSearch={handleSearch}
+                             />
+                            )
+                            }
                         </TableCell>
                     </TableRow>
                 </TableBody>

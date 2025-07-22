@@ -21,7 +21,7 @@ const AddPerkForm = ({ perkFormData, setPerkFormData, changeFormData, commonsDat
             <Grid container spacing={2}>
                 <Grid item size={{xs: 12, md: 12, lg: 12}}>
                     <Stack direction="row"
-                        sx={{ flexWrap: 'wrap', rowGap: 1 }}>
+                        sx={{flexWrap: 'wrap', rowGap: 1 }}>
                         { commonsData?.map((common, index) => (
                             <Chip
                                 key={index}

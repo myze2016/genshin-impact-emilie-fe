@@ -4,7 +4,7 @@ const AddParty = ({ partyFormData, setPartyFormData, changeFormData, options }) 
         <Box sx={{ width: '100%' }}>
             <Grid container spacing={2} >
                 <Grid item size={{xs: 12, md: 6, lg: 6}}>
-                    <TextField fullWidth name="name" value={partyFormData?.name}  onChange={(e) => changeFormData(e, partyFormData, setPartyFormData)} label="Name" variant="outlined" />
+                    <TextField autoComplete="off" fullWidth name="name" value={partyFormData?.name}  onChange={(e) => changeFormData(e, partyFormData, setPartyFormData)} label="Name" variant="outlined" />
                 </Grid>
                 <Grid item size={{xs: 12, md: 6, lg: 6}}>
                     <FormControl fullWidth>
@@ -52,7 +52,7 @@ const AddParty = ({ partyFormData, setPartyFormData, changeFormData, options }) 
                     />
                 </Grid>
                 <Grid item size={{xs: 12, md: 6, lg: 6}}>
-                    <TextField fullWidth name="reaction" value={partyFormData?.reaction}  onChange={(e) => changeFormData(e, partyFormData, setPartyFormData)} label="Reaction" variant="outlined"/>
+                    <TextField autoComplete="off" fullWidth name="reaction" value={partyFormData?.reaction}  onChange={(e) => changeFormData(e, partyFormData, setPartyFormData)} label="Reaction" variant="outlined"/>
                 </Grid>
             </Grid>
         </Box>

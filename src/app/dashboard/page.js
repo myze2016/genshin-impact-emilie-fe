@@ -1,6 +1,6 @@
 'use client'
 
-import { Grid, Typography, Button, Card, CardContent, CardActionArea, IconButton, CardActions, TablePagination, Box} from "@mui/material"
+import { Paper, TableContainer, Table, Grid, Typography, Button, Card, CardContent, CardActionArea, IconButton, CardActions, TablePagination, Box, Select, MenuItem, TableBody, TableRow, TableCell} from "@mui/material"
 import { Fragment, useState, useEffect } from "react";
 import { getParties, addParty, addPartyImage } from "../../hooks/useParty";
 import AddParty from "./form/AddParty";
@@ -26,6 +26,7 @@ export default function Dashboard() {
   const [partiesPayload, setPartiesPayload] = useState('')
   const [page, setPage] = useState(0)
   const [search, setSearch] = useState('')
+  const [type, setType] = useState('board')
   const [searchInput, setSearchInput] = useState('')
   const [rowsPerPage, setRowsPerPage] = useState(10)
   const { data: partiesData, loading: partiesLoading, total: partiesTotal } = getParties(partiesPayload, refetchParties, search, page+1, rowsPerPage)
@@ -128,6 +129,11 @@ export default function Dashboard() {
     setCharactersPage(0);
   };
 
+  const onSelectType = (e) => {
+    setRowsPerPage(20);
+    setType(e.target.value)
+  }
+
   
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -198,15 +204,31 @@ export default function Dashboard() {
             />
        
       <Grid container spacing={2}>
-        <Grid item size={8}>
+        <Grid item size={6}>
            <Button  color='secondary' startIcon={<ReplyOutlinedIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} />} 
                                       sx={{ '& .MuiButton-startIcon': {  mr: 0.5, }, mr: 1, mb: 1}} onClick={(e) => router.back()} variant="contained">Back</Button>
           <Button startIcon={<AddCircleOutlineIcon sx={{ verticalAlign: 'middle', position: 'relative', top: '-1px',  }} />} 
           sx={{ '& .MuiButton-startIcon': {  mr: 0.5}, mr: 1, mb: 1}} 
           onClick={(e) => setAddPartyDialog(true)} variant="contained">Add Party</Button>
         </Grid>
-        <Grid item size={4} >
+        <Grid item size={6} >
             <Grid container  justifyContent="flex-end" spacing={2} >
+            <Select
+                  id="type"
+                  name="type"
+                  value={type}
+                  label="Type"
+                  variant="outlined"
+                  size="small"
+                  onChange={(e) => onSelectType(e)}
+              >
+                  <MenuItem value="board">
+                        Board
+                  </MenuItem>
+                  <MenuItem value="list">
+                        List
+                  </MenuItem>
+              </Select>
             <CustomSearch  search={searchInput}
               handleSearch={handleSearch}
               fullWidth={false}>
@@ -218,7 +240,7 @@ export default function Dashboard() {
        
           <Grid container spacing={2}>
             {
-              partiesData && partiesData?.map((party, index) => (
+              partiesData && type ==='board' ? partiesData?.map((party, index) => (
                 <Fragment key={index}>
                     <Card
                     sx={{
@@ -266,7 +288,50 @@ export default function Dashboard() {
                     </IconButton>
                   </Card>
                 </Fragment>
-              ))
+              )) : <Fragment> 
+                   <TableContainer component={Paper}>
+                  <Table >
+                    <TableBody>
+                        {
+                          partiesData?.map((party, index) => (
+                            <TableRow onClick={(e)=> handleRedirectParty(e, party.id)} key={index} hover
+                            sx={{
+                              cursor: 'pointer',
+                              '&:hover': {
+                                backgroundColor: 'rgba(0, 0, 0, 0.04)', // adjust as needed
+                              },
+                            }}>
+                                <TableCell>
+                                  <Typography variant="h6" color="primary">
+                                      {party?.name}
+                                  </Typography>
+                                </TableCell>
+                                <TableCell>
+                                  <Typography variant="body2" color="secondary">
+                                    {party?.description}
+                                  </Typography>
+                                </TableCell>
+                                <TableCell>
+                                    <IconButton
+                                      color="primary"
+                                      onClick={(e) => {
+                                        e.stopPropagation(); // prevent navigation
+                                        e.preventDefault();
+                                        clickAddPartyImage(e, party);
+                                      }}
+                                    >
+                                      <AddCircleOutlineIcon sx={{ fontSize: '28px' }} />
+                                    </IconButton>
+                                </TableCell>
+
+                            </TableRow>
+                          ))
+                        }
+
+                    </TableBody>
+                  </Table>
+                  </TableContainer>
+                </Fragment>
             }
           </Grid>
         </Grid>

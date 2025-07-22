@@ -39,7 +39,7 @@ export default function Page() {
 
   const [ commonFormData, setCommonFormData ] = useState({
     name: '',
-    color: 'primary',
+    color: '#81c784',
   })
 
   const [ perkFormData, setPerkFormData] = useState({
@@ -93,7 +93,7 @@ export default function Page() {
     if (response?.data?.success) {
       setPerkFormData({
         name: '',
-        type: 'Perk',
+        type: tabValueInput,
         color: '#81c784',
         description: '',
       })
@@ -239,9 +239,9 @@ export default function Page() {
           <Tabs
             value={tabValueInput}
             onChange={(e, newValue) => setTabValueInput(newValue)}
-            textColor="secondary"
-            indicatorColor="secondary"
-            aria-label="secondary tabs example"
+            textColor="primary"
+            indicatorColor="primary"
+            aria-label="primary tabs example"
           >
             <Tab value="Perk" label="Perk" />
             <Tab value="Synergy" label="Synergy" />

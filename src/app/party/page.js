@@ -220,7 +220,7 @@ export default function Party() {
     if (!searchCharactersInput.includes(value)) {
       setSearchCharactersInput((prev) => prev + (value + ' '))
     } else {
-      setSearchCharactersInpu((prev) => prev.replace(value + ' ', ''))
+      setSearchCharactersInput((prev) => prev.replace(value + ' ', ''))
     }
   }
   
@@ -774,6 +774,23 @@ export default function Party() {
                               <TableCell>
                                 <Typography>{position?.description}</Typography>
                               </TableCell>
+                              <TableCell align="right">
+                              <IconButton
+                                    color="info"
+                                    onClick={() => handleOpenEditPositionDialog(position)}
+                                    aria-label="Edit Position"
+                                  >
+                                    <ModeEditOutlineOutlinedIcon />
+                                  </IconButton>
+                                  <IconButton
+                                      color="error"
+                                      onClick={(e) => {
+                                        handleRemovePosition(position);
+                                      }}
+                                    >
+                                  <DeleteOutlineIcon sx={{ fontSize: '24px' }} />
+                                </IconButton>
+                              </TableCell>
                             </TableRow>
                           ))}
                         </TableBody>
@@ -792,33 +809,18 @@ export default function Party() {
                           <Grid container spacing={0}>
                             <Grid item size={{xs: 12, md: 12, lg: 12}} >
                               <Grid container spacing={2} sx={{px: 2, py: 1}}>
-                                <Grid item size={{xs: 12, md: 6, lg: 6}} sx={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center'}}>
+                                <Grid item size={{xs: 12, md: 12, lg: 12}} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                                    <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap' }}>
                                     <Typography sx={{fontWeight: 100 }}>{position?.name}</Typography>&nbsp;&nbsp;•&nbsp;&nbsp;<Typography sx={{ fontWeight: 100 }}>{position?.description}</Typography>
-                                </Grid>
-                                <Grid item size={{xs: 12, md: 6, lg: 6}} sx={{display: 'flex', justifyContent: 'flex-end', alignItems: 'center'}}>
-                                  <IconButton
-                                    color="info"
-                                    onClick={() => handleOpenEditPositionDialog(position)}
-                                    aria-label="Edit Position"
-                                  >
-                                    <ModeEditOutlineOutlinedIcon />
-                                  </IconButton>
-                                  <IconButton
-                                    color="primary"
-                                    onClick={() => handleOpenAddCharacterPositionDialog(position)}
-                                    aria-label="add character to position"
-                                  >
-                                    <AddCircleOutlineIcon />
-                                  </IconButton>
-                                  <IconButton
-                                      color="error"
-                                      onClick={(e) => {
-                                        handleRemovePosition(position);
-                                      }}
+                                    </Box>
+                                    <IconButton
+                                      color="primary"
+                                      onClick={() => handleOpenAddCharacterPositionDialog(position)}
+                                      aria-label="add character to position"
                                     >
-                                  <DeleteOutlineIcon sx={{ fontSize: '24px' }} />
-                                </IconButton>
-                            </Grid>
+                                      <AddCircleOutlineIcon />
+                                    </IconButton>
+                                </Grid>
                               </Grid>
                             
                             </Grid>

@@ -81,7 +81,7 @@ const AddWeaponsForm = ({ chipData, characterId, weaponTypeId, dialog, setRefetc
             <CustomTableDialog size="md" open={dialog}
                 handleClose={handleCloseDialog} 
                 handleConfirm={handleCloseDialog}  
-                title="Add Character Perks"
+                title="Add Weapon Perks"
                 content={
                     <Box sx={{Width: '100%'}}>
                         <Grid container spacing={2}>

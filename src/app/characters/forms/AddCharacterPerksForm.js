@@ -10,10 +10,11 @@ const AddCharacterPerksForm = ({ refetch, setRefetch, chipData, characterId, set
     
     const [payload, setPayload] = useState('')
     const [search, setSearch] = useState('')
+    const [searchType, setSearchType] = useState('Perk')
     const [searchInput, setSearchInput] = useState('')
     const [ page, setPage] = useState(0)
     const [ rowsPerPage, setRowsPerPage] = useState(10)
-    const { data, loading, total } = getCharacterPerks(characterId, refetch, search, page+1, rowsPerPage)
+    const { data, loading, total } = getCharacterPerks(characterId, refetch, search, page+1, rowsPerPage, searchType)
     
     const handleClickChip = (value) => {
         if (!searchInput.includes(value)) {
@@ -102,7 +103,10 @@ const AddCharacterPerksForm = ({ refetch, setRefetch, chipData, characterId, set
                                     handleChangePage={handleChangePage} 
                                     rowsPerPage={rowsPerPage} 
                                     handleChangeRowsPerPage={handleChangeRowsPerPage} 
-                                    total={total}/>
+                                    total={total}
+                                    select={searchType}
+                                    handleSelect={(e) => setSearchType(e.target.value)}
+                                    />
                             </Grid>
                         </Grid>
                     </Box> 

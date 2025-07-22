@@ -168,7 +168,7 @@ export default function Party() {
     if (!searchCharactersInput.includes(value)) {
       setSearchCharactersInput((prev) => prev + (value + ' '))
     } else {
-      setSearchCharactersInpu((prev) => prev.replace(value + ' ', ''))
+      setSearchCharactersInput((prev) => prev.replace(value + ' ', ''))
     }
   }
   
