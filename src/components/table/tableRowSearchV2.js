@@ -25,6 +25,7 @@ const CustomTableRowSearchV2 = ({ minWidth=650, headers=[], data=[], chipData=[]
                                             key={index}
                                             onClick={() => handleSearchChip(chip?.name)}
                                             label={chip?.name}
+                                            color={chip?.color}
                                             sx={{ fontSize: '16px', mr: 1, color: search.includes(chip?.name) ? '#fff' : chip?.color, borderColor: chip?.color, backgroundColor: search.includes(chip?.name) ? chip?.color : 'transparent'
                                             }}
                                             variant={ search.includes(chip?.name) ? "contained" : "outlined"}

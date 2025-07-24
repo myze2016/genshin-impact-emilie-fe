@@ -1,6 +1,6 @@
 'use client'
 
-import { Grid, Typography, Button, Box, Chip, Stack, Paper, Table, TableRow, TableCell, TableBody, IconButton, Collapse } from "@mui/material"
+import { Menu, MenuItem, useTheme, useMediaQuery, Grid, Typography, Button, Box, Chip, Stack, Paper, Table, TableRow, TableCell, TableBody, IconButton, Collapse } from "@mui/material"
 import { Fragment, useState, useEffect } from "react";
 import { editPartyPosition, getParty, addPartyPosition, addPartyPositionCharacter, removePartyPositionCharacter, editParty, moveVerticalCharacter, removePosition, addMyParty, deleteParty, addPartyArtifact, addPartyWeapon, removePartyWeapon, removePartyArtifact } from "../../hooks/useParty";
 import AddPartyPosition from "./form/AddPartyPosition";
@@ -12,6 +12,7 @@ import characterTable from "./table/characterTable";
 import { useParams, useRouter } from "next/navigation";
 import CustomTableDialog from "@/components/dialog/table";
 import { getCommons } from "@/hooks/useCommon";
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import SwapVerticalCircleIcon from '@mui/icons-material/SwapVerticalCircle';
 import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
@@ -50,6 +51,7 @@ export default function Party() {
   const [stealth, setStealth] = useState('')
   const [apiDialog, setApiDialog] = useState(false)
   const [openRows, setOpenRows] = useState({});
+  const theme = useTheme();
 
   const [refetchParty, setRefetchParty] = useState(false)
   const [partyPayload, setPartyPayload] = useState({
@@ -90,7 +92,12 @@ export default function Party() {
     const [addPositionDialog, setAddPositionDialog] = useState(false)
   const { data: charactersData, loading: charactersLoading, total: charactersTotal } = getCharacters(addPositionDialog, charactersPayload, refetchCharacters, searchCharacters, charactersPage+1, charactersRows)
 
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
 
+  const [menuAnchorEl, setMenuAnchorEl] = useState(null);
+  const openMenu = (event) => setMenuAnchorEl(event.currentTarget);
+  const closeMenu = () => setMenuAnchorEl(null);
+  
   const [commonsPayload, setCommonsPayload] = useState('')
   const [refetchCommons, setRefetchCommons] = useState(false)
   const [searchCommons, setSearchCommons] = useState('')
@@ -417,7 +424,7 @@ export default function Party() {
             } else {
              router.push('/dashboard') // ✅ Redirect to /login
             }
-      }
+        }
     
       }
 
@@ -854,52 +861,98 @@ export default function Party() {
                                       <TableCell>
                                         <Typography>{character?.party_artifact[0]?.artifact?.name}</Typography>
                                       </TableCell>
-                                      <TableCell>
-                                            <Box display="flex" justifyContent="flex-end" alignItems="center" flexWrap="wrap" gap={1}>
-                                              <IconButton
-                                                color="warning"
-                                                onClick={(e) => {
-                                                  setPartyCharacterId(character?.id)
-                                                  setWeaponsPayload({
-                                                    character_id: character?.character?.id,
-                                                    weapon_type_id: character?.character?.weapon_type_id,
-                                                    party_character_id: character?.id
-                                                  })
-                                                  setWeaponsDialog(true);
-                                                }}
-                                              >
-                                                <ConstructionOutlinedIcon sx={{ fontSize: '24px' }} />
-                                            </IconButton>
-                                            <IconButton
-                                                color="primary"
-                                                onClick={(e) => {
-                                                  setPartyCharacterId(character?.id)
-                                                  setArtifactPayload({
-                                                    character_id: character?.character?.id,
-                                                    party_character_id: character?.id
-                                                  })
-                                                  setArtifactsDialog(true);
-                                                }}
-                                              >
-                                                <CompostOutlinedIcon sx={{ fontSize: '24px' }} />
-                                            </IconButton>
-                                             <IconButton
-                                                color="info"
-                                                onClick={(e) => {
-                                                  handleMoveVertical(character);
-                                                }}
-                                              >
-                                                <SwapVerticalCircleIcon sx={{ fontSize: '24px' }} />
-                                            </IconButton>
-                                            <IconButton
-                                                color="error"
-                                                onClick={(e) => {
-                                                  handleRemoveCharacter(character);
-                                                }}
-                                              >
-                                                <DeleteOutlineIcon sx={{ fontSize: '24px' }} />
-                                            </IconButton>
-                                          </Box>
+                                      <TableCell align="right">
+                                      {isSmallScreen ? (
+                                        <>
+                                        <IconButton color="primary" onClick={openMenu}>
+                                          <MoreVertIcon />
+                                        </IconButton>
+                                        <Menu
+                                          anchorEl={menuAnchorEl}
+                                          open={Boolean(menuAnchorEl)}
+                                          onClose={closeMenu}
+                                          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                                          transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+                                        >
+                                          <MenuItem onClick={(e) => {
+                                            setPartyCharacterId(character?.id)
+                                            setWeaponsPayload({
+                                              character_id: character?.character?.id,
+                                              weapon_type_id: character?.character?.weapon_type_id,
+                                              party_character_id: character?.id
+                                            })
+                                            setWeaponsDialog(true);
+                                          }}>
+                                            <ConstructionOutlinedIcon sx={{ mr: 1 }} fontSize="small" /> Weapons
+                                          </MenuItem>
+                                          <MenuItem onClick={(e) => {
+                                            setPartyCharacterId(character?.id)
+                                            setArtifactPayload({
+                                              character_id: character?.character?.id,
+                                              party_character_id: character?.id
+                                            })
+                                            setArtifactsDialog(true);
+                                          }}>
+                                            <CompostOutlinedIcon sx={{ mr: 1 }} fontSize="small" /> Artifacts
+                                          </MenuItem>
+                                          <MenuItem onClick={(e) => {
+                                            handleMoveVertical(character);
+                                          }}>
+                                            <SwapVerticalCircleIcon sx={{ mr: 1 }} fontSize="small" /> Move
+                                          </MenuItem>
+                                          <MenuItem onClick={(e) => {
+                                            handleRemoveCharacter(character);
+                                          }}>
+                                            <DeleteOutlineIcon sx={{ mr: 1 }} fontSize="small" /> Remove
+                                          </MenuItem>
+                                        </Menu>
+                                      </>
+                                      ) : ( <Box display="flex" justifyContent="flex-end" alignItems="center" flexWrap="wrap" gap={1}>
+                                        <IconButton
+                                          color="warning"
+                                          onClick={(e) => {
+                                            setPartyCharacterId(character?.id)
+                                            setWeaponsPayload({
+                                              character_id: character?.character?.id,
+                                              weapon_type_id: character?.character?.weapon_type_id,
+                                              party_character_id: character?.id
+                                            })
+                                            setWeaponsDialog(true);
+                                          }}
+                                        >
+                                          <ConstructionOutlinedIcon sx={{ fontSize: '24px' }} />
+                                      </IconButton>
+                                      <IconButton
+                                          color="primary"
+                                          onClick={(e) => {
+                                            setPartyCharacterId(character?.id)
+                                            setArtifactPayload({
+                                              character_id: character?.character?.id,
+                                              party_character_id: character?.id
+                                            })
+                                            setArtifactsDialog(true);
+                                          }}
+                                        >
+                                          <CompostOutlinedIcon sx={{ fontSize: '24px' }} />
+                                      </IconButton>
+                                       <IconButton
+                                          color="info"
+                                          onClick={(e) => {
+                                            handleMoveVertical(character);
+                                          }}
+                                        >
+                                          <SwapVerticalCircleIcon sx={{ fontSize: '24px' }} />
+                                      </IconButton>
+                                      <IconButton
+                                          color="error"
+                                          onClick={(e) => {
+                                            handleRemoveCharacter(character);
+                                          }}
+                                        >
+                                          <DeleteOutlineIcon sx={{ fontSize: '24px' }} />
+                                      </IconButton>
+                                    </Box>) }
+                                           
                                       </TableCell>
                                     </TableRow>
                                     <TableRow>
