@@ -37,6 +37,12 @@ import { useUser } from "@/context/UserContext";
 import { useRouter } from "next/navigation";
 import { useElementContext } from "@/context/ElementContext";
 import ReplyOutlinedIcon from "@mui/icons-material/ReplyOutlined";
+import CustomSearchV2 from "@/components/v2/Search";
+import CustomSelectV2 from "@/components/v2/Select";
+import { dashboardViewOptions } from "./helper/constants";
+import mapPartyToCard from "./helper/mapper";
+import CustomBoard from "@/components/v2/Board";
+import CustomPaginationV2 from "@/components/v2/Pagination";
 
 export default function Dashboard() {
   const { user, partyContextId, setPartyContextId } = useUser();
@@ -59,26 +65,7 @@ export default function Dashboard() {
   // const { data: elementsData, loading: elementsLoading } = getElements(elementsPayload, refetchElements)
   const { data: elementsData, loading: elementsLoading } = useElementContext();
 
-  const [charactersPage, setCharactersPage] = useState(0);
-  const [charactersPayload, setCharactersPayload] = useState("");
-  const [refetchCharacters, setRefetchCharacters] = useState(false);
-  const [searchCharacters, setSearchCharacters] = useState("");
-  const [searchCharactersInput, setSearchCharactersInput] = useState("");
-  const [charactersRows, setCharactersRows] = useState(9);
-
   const [addImageDialog, setAddImageDialog] = useState(false);
-  const {
-    data: charactersData,
-    loading: charactersLoading,
-    total: charactersTotal,
-  } = getCharactersName(
-    addImageDialog,
-    charactersPayload,
-    refetchCharacters,
-    searchCharacters,
-    charactersPage + 1,
-    charactersRows
-  );
 
   const [apiLoading, setApiLoading] = useState(false);
   const [addPartyDialog, setAddPartyDialog] = useState(false);
@@ -113,19 +100,6 @@ export default function Dashboard() {
     setFormData(updatedForm);
   };
 
-  const selectImage = async (character) => {
-    setApiLoading(true);
-    let response = await addPartyImage({
-      character_id: character.id,
-      party_id: partyId,
-    });
-    if (response?.data?.success) {
-      setRefetchParties((prev) => !prev);
-      setAddImageDialog(false);
-    }
-    setApiLoading(false);
-  };
-
   const closeAddPartyDialog = (e) => {
     setAddPartyDialog(false);
   };
@@ -145,14 +119,9 @@ export default function Dashboard() {
     setApiLoading(false);
   };
 
-  const clickAddPartyImage = (e, party) => {
-    e.stopPropagation();
-    setPartyId(party.id);
+  const handleAddPartyImage = (id) => {
+    setPartyId(id);
     setAddImageDialog(true);
-  };
-
-  const closeAddImageDialog = () => {
-    setAddImageDialog(false);
   };
 
   const clickCharactersPage = (e, page) => {
@@ -164,7 +133,7 @@ export default function Dashboard() {
     setCharactersPage(0);
   };
 
-  const onSelectType = (e) => {
+  const handleSelectView = (e) => {
     setRowsPerPage(20);
     setType(e.target.value);
   };
@@ -177,31 +146,16 @@ export default function Dashboard() {
     return () => clearTimeout(timeout);
   }, [searchCharactersInput]);
 
-  const handleSearch = (search) => {
-    setSearchInput(search);
-  };
-
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setSearch(searchInput);
-    }, 300);
-
-    return () => clearTimeout(timeout);
-  }, [searchInput]);
-
-  const handleChangeRowsPerPage = (e) => {
-    setRowsPerPage(parseInt(e.target.value, 10));
-    setPage(0);
-  };
-
-  const handleChangePage = (e, page) => {
-    setPage(page);
-  };
-
-  const handleRedirectParty = (e, id) => {
+  const handleRedirectParty = (id) => {
     setPartyContextId(id);
     router.push("/party");
   };
+
+  const cards = mapPartyToCard(
+    partiesData,
+    handleRedirectParty,
+    handleAddPartyImage
+  );
 
   return (
     <>
@@ -221,7 +175,7 @@ export default function Dashboard() {
           />
         }
       />
-      <CustomTableDialog
+      {/* <CustomTableDialog
         open={addImageDialog}
         size="lg"
         handleClose={closeAddImageDialog}
@@ -240,7 +194,11 @@ export default function Dashboard() {
             setSearch={setSearchCharactersInput}
           />
         }
-      />
+      /> */}
+      <addImageDialog
+        isOpen={addImageDialog}
+        handleClose={(e) => setAddImageDialog(false)}
+      ></addImageDialog>
 
       <Grid container spacing={2}>
         <Grid item size={6}>
@@ -280,81 +238,22 @@ export default function Dashboard() {
         </Grid>
         <Grid item size={6}>
           <Grid container justifyContent="flex-end" spacing={2}>
-            <Select
-              id="type"
-              name="type"
+            <CustomSelectV2
+              handleChange={(e) => handleSelectView(e)}
               value={type}
-              label="Type"
-              variant="outlined"
-              size="small"
-              onChange={(e) => onSelectType(e)}
-            >
-              <MenuItem value="board">Board</MenuItem>
-              <MenuItem value="list">List</MenuItem>
-            </Select>
-            <CustomSearch
-              search={searchInput}
-              handleSearch={handleSearch}
-              fullWidth={false}
-            ></CustomSearch>
+              options={dashboardViewOptions}
+            ></CustomSelectV2>
+            <CustomSearchV2
+              placeholder="Search Party..."
+              setSearch={setSearch}
+            ></CustomSearchV2>
           </Grid>
         </Grid>
         <Grid item size={12}>
-          <Grid container spacing={2}>
-            {partiesData && type === "board" ? (
-              partiesData?.map((party, index) => (
-                <Fragment key={index}>
-                  <Card
-                    sx={{
-                      width: 345,
-                      height: 160,
-                      backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.4), rgba(0,0,0,0.8)), url(${
-                        stealth
-                          ? "https://genshin.jmp.blue/characters/tighnari/gacha-splash.png"
-                          : party?.character?.gacha_splash_url
-                      })`,
-                      backgroundSize: "cover",
-                      backgroundPosition: "top",
-                      overflowY: "auto",
-                      position: "relative",
-                    }}
-                  >
-                    <CardActionArea
-                      component="a"
-                      onClick={(e) => handleRedirectParty(e, party.id)}
-                      sx={{ height: "100%", display: "block" }}
-                    >
-                      <CardContent
-                        sx={{
-                          height: "100%",
-                          pt: 2,
-                          px: 2,
-                        }}
-                      >
-                        <Typography gutterBottom variant="h6" component="div">
-                          {party?.name}
-                        </Typography>
-                        <Typography variant="body2" color="secondary">
-                          {party?.description}
-                        </Typography>
-                      </CardContent>
-                    </CardActionArea>
-
-                    <IconButton
-                      color="primary"
-                      onClick={(e) => {
-                        e.stopPropagation(); // prevent navigation
-                        e.preventDefault();
-                        clickAddPartyImage(e, party);
-                      }}
-                      sx={{ position: "absolute", top: 8, right: 8 }}
-                    >
-                      <AddCircleOutlineIcon sx={{ fontSize: "28px" }} />
-                    </IconButton>
-                  </Card>
-                </Fragment>
-              ))
-            ) : (
+          {partiesData && type === "board" ? (
+            <CustomBoard data={cards}></CustomBoard>
+          ) : (
+            <Grid container spacing={2}>
               <Fragment>
                 <TableContainer component={Paper}>
                   <Table>
@@ -385,9 +284,9 @@ export default function Dashboard() {
                             <IconButton
                               color="primary"
                               onClick={(e) => {
-                                e.stopPropagation(); // prevent navigation
+                                e.stopPropagation();
                                 e.preventDefault();
-                                clickAddPartyImage(e, party);
+                                handleAddPartyImage(party?.id);
                               }}
                             >
                               <AddCircleOutlineIcon sx={{ fontSize: "28px" }} />
@@ -399,26 +298,24 @@ export default function Dashboard() {
                   </Table>
                 </TableContainer>
               </Fragment>
-            )}
-          </Grid>
+            </Grid>
+          )}
         </Grid>
         <Grid item size={{ xs: 12, md: 12, lg: 12 }}>
           <Box
             sx={{
               display: "flex",
-              justifyContent: "flex-end", // or 'flex-end'
-              mt: 4,
+              justifyContent: "flex-end",
+              mt: 1,
             }}
           >
-            <TablePagination
-              component="div"
-              count={partiesTotal}
+            <CustomPaginationV2
+              total={partiesTotal}
               page={page}
-              onPageChange={handleChangePage}
+              setPage={setPage}
               rowsPerPage={rowsPerPage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-              rowsPerPageOptions={[5, 10, 25, 50]}
-            />
+              setRowsPerPage={setRowsPerPage}
+            ></CustomPaginationV2>
           </Box>
         </Grid>
       </Grid>
